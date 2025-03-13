@@ -48,7 +48,6 @@ const Footer = () => {
                         socials.map((social, i) => (
                             <Link key={i} href={"/"}>
                                 <Image src={social} alt={"social"} height={24} width={24}/>
-
                             </Link>
                         ))
                     }
