@@ -23,7 +23,7 @@ export default function LoginPage() {
                 </div>
                 <Button label={"Continue"} type="submit" onClick={(e) => e.preventDefault()}/>
                 <div className="w-full text-center">
-                    <span className="text-[#99A0AB] font-semibold">{"Don't have an account?"}</span> <CustomLink href={"#"} label={"Sign In"}/>
+                    <span className="text-[#99A0AB] font-semibold">{"Don't have an account?"}</span> <CustomLink href={"/register"} label={"Sign In"}/>
                 </div>
             </form>
         </div>

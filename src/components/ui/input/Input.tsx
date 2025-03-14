@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, {useRef} from "react"
 import {useState} from "react";
 import Image from "next/image";
 
@@ -14,18 +14,26 @@ interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
 
 const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, ...props}) => {
     const [isFocused, setIsFocused] = useState(false);
-    const [value, setValue] = useState("");
+    const [hasContent, setHasContent] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const handleBlur = () => {
+        setIsFocused(false);
+        if (inputRef.current) {
+            setHasContent(inputRef.current.value.trim().length > 0);
+        }
+    };
 
     return (
         <div className={`relative w-full flex items-center gap-2 max-w-[520px] rounded-[14px] px-4 py-[10px] border ${isFocused ? "border-[#7B68EE]" : "border-[#E6E8EA]"}`}>
             {
-                label && (
+                label && (isFocused || hasContent)  ? (
                     <label
                         className="absolute left-3 top-0 -translate-y-1/2 px-2 text-[#546173] text-xs bg-white transition-all px-[6px] rounded-2xl"
                     >
                         {label}
                     </label>
-                )
+                ) : null
             }
             {
                 iconStart && (
@@ -34,10 +42,9 @@ const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, ..
             }
             <input
                 {...props}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
+                ref={inputRef}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(value !== "")}
+                onBlur={handleBlur}
                 placeholder={placeholder}
                 className="w-full border-none outline-none focus:outline-none h-full text-sm"
             />

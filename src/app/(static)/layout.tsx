@@ -6,7 +6,7 @@ export default function BasicLayout({
                                    }: {
     children: React.ReactNode
 }) {
-    return <section className="min-h-[100vh] relative flex flex-col items-center font-Montserrat">
+    return <section className="min-h-screen relative flex flex-col items-center font-Montserrat">
         <Header />
         {children}
         <Footer/>

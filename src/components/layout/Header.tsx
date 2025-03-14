@@ -1,6 +1,8 @@
+"use client"
 import Wrapper from "@/components/layout/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 
 const nav = [
     {
@@ -22,6 +24,7 @@ const nav = [
 
 
 const Header = () => {
+    const router = useRouter();
     return (
             <Wrapper>
                 <div className="flex justify-between items-center w-full py-3">
@@ -41,7 +44,7 @@ const Header = () => {
                         </div>
                     </div>
                     <div className="flex gap-8 items-center">
-                        <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" >
+                        <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
                             Тіркелу
                         </button>
                     </div>
