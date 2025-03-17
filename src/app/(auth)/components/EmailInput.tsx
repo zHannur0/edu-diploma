@@ -1,8 +1,9 @@
-import Input from "@/components/ui/input/Input";
+import Input, {InputProps} from "@/components/ui/input/Input";
+import React from "react";
 
-const EmailInput = () => {
+const EmailInput: React.FC<InputProps> = ({...props}) => {
     return (
-        <Input iconStart={"/icon/auth/letter.svg"} type={"email"} label={"Email"} placeholder={"Email"}/>
+        <Input iconStart={"/icon/auth/letter.svg"} type={"email"} label={"Email"} placeholder={"Email"} {...props} />
     );
 }
 

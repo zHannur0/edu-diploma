@@ -1,8 +1,16 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-export interface AuthResponse {
-    user: { id: string; email: string };
-    token: string;
+export interface SignUpResponse {
+   id: number;
+   first_name: string;
+   email: string;
+}
+
+export interface SignUpRequest {
+    first_name: string,
+    email: string,
+    password: string,
+    password2: string
 }
 
 export interface AuthRequest {
@@ -10,31 +18,30 @@ export interface AuthRequest {
     password: string;
 }
 
+export interface AuthResponse {
+    access: string;
+    refresh: string;
+}
+
 export const authApi = createApi({
     reducerPath: "authApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://your-api.com" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "https://api.aqylshyn.kz/" }),
     endpoints: (builder) => ({
         signIn: builder.mutation<AuthResponse, AuthRequest>({
             query: (credentials) => ({
-                url: "/auth/login",
+                url: "auth/token",
                 method: "POST",
                 body: credentials,
             }),
         }),
-        signUp: builder.mutation<AuthResponse, AuthRequest>({
+        signUp: builder.mutation<SignUpResponse, SignUpRequest>({
             query: (credentials) => ({
                 url: "/auth/register",
                 method: "POST",
                 body: credentials,
             }),
         }),
-        logout: builder.mutation<{ message: string }, void>({
-            query: () => ({
-                url: "/auth/logout",
-                method: "POST",
-            }),
-        }),
     }),
 });
 
-export const { useSignInMutation, useSignUpMutation, useLogoutMutation } = authApi;
+export const { useSignInMutation, useSignUpMutation } = authApi;

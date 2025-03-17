@@ -1,10 +1,10 @@
 "use client"
 
-import React, {useRef} from "react"
+import React, {InputHTMLAttributes, useRef} from "react"
 import {useState} from "react";
 import Image from "next/image";
 
-interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     iconStart?: string;
     iconEnd?: string;
     label?: string;
