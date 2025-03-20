@@ -3,11 +3,12 @@ import Wrapper from "@/components/layout/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/hooks/useAuth";
 
 const nav = [
     {
         id: 1,
-        link: "/",
+        link: "/english",
         title: "Ағылшын үйрену"
     },
     {
@@ -25,11 +26,13 @@ const nav = [
 
 const Header = () => {
     const router = useRouter();
+    const {isAuthenticated} = useAuth();
+
     return (
             <Wrapper>
                 <div className="flex justify-between items-center w-full py-3">
                     <div className="flex gap-[55px] items-center">
-                        <div className="flex gap-2">
+                        <div className="flex gap-2" onClick={() => router.push("/")}>
                             <Image src={"/icon/logo.svg"} alt={"logo"} height={24} width={24}/>
                             <Image src={"/icon/name.svg"} alt={"logo"} height={15} width={70}/>
                         </div>
@@ -44,9 +47,18 @@ const Header = () => {
                         </div>
                     </div>
                     <div className="flex gap-8 items-center">
-                        <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
-                            Тіркелу
-                        </button>
+                        {
+                            isAuthenticated ? (
+                                <div>
+
+                                </div>
+                                ) : (
+                                <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
+                                    Тіркелу
+                                </button>
+                            )
+                        }
+
                     </div>
                 </div>
             </Wrapper>

@@ -1,5 +1,4 @@
 import React, {FormEvent, useState} from "react";
-import {useRouter} from "next/navigation";
 import {useSignUpMutation} from "@/store/api/authApi";
 
 interface RegisterFormValues {
@@ -40,7 +39,6 @@ export const useRegisterForm = (): UseRegisterFormReturn => {
         repeatPassword: ""
     });
 
-    const router = useRouter();
     const [signUp, {isLoading, isError}] = useSignUpMutation();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +59,7 @@ export const useRegisterForm = (): UseRegisterFormReturn => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log('ads')
+
         try {
             const result = await signUp({
                 first_name: values.username,
