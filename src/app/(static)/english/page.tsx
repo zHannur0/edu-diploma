@@ -1,79 +1,67 @@
 "use client"
-import {useAuth} from "@/hooks/useAuth";
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import Wrapper from "@/components/layout/Wrapper";
 import CourseCard from "@/app/(static)/english/components/CourseCard";
-import {useState} from "react";
 import CourseCardBig from "@/app/(static)/english/components/CourseCardBig";
-
-const courses = [
-    {
-        id: 1,
-        title: "General English",
-        modules: 12,
-        level: "Начальный",
-        progress: 44,
-        image: "/images/general-english.jpg",
-    },
-    {
-        id: 2,
-        title: "Gra",
-        modules: 4,
-        level: "Начальный",
-        progress: 44,
-        image: "/images/gra.jpg",
-    },
-    {
-        id: 3,
-        title: "IELTS",
-        modules: 4,
-        level: "Начальный",
-        progress: 44,
-        image: "/images/ielts.jpg",
-    },
-    {
-        id: 4,
-        title: "TOEFL",
-        modules: 4,
-        level: "Начальный",
-        progress: 44,
-        image: "/images/toefl.jpg",
-    },
-];
-
+import { useGetCoursesQuery } from "@/store/api/courseApi";
+import TrialTestModal from "@/components/modal/TrialTestModal";
 
 export default function EnglishPage() {
-    const {isAuthenticated} = useAuth();
-    const [curr, setCurr] = useState<{
-        id: number;
-        title: string;
-        modules: number;
-        progress: number;
-        image: string;
-        level: string;
-    }>();
+    const { isAuthenticated } = useAuth();
+    const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
+    const [isTrialModalOpen, setIsTrialModalOpen] = useState<boolean>(false);
+
+    const { data: coursesData } = useGetCoursesQuery();
+
+    const handleCourseClick = (courseId: number) => {
+        const selectedCourse = coursesData?.find(course => course.id === courseId);
+
+        if (!selectedCourse?.trial_passed) {
+            setIsTrialModalOpen(true);
+        }
+
+        setSelectedCourseId(courseId);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedCourseId(null);
+        setIsTrialModalOpen(false);
+    };
 
     return (
-        <Wrapper isLoading={
-            isAuthenticated === null
-        }>
-            <div className="flex w-full items-start py-12 min-h-screen">
-                {
-                    curr && (
-                        <CourseCardBig/>
-                    )
-                }
-                <div className="w-full flex gap-6 flex-wrap">
-                    {
-                        courses.filter((course) => course.id !== curr?.id).map((course) => (
-                            <CourseCard key={course.id} id={course.id} title={course.title} modules={course.modules}
-                                        level={course.level} progress={course.progress} image={course.image}
-                                        handleClick={() => setCurr(course)}
+        <Wrapper isLoading={isAuthenticated === null}>
+            <div className="relative flex w-full py-12 min-h-screen">
+                {selectedCourseId && (
+                    <div>
+                        {isTrialModalOpen ? (
+                            <TrialTestModal
+                                course_id={selectedCourseId}
+                                onClose={handleCloseModal}
                             />
-                        ))
-                    }
+                        ) : (
+                            <CourseCardBig course_id={selectedCourseId}/>
+                        )}
+                    </div>
+                )}
+                <div className="w-full flex gap-6 flex-wrap">
+                    {coursesData?.map((course) => (
+                        <CourseCard
+                            key={course.id}
+                            id={course.id}
+                            title={course.name}
+                            modules={course.modules_count}
+                            image="/img/DefaultCourse.png"
+                            trial_passed={!!course.trial_passed}
+                            progress={course.user_progress}
+                            handleClick={() => handleCourseClick(course.id)}
+                            isSelected={course.id === selectedCourseId}
+                        />
+                    ))}
                 </div>
-            </div>
 
+
+            </div>
         </Wrapper>
     );
 }

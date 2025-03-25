@@ -1,43 +1,103 @@
-import Image from "next/image";
 import Button from "@/components/ui/button/Button";
+import React from "react";
+import { useGetCourseQuery } from "@/store/api/courseApi";
+import { motion } from "framer-motion";
 
-const CourseCardBig = () => {
-    return (
-        <div className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl">
-            <Image src={""} alt={""} width={465} height={180} className="w-full h-[180px] mb-5"/>
-            <p className="text-[#7D7D7D] text-sm mb-2">
-                Курс атауы
-            </p>
-            <h3 className="text-[#242424] font-medium mb-5">
-                General English
-            </h3>
-            <p className="text-[#7D7D7D] text-sm mb-2">
-                Деңгей анықтау
-            </p>
-            <h3 className="text-[#242424] font-medium mb-5">
-                Бар
-            </h3>
-            <p className="text-[#7D7D7D] text-sm mb-2">
-                Өту уақыты
-            </p>
-            <h3 className="text-[#242424] font-medium mb-5">
-                12 сағат
-            </h3>
-            <p className="text-[#7D7D7D] text-sm mb-2">
-                Прогресс
-            </p>
-            <h3 className="text-[#242424] font-medium mb-5">
-                12 сағат
-            </h3>
-            <p className="text-black mb-2">
-                Вы остановились на:
-            </p>
-            <h3 className="text-[#0375DF] mb-4">
-                Модуль №4 “Тақырып” - 5 сабақ - “Тақырып”
-            </h3>
-            <Button label={"Продолжить обучение"}/>
-        </div>
-    )
+interface CourseCardBigProps {
+    course_id: number;
 }
+
+const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id }) => {
+    const { data: course, isLoading, error } = useGetCourseQuery(course_id);
+
+    if (isLoading) {
+        return (
+            <motion.div
+                initial={{ opacity: 0, y: 0 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl animate-pulse"
+            >
+                <div className="w-full h-45 mb-5 rounded-xl bg-gray-300"></div>
+
+                {[...Array(5)].map((_, index) => (
+                    <div key={index} className="mb-4">
+                        <div className="h-4 w-1/3 bg-gray-300 mb-2"></div>
+                        <div className="h-6 w-2/3 bg-gray-300"></div>
+                    </div>
+                ))}
+
+                <div className="h-10 w-full bg-gray-300 rounded-full"></div>
+            </motion.div>
+        );
+    }
+
+    if (error) {
+        return (
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl bg-red-50"
+            >
+                <h2 className="text-red-600 font-bold mb-4">Курсты жүктеу кезінде қате шықты</h2>
+                <p className="text-red-500">
+                    {error instanceof Error ? error.message : "Белгісіз қате"}
+                </p>
+            </motion.div>
+        );
+    }
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl"
+        >
+            <div
+                className="w-full h-45 mb-5 rounded-xl p-4 flex items-center text-2xl font-bold text-white"
+                style={{
+                    background: "linear-gradient(102deg, #A697FF 0%, #7B68EE 100%)",
+                }}
+            >
+                {course?.name || "Курс атауы"}
+            </div>
+
+            {[
+                { label: "Курс атауы", value: course?.name },
+                {
+                    label: "Деңгей анықтау",
+                    value: course?.has_level_define ? "Бар" : "Жоқ"
+                },
+                {
+                    label: "Өту уақыты",
+                    value: `${course?.duration} сағат`
+                },
+                {
+                    label: "Прогресс",
+                    value: `${course?.user_progress}%`
+                }
+            ].map(({ label, value }) => (
+                <div key={label} className="mb-5">
+                    <p className="text-[#7D7D7D] text-sm mb-2">{label}</p>
+                    <h3 className="text-[#242424] font-medium">{value}</h3>
+                </div>
+            ))}
+
+            <div className="mb-4">
+                <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
+                <h3 className="text-[#0375DF]">
+                    {course?.last_module_name || "Аяқталмаған бөлім"}
+                </h3>
+            </div>
+
+            <Button
+                label={course?.trial_passed ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
+                disabled={!course}
+            />
+        </motion.div>
+    );
+};
 
 export default CourseCardBig;
