@@ -24,7 +24,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ title, modules, level, image, p
                 <h2 className="font-medium">
                     {title}
                 </h2>
-                <p className="text-[#7D7D7D]">{modules} <span>{level}</span></p>
+                <p className="text-[#7D7D7D]">{modules} модуль<span>{level}</span></p>
                 <button
                     className="font-bold w-full p-2 rounded-4xl text-sm text-white flex items-center justify-center bg-[#7B68EE] ">
                     {

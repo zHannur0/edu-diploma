@@ -23,7 +23,6 @@ const nav = [
     }
 ]
 
-
 const Header = () => {
     const router = useRouter();
     const {isAuthenticated} = useAuth();
@@ -49,8 +48,8 @@ const Header = () => {
                     <div className="flex gap-8 items-center">
                         {
                             isAuthenticated ? (
-                                <div>
-
+                                <div className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
+                                    Шығу
                                 </div>
                                 ) : (
                                 <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
@@ -58,7 +57,6 @@ const Header = () => {
                                 </button>
                             )
                         }
-
                     </div>
                 </div>
             </Wrapper>

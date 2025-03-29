@@ -2,21 +2,26 @@ import Button from "@/components/ui/button/Button";
 import React from "react";
 import { useGetCourseQuery } from "@/store/api/courseApi";
 import { motion } from "framer-motion";
+import {redirect} from "next/navigation";
 
 interface CourseCardBigProps {
     course_id: number;
+    width?: number;
 }
 
-const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id }) => {
+const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
     const { data: course, isLoading, error } = useGetCourseQuery(course_id);
 
-    if (isLoading) {
+    if (isLoading || error) {
         return (
             <motion.div
                 initial={{ opacity: 0, y: 0 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: "easeOut" }}
-                className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl animate-pulse"
+                className="p-6 w-full flex flex-col mr-6 shadow shadow-sm rounded-xl animate-pulse bg-white"
+                style={{
+                    maxWidth: width ? width : 515,
+                }}
             >
                 <div className="w-full h-45 mb-5 rounded-xl bg-gray-300"></div>
 
@@ -32,28 +37,15 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id }) => {
         );
     }
 
-    if (error) {
-        return (
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, ease: "easeOut" }}
-                className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl bg-red-50"
-            >
-                <h2 className="text-red-600 font-bold mb-4">Курсты жүктеу кезінде қате шықты</h2>
-                <p className="text-red-500">
-                    {error instanceof Error ? error.message : "Белгісіз қате"}
-                </p>
-            </motion.div>
-        );
-    }
-
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="p-6 min-w-[514px] flex flex-col mr-6 shadow shadow-sm rounded-xl"
+            className="p-6 flex flex-col mr-6 shadow shadow-sm rounded-xl bg-white"
+            style={{
+                minWidth: width ? width : 515,
+            }}
         >
             <div
                 className="w-full h-45 mb-5 rounded-xl p-4 flex items-center text-2xl font-bold text-white"
@@ -95,6 +87,7 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id }) => {
             <Button
                 label={course?.trial_passed ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
                 disabled={!course}
+                onClick={() => redirect(`/english/${course_id}`)}
             />
         </motion.div>
     );

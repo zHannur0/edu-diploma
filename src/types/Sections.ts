@@ -3,15 +3,16 @@ interface Option {
     option: string;
 }
 
-export interface Question {
+interface Question {
     id: number;
     question: string;
-    question_type: string;
     options: Option[];
 }
 
-export interface TrialQuestions {
+export interface Reading {
     id: number;
-    name: string;
+    context: string;
+    image: string;
+    source: string;
     questions: Question[];
 }

@@ -9,9 +9,9 @@ export const generalEnglishApi = createApi({
     baseQuery: baseQuery,
     tagTypes: ["Courses"],
     endpoints: (builder) => ({
-        getModules: builder.query<Course[], void>({
-            query: () => ({
-                url: "courses/courses/general-english-modules/",
+        getModules: builder.query<Course, number>({
+            query: (id) => ({
+                url: `courses/courses/${id}/modules/`,
             }),
         }),
         getTrialTest: builder.query<Question[], number>({

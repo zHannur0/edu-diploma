@@ -12,7 +12,7 @@ const Button: React.FC<ButtonProps> = ({ label, width, height = 48, ...props }) 
         <button
             {...props}
             style={{ width: width ?? "100%", height }}
-            className={`flex rounded-xl items-center justify-center bg-[#7B68EE] py-2 px-6 text-white font-semibold cursor_pointer`}
+            className={`flex rounded-xl items-center justify-center bg-[#7B68EE] py-2 px-6 text-white font-semibold cursor-pointer`}
         >
             {label}
         </button>
