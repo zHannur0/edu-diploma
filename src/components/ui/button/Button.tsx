@@ -1,20 +1,21 @@
 import React from "react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-    label: string;
+    children: React.ReactNode;
     width?: number;
     height?: number;
     type?: "button" | "submit" | "reset";
+    className?: string;
 }
 
-const Button: React.FC<ButtonProps> = ({ label, width, height = 48, ...props }) => {
+const Button: React.FC<ButtonProps> = ({ children, width, height = 48, className, ...props }) => {
     return (
         <button
             {...props}
             style={{ width: width ?? "100%", height }}
-            className={`flex rounded-xl items-center justify-center bg-[#7B68EE] py-2 px-6 text-white font-semibold cursor-pointer`}
+            className={`flex rounded-xl items-center justify-center text-white bg-[#7B68EE] py-2 px-6 font-semibold cursor-pointer ${className}`}
         >
-            {label}
+            {children}
         </button>
     );
 };

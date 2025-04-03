@@ -23,7 +23,7 @@ const ModalCard = ({ children, onClose }: ModalCardProps) => {
             onClick={onClose}
         >
             <div
-                className="modal-card p-8 rounded-xl flex flex-col bg-[#FCFCFF] w-full max-w-[750px] max-h-[85vh] overflow-y-auto"
+                className="modal-card p-8 rounded-xl flex flex-col bg-[#FCFCFF] w-auto max-h-[85vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
             >
                 {children}

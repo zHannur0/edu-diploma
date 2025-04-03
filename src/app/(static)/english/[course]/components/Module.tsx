@@ -24,7 +24,7 @@ const sectionImages = [
     "/icon/sections/speaking.svg",
 ]
 
-const ModuleCard:React.FC<ModuleProps> = ({index, name, sections, total_score, is_completed, is_disabled}) => {
+const ModuleCard:React.FC<ModuleProps> = ({index, name, sections, total_score, is_completed, is_disabled, id}) => {
     const [openSections, setOpenSections] = useState<boolean>(false);
     const sectionEntries = Object.entries(sections).sort((a, b) => {
         const order = ["reading", "listening", "writing", "speaking"];
@@ -57,7 +57,14 @@ const ModuleCard:React.FC<ModuleProps> = ({index, name, sections, total_score, i
                 openSections && (
                     <>
                         {sectionEntries.map(([key, section], index) => (
-                                <Section key={key} name={getSectionName(key) || ""} has_section={section.has_section} image={sectionImages[index]} already_passed={section.already_passed} score={section.score} />
+                                <Section key={key}
+                                         name={getSectionName(key) || ""}
+                                         has_section={section.has_section}
+                                         image={sectionImages[index]}
+                                         already_passed={section.already_passed}
+                                         score={section.score}
+                                         module_id={id}
+                                />
                         ))}
                     </>
                 )

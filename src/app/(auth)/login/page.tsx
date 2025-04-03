@@ -24,7 +24,9 @@ export default function LoginPage() {
                     <div></div>
                     <CustomLink href={"#"} label={"Forgot Password?"}/>
                 </div>
-                <Button label={isLoading ? "Loading..." : "Continue"} type="submit" disabled={isLoading}/>
+                <Button type="submit" disabled={isLoading}>
+                    {isLoading ? "Loading..." : "Continue"}
+                </Button>
                 <div className="w-full text-center">
                     <span className="text-[#99A0AB] font-semibold">{"Don't have an account?"}</span> <CustomLink href={"/register"} label={"Sign Up"}/>
                 </div>

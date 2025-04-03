@@ -31,8 +31,10 @@ export default function ProfilePage() {
                                     </p>
                                     <PasswordInput label="Старый пароль" value={"asdf"} className={"mb-2"}/>
                                     <div className="flex justify-end">
-                                        <Button label={"Дұрыстау"} width={328}
-                                                style={{backgroundColor: "transparent"}}/>
+                                        <Button width={328}
+                                                style={{backgroundColor: "transparent"}}>
+                                            Дұрыстау
+                                        </Button>
                                     </div>
                                 </div>
                             </div>

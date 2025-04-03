@@ -29,7 +29,7 @@ export default function LoginPage() {
                     <div></div>
                 </div>
 
-                <Button label={"Create account"} type="submit"/>
+                <Button type="submit">Create account</Button>
             </form>
         </div>
     );

@@ -10,7 +10,7 @@ import TrialTestModal from "@/components/modal/TrialTestModal";
 export default function EnglishPage() {
     const { isAuthenticated } = useAuth();
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
-    const [isTrialModalOpen, setIsTrialModalOpen] = useState<boolean>(false);
+    const [isTrialModalOpen, setIsTrialModalOpen] = useState<boolean>(true);
 
     const { data: coursesData } = useGetCoursesQuery();
 

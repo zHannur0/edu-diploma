@@ -2,7 +2,7 @@ import Button from "@/components/ui/button/Button";
 import React from "react";
 import { useGetCourseQuery } from "@/store/api/courseApi";
 import { motion } from "framer-motion";
-import {redirect} from "next/navigation";
+import {useRouter} from "next/navigation";
 
 interface CourseCardBigProps {
     course_id: number;
@@ -11,7 +11,7 @@ interface CourseCardBigProps {
 
 const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
     const { data: course, isLoading, error } = useGetCourseQuery(course_id);
-
+    const router = useRouter();
     if (isLoading || error) {
         return (
             <motion.div
@@ -85,10 +85,11 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
             </div>
 
             <Button
-                label={course?.trial_passed ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
                 disabled={!course}
-                onClick={() => redirect(`/english/${course_id}`)}
-            />
+                onClick={() => router.push(`/english/${course_id}`)}
+            >
+                {course?.trial_passed ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
+            </Button>
         </motion.div>
     );
 };

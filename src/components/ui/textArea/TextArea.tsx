@@ -23,7 +23,7 @@ const Textarea: React.FC<TextareaProps> = ({ label, iconStart, iconEnd, placehol
     };
 
     return (
-        <div className={`relative w-full flex items-start gap-2 max-w-[520px] rounded-[14px] px-4 py-[10px] border ${isFocused ? "border-[#7B68EE]" : "border-[#E6E8EA]"}`}>
+        <div className={`relative w-full flex items-start gap-2 rounded-[14px] px-4 py-[10px] border ${isFocused ? "border-[#7B68EE]" : "border-[#E6E8EA]"}`}>
             {label && (isFocused || hasContent) && (
                 <label className="absolute left-3 top-0 -translate-y-1/2 px-2 text-[#546173] text-xs bg-white transition-all px-[6px] rounded-2xl">
                     {label}

@@ -17,7 +17,7 @@ export default function CoursePage() {
     return (
         <div className="w-full bg-[#EEF4FF]">
             <Wrapper isLoading={isAuthenticated === null || isLoading}>
-                <div className="flex justify-between py-9 items-start">
+                <div className="flex justify-between py-12 items-start">
                     <CourseCardBig course_id={Number(course)} width={380}/>
                     <div className="w-full flex flex-col gap-6">
                         <CourseHeader course_name={modulesData?.name || ""} description={modulesData?.description || ""}/>
