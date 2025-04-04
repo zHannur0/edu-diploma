@@ -18,7 +18,7 @@ const CourseModules: React.FC<CourseModulesProps> = ({modules, lastModule}) => {
                                 sections={module.sections}
                                 total_score={module.total_score}
                                 is_completed={module.is_completed}
-                                is_disabled={module.name === lastModule}
+                                is_disabled={!lastModule}
                                 index={index+1}
                     />
                 ))

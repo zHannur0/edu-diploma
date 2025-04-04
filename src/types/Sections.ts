@@ -10,8 +10,10 @@ export interface AnswerTest {
 
 export interface QuestionReading {
     id: number;
-    question: string;
+    context: string;
     options: OptionTest[];
+    source: string;
+    image: string;
 }
 
 export interface Reading {
@@ -19,7 +21,7 @@ export interface Reading {
     context: string;
     image: string;
     source: string;
-    questions: QuestionReading[];
+    readings: QuestionReading[];
 }
 
 export interface QuestionListening {
@@ -33,4 +35,16 @@ export interface Listening {
     id: number;
     name: string;
     listening_questions: QuestionListening[];
+}
+
+export interface WritingQuestion {
+    id: number;
+    title: string;
+    requirements: string;
+}
+
+export interface Writing {
+    id: number;
+    name: string;
+    writing: WritingQuestion[]
 }

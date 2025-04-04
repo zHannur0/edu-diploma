@@ -3,6 +3,7 @@ import React from "react";
 import { useGetCourseQuery } from "@/store/api/courseApi";
 import { motion } from "framer-motion";
 import {useRouter} from "next/navigation";
+import CustomLink from "@/components/ui/link/CustomLink";
 
 interface CourseCardBigProps {
     course_id: number;
@@ -79,9 +80,7 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
 
             <div className="mb-4">
                 <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
-                <h3 className="text-[#0375DF]">
-                    {course?.last_module_name || "Аяқталмаған бөлім"}
-                </h3>
+                <CustomLink href={`/english/${course_id}/${course?.last_module}`} label={course?.last_module_name || "Аяқталмаған бөлім"}/>
             </div>
 
             <Button

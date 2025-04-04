@@ -3,7 +3,7 @@ import {Course} from "@/types/Course";
 import {Answer} from "@/types/Answer";
 import baseQuery from "@/store/api/baseQuery";
 import {Question, TrialQuestions} from "@/types/TrialQuestions";
-import {AnswerTest, Listening, QuestionListening, QuestionReading, Reading} from "@/types/Sections";
+import {AnswerTest, Listening, QuestionListening, QuestionReading, Reading, Writing} from "@/types/Sections";
 
 export const generalEnglishApi = createApi({
     reducerPath: "generalEnglishApi",
@@ -33,11 +33,11 @@ export const generalEnglishApi = createApi({
             query: (id) => ({
                 url: `general-english/modules/${id}/readings/`,
             }),
-            transformResponse: (response: Reading) => response.questions,
+            transformResponse: (response: Reading) => response.readings,
         }),
         submitReading: builder.mutation<string, {id: number, data: {options: AnswerTest[]}}>({
             query: ({id, data}) => ({
-                url: `general-english/modules/submits/${id}/readings/`,
+                url: `general-english/modules/submits/${id}/reading/`,
                 method: "POST",
                 body: data
             }),
@@ -54,8 +54,22 @@ export const generalEnglishApi = createApi({
                 method: "POST",
                 body: data
             }),
+        }),
+        getWriting: builder.query<Writing, number>({
+            query: (id) => ({
+                url: `general-english/modules/${id}/writing/`,
+            }),
+        }),
+        submitWriting: builder.mutation<string, {id: number, data: {writing: { text: string }}}>({
+            query: ({id, data}) => ({
+                url: `general-english/modules/submits/${id}/writing/`,
+                method: "POST",
+                body: data
+            }),
         })
     }),
 });
 
-export const { useGetModulesQuery, useGetTrialTestQuery, useFinishTrialTestMutation, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation } = generalEnglishApi;
+export const { useGetModulesQuery, useGetTrialTestQuery, useFinishTrialTestMutation, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
+    useGetWritingQuery, useSubmitWritingMutation
+} = generalEnglishApi;

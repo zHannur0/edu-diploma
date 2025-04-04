@@ -16,7 +16,7 @@ export default function SectionLayout({
     const { isAuthenticated } = useAuth();
     const { data: modulesData, isLoading } = useGetModulesQuery(Number(course));
 
-    return <div className="w-full bg-[#EEF4FF]">
+    return <div className="w-full bg-[#EEF4FF] flex justify-center">
         <Wrapper isLoading={isAuthenticated === null || isLoading}>
             <div className="w-full grid grid-cols-[70%_30%] gap-5 py-12 items-start">
                 <>

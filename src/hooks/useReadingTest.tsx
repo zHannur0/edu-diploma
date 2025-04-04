@@ -13,7 +13,7 @@ interface UseReadingTestReturn {
     isError: boolean;
     progress: number;
 
-    setAnswer: (questionId: number, optionId: string) => void;
+    setAnswer: (questionId: number, optionId: number) => void;
     goToNextPage: () => void;
     goToPrevPage: () => void;
     goToPage: (page: number) => void;
@@ -50,11 +50,11 @@ const useReadingTest = (): UseReadingTestReturn => {
         }
     }, [questions]);
 
-    const setAnswer = (questionId: number, optionId: string) => {
+    const setAnswer = (questionId: number, optionId: number) => {
         setUserAnswers(prev =>
             prev.map(ua =>
                 ua.question_id === questionId
-                    ? { ...ua, selectedOptionId: optionId }
+                    ? { ...ua, option_id: optionId }
                     : ua
             )
         );
@@ -62,13 +62,13 @@ const useReadingTest = (): UseReadingTestReturn => {
         localStorage.setItem('userAnswers', JSON.stringify(
             userAnswers.map(ua =>
                 ua.question_id === questionId
-                    ? { ...ua, selectedOptionId: optionId }
+                    ? { ...ua, option_id: optionId }
                     : ua
             )
         ));
     };
 
-    const totalPages = 10;
+    const totalPages = Math.ceil((questions?.length || 0) / questionsPerPage);
     const canGoNext = currentPage < totalPages - 1;
     const canGoPrev = currentPage > 0;
 
