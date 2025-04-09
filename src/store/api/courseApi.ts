@@ -1,10 +1,10 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {Course} from "@/types/Course";
-import baseQuery from "@/store/api/baseQuery";
+import baseQueryWithReauth from "@/store/api/baseQuery";
 
 export const courseApi = createApi({
     reducerPath: "courseApi",
-    baseQuery: baseQuery,
+    baseQuery: baseQueryWithReauth,
     tagTypes: ["Courses"],
     endpoints: (builder) => ({
         getCourses: builder.query<Course[], void>({

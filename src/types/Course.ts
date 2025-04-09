@@ -17,7 +17,10 @@ export interface Module {
     id: number;
     name: string;
     is_completed: boolean;
-    total_score: number;
+    total_score: {
+        max_score: number;
+        score: number;
+    };
     sections: {
         reading: Section;
         listening: Section;
@@ -30,4 +33,5 @@ export interface Section {
     has_section: boolean;
     already_passed: boolean;
     score: number | null;
-};
+    max_score: number;
+}

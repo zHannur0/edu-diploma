@@ -2,8 +2,9 @@
 import Wrapper from "@/components/layout/Wrapper";
 import Image from "next/image";
 import Link from "next/link";
-import {useRouter} from "next/navigation";
+import {usePathname, useRouter} from "next/navigation";
 import {useAuth} from "@/hooks/useAuth";
+import {useEffect, useState} from "react";
 
 const nav = [
     {
@@ -25,7 +26,16 @@ const nav = [
 
 const Header = () => {
     const router = useRouter();
+    const pathname= usePathname();
     const {isAuthenticated} = useAuth();
+
+    const handleNavigateProfile = () => {
+        if(pathname.includes("profile")){
+            router.push("/login");
+        } else {
+            router.push("/profile");
+        }
+    }
 
     return (
             <Wrapper>
@@ -48,8 +58,8 @@ const Header = () => {
                     <div className="flex gap-8 items-center">
                         {
                             isAuthenticated ? (
-                                <div className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>
-                                    Шығу
+                                <div className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={handleNavigateProfile}>
+                                    {pathname.includes("profile") ? "Шығу" : "Профиль"}
                                 </div>
                                 ) : (
                                 <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl" onClick={() => router.push("/login")}>

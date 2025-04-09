@@ -13,7 +13,7 @@ const Button: React.FC<ButtonProps> = ({ children, width, height = 48, className
         <button
             {...props}
             style={{ width: width ?? "100%", height }}
-            className={`flex rounded-xl items-center justify-center text-white bg-[#7B68EE] py-2 px-6 font-semibold cursor-pointer ${className}`}
+            className={`flex rounded-xl items-center justify-center bg-[#7B68EE] py-2 px-6 font-semibold cursor-pointer ${className}  text-white`}
         >
             {children}
         </button>

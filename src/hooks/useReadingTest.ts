@@ -1,17 +1,14 @@
-import {AnswerTest, QuestionListening} from "@/types/Sections";
+import {AnswerTest, QuestionReading} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {
-    useGetListeningQuery,
-    useSubmitListeningMutation,
-} from "@/store/api/generalEnglishApi";
+import {useGetReadingQuery, useSubmitReadingMutation} from "@/store/api/generalEnglishApi";
 
-interface UseListeningTestReturn {
-    questions?: QuestionListening[];
+interface UseReadingTestReturn {
+    questions?: QuestionReading[];
     userAnswers: AnswerTest[];
     currentPage: number;
     questionsPerPage: number;
-    currentQuestions?: QuestionListening[];
+    currentQuestions?: QuestionReading[];
     isLoading: boolean;
     isError: boolean;
     progress: number;
@@ -26,7 +23,7 @@ interface UseListeningTestReturn {
     handleSubmit: () => Promise<void>;
 }
 
-const useReadingTest = (): UseListeningTestReturn => {
+const useReadingTest = (): UseReadingTestReturn => {
     const {course, module} = useParams();
     const router = useRouter();
     const [userAnswers, setUserAnswers] = useState<AnswerTest[]>([]);
@@ -34,15 +31,14 @@ const useReadingTest = (): UseListeningTestReturn => {
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
 
-    const questionsPerPage = 3;
+    const questionsPerPage = 2;
 
-    const {data: questions} = useGetListeningQuery(Number(module));
+    const {data: questions} = useGetReadingQuery(Number(module));
 
     const currentQuestions = useMemo(() => {
         const startIndex = currentPage * questionsPerPage;
         return questions?.slice(startIndex, startIndex + questionsPerPage);
     }, [questions, currentPage, questionsPerPage]);
-
 
     useEffect(() => {
         if (questions) {
@@ -62,7 +58,7 @@ const useReadingTest = (): UseListeningTestReturn => {
             )
         );
 
-        sessionStorage.setItem('userAnswersListening', JSON.stringify(
+        sessionStorage.setItem('userAnswersReading', JSON.stringify(
             userAnswers.map(ua =>
                 ua.question_id === questionId
                     ? { ...ua, option_id: optionId }
@@ -71,7 +67,7 @@ const useReadingTest = (): UseListeningTestReturn => {
         ));
     };
 
-    const totalPages =  Math.ceil((questions?.length || 0) / questionsPerPage);
+    const totalPages = Math.ceil((questions?.length || 0) / questionsPerPage);
     const canGoNext = currentPage < totalPages - 1;
     const canGoPrev = currentPage > 0;
 
@@ -104,7 +100,7 @@ const useReadingTest = (): UseListeningTestReturn => {
 
     const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
 
-    const [submitListening] = useSubmitListeningMutation();
+    const [submitReading] = useSubmitReadingMutation();
 
     const handleSubmit = async () => {
         if (!isTestCompleted) {
@@ -113,17 +109,15 @@ const useReadingTest = (): UseListeningTestReturn => {
 
         try {
             setIsLoading(true);
-            await submitListening({
+            await submitReading({
                 id: Number(module),
                 data: {options: userAnswers}
             }).unwrap();
 
-            sessionStorage.removeItem('userAnswersListening');
+            sessionStorage.removeItem('userAnswersReading');
 
             setIsLoading(false);
-
-            router.push(`/english/${course}/${module}/speaking`);
-
+            router.push(`/english/${course}/${module}/writing`);
         } catch (error) {
             console.log('Error submitting test:', error);
             setIsError(true);
@@ -132,7 +126,7 @@ const useReadingTest = (): UseListeningTestReturn => {
     }
 
     useEffect(() => {
-        const savedAnswers = sessionStorage.getItem('userAnswersListening');
+        const savedAnswers = sessionStorage.getItem('userAnswersReading');
         if (savedAnswers && questions && questions.length > 0) {
             try {
                 const parsedAnswers = JSON.parse(savedAnswers);

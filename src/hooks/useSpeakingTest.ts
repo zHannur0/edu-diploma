@@ -1,22 +1,19 @@
-import {AnswerTest, QuestionListening} from "@/types/Sections";
+import {AnswerSpeaking, SpeakingQuestion} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
 import {useParams, useRouter} from "next/navigation";
-import {
-    useGetListeningQuery,
-    useSubmitListeningMutation,
-} from "@/store/api/generalEnglishApi";
+import {useGetSpeakingQuery, useSubmitSpeakingMutation} from "@/store/api/generalEnglishApi";
 
-interface UseListeningTestReturn {
-    questions?: QuestionListening[];
-    userAnswers: AnswerTest[];
+interface UseSpeakingTestReturn {
+    questions?: SpeakingQuestion[];
+    userAnswers: AnswerSpeaking[];
     currentPage: number;
     questionsPerPage: number;
-    currentQuestions?: QuestionListening[];
+    currentQuestions?: SpeakingQuestion[];
     isLoading: boolean;
     isError: boolean;
     progress: number;
 
-    setAnswer: (questionId: number, optionId: number) => void;
+    setAnswer: (speaking_id: number, text: string) => void;
     goToNextPage: () => void;
     goToPrevPage: () => void;
     goToPage: (page: number) => void;
@@ -26,17 +23,17 @@ interface UseListeningTestReturn {
     handleSubmit: () => Promise<void>;
 }
 
-const useReadingTest = (): UseListeningTestReturn => {
+const useSpeakingTest = (): UseSpeakingTestReturn => {
     const {course, module} = useParams();
     const router = useRouter();
-    const [userAnswers, setUserAnswers] = useState<AnswerTest[]>([]);
+    const [userAnswers, setUserAnswers] = useState<AnswerSpeaking[]>([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
 
     const questionsPerPage = 3;
 
-    const {data: questions} = useGetListeningQuery(Number(module));
+    const {data: questions} = useGetSpeakingQuery(Number(module));
 
     const currentQuestions = useMemo(() => {
         const startIndex = currentPage * questionsPerPage;
@@ -47,31 +44,32 @@ const useReadingTest = (): UseListeningTestReturn => {
     useEffect(() => {
         if (questions) {
             setUserAnswers(questions.map((q) => ({
-                question_id: q.id,
-                option_id: null
+                speaking_id: q.id,
+                text: ""
             })));
         }
     }, [questions]);
 
-    const setAnswer = (questionId: number, optionId: number) => {
+    console.log(userAnswers)
+
+    const setAnswer = (speaking_id: number, text: string) => {
         setUserAnswers(prev =>
             prev.map(ua =>
-                ua.question_id === questionId
-                    ? { ...ua, option_id: optionId }
+                ua.speaking_id === speaking_id
+                    ? { ...ua, text: text }
                     : ua
             )
         );
-
-        sessionStorage.setItem('userAnswersListening', JSON.stringify(
+        sessionStorage.setItem('userAnswersSpeaking', JSON.stringify(
             userAnswers.map(ua =>
-                ua.question_id === questionId
-                    ? { ...ua, option_id: optionId }
+                ua.speaking_id === speaking_id
+                    ? { ...ua, text: text }
                     : ua
             )
         ));
     };
 
-    const totalPages =  Math.ceil((questions?.length || 0) / questionsPerPage);
+    const totalPages = Math.ceil((questions?.length || 0) / questionsPerPage);
     const canGoNext = currentPage < totalPages - 1;
     const canGoPrev = currentPage > 0;
 
@@ -96,15 +94,15 @@ const useReadingTest = (): UseListeningTestReturn => {
         }
     };
 
-    const answeredQuestions = userAnswers.filter(ua => ua.option_id).length;
+    const answeredQuestions = userAnswers.filter(ua => ua.text).length;
 
     const progress = questions && questions?.length > 0
         ? Math.round((answeredQuestions / questions?.length) * 100)
         : 0;
 
-    const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
+    const isTestCompleted = userAnswers.every(ua => ua.text !== undefined);
 
-    const [submitListening] = useSubmitListeningMutation();
+    const [submitSpeaking] = useSubmitSpeakingMutation();
 
     const handleSubmit = async () => {
         if (!isTestCompleted) {
@@ -113,17 +111,16 @@ const useReadingTest = (): UseListeningTestReturn => {
 
         try {
             setIsLoading(true);
-            await submitListening({
+            await submitSpeaking({
                 id: Number(module),
-                data: {options: userAnswers}
+                data: {answers: userAnswers}
             }).unwrap();
 
-            sessionStorage.removeItem('userAnswersListening');
+            sessionStorage.removeItem('userAnswersSpeaking');
 
             setIsLoading(false);
 
-            router.push(`/english/${course}/${module}/speaking`);
-
+            router.push(`/english/${course}/${module}/finish`);
         } catch (error) {
             console.log('Error submitting test:', error);
             setIsError(true);
@@ -132,14 +129,13 @@ const useReadingTest = (): UseListeningTestReturn => {
     }
 
     useEffect(() => {
-        const savedAnswers = sessionStorage.getItem('userAnswersListening');
+        const savedAnswers = sessionStorage.getItem('userAnswersSpeaking');
         if (savedAnswers && questions && questions.length > 0) {
             try {
                 const parsedAnswers = JSON.parse(savedAnswers);
                 const validAnswers = parsedAnswers.filter(
-                    (answer: AnswerTest) => questions.some(q => q.id === answer.question_id)
+                    (answer: AnswerSpeaking) => questions.some(q => q.id === answer.speaking_id)
                 );
-
                 if (validAnswers.length > 0) {
                     setUserAnswers(validAnswers);
                 }
@@ -169,4 +165,4 @@ const useReadingTest = (): UseListeningTestReturn => {
     };
 }
 
-export default useReadingTest;
+export default useSpeakingTest;

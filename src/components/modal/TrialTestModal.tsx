@@ -15,7 +15,7 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
     const { data: trialQuestions } = useGetTrialTestQuery(course_id);
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [sendAnswer, { isLoading }] = useFinishTrialTestMutation();
-    const [result, setResult] = useState<null | string>(null); // Состояние для результата
+    const [result, setResult] = useState<null | string>(null);
 
     const handleSelectOption = (question_id: number, option_id: number) => {
         setAnswers((prev) => [

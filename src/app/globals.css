@@ -39,3 +39,16 @@
     cursor: pointer;
 }
 
+progress::-webkit-progress-bar {
+    @apply bg-gray-100 rounded-xl;
+}
+
+progress::-webkit-progress-value {
+    background: linear-gradient(to right, #F68080, #7B68EE);
+    border-radius: 1rem;
+}
+
+progress::-moz-progress-bar {
+    background: linear-gradient(to right, #F68080, #7B68EE);
+    border-radius: 1rem;
+}

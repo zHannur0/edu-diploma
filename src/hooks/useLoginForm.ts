@@ -88,6 +88,7 @@ export const useLoginForm = (): UseLoginFormReturn => {
 
             if (result.access) {
                 localStorage.setItem('token', result.access);
+                localStorage.setItem('refresh', result.refresh);
                 router.push('/profile');
             }
         } catch (err) {

@@ -46,5 +46,21 @@ export interface WritingQuestion {
 export interface Writing {
     id: number;
     name: string;
-    writing: WritingQuestion[]
+    writing: WritingQuestion
+}
+
+export interface AnswerSpeaking {
+    speaking_id?: number | null;
+    text: string;
+}
+
+export interface SpeakingQuestion {
+    id: number;
+    context: string;
+}
+
+export interface Speaking {
+    id: number;
+    name: string;
+    speakings: SpeakingQuestion[];
 }
