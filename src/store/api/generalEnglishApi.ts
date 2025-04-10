@@ -1,7 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {Course, Module} from "@/types/Course";
-import {Answer} from "@/types/Answer";
-import {Question, TrialQuestions} from "@/types/TrialQuestions";
 import {
     AnswerSpeaking,
     AnswerTest,
@@ -18,7 +16,7 @@ import baseQueryWithReauth from "@/store/api/baseQuery";
 export const generalEnglishApi = createApi({
     reducerPath: "generalEnglishApi",
     baseQuery: baseQueryWithReauth,
-    tagTypes: ["Courses"],
+    tagTypes: ["Modules"],
     endpoints: (builder) => ({
         getModules: builder.query<Course, number>({
             query: (id) => ({
@@ -29,20 +27,6 @@ export const generalEnglishApi = createApi({
             query: (id) => ({
                 url: `general-english/modules/${id}/details/`,
             }),
-        }),
-        getTrialTest: builder.query<Question[], number>({
-            query: (id) => ({
-                url: `general-english/trial-tests/course/${id}/trial-questions/`,
-            }),
-            transformResponse: (response: TrialQuestions) => response.questions,
-        }),
-        finishTrialTest: builder.mutation<{ score: string }, {id: number, data: {answers: Answer[]}}>({
-            query: ({id, data}) => ({
-                url: `general-english/trial-tests/course/${id}/send-answer/`,
-                method: "POST",
-                body: data
-            }),
-            invalidatesTags: ["Courses"]
         }),
         getReading: builder.query<QuestionReading[], number>({
             query: (id) => ({
@@ -75,7 +59,7 @@ export const generalEnglishApi = createApi({
                 url: `general-english/modules/${id}/writing/`,
             }),
         }),
-        submitWriting: builder.mutation<string, {id: number, data: {writing: { text: string }}}>({
+        submitWriting: builder.mutation<string, {id: number, data: {writing: string}}>({
             query: ({id, data}) => ({
                 url: `general-english/modules/submits/${id}/writing/`,
                 method: "POST",
@@ -103,6 +87,6 @@ export const generalEnglishApi = createApi({
     }),
 });
 
-export const { useGetModulesQuery, useGetModuleQuery, useGetTrialTestQuery, useFinishTrialTestMutation, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
+export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
     useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery
 } = generalEnglishApi;

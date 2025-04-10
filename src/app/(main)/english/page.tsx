@@ -5,7 +5,7 @@ import Wrapper from "@/components/layout/Wrapper";
 import CourseCard from "@/app/(main)/english/components/CourseCard";
 import CourseCardBig from "@/app/(main)/english/components/CourseCardBig";
 import { useGetCoursesQuery } from "@/store/api/courseApi";
-import TrialTestModal from "@/components/modal/TrialTestModal";
+import TrialTestModal from "@/app/(main)/english/components/TrialTestModal";
 
 export default function EnglishPage() {
     const { isAuthenticated } = useAuth();

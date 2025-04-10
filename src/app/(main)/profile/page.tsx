@@ -4,7 +4,8 @@ import Wrapper from "@/components/layout/Wrapper";
 import {useAuth} from "@/hooks/useAuth";
 import {useRouter} from "next/navigation";
 import {useEffect} from "react";
-import UserInfoForm from "@/app/(main)/profile/components/UserInfoForm";
+import ProfileInfoForm from "@/app/(main)/profile/components/ProfileInfoForm";
+import MyAchievments from "@/app/(main)/profile/components/MyAchievments";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -23,15 +24,9 @@ export default function ProfilePage() {
                         Менің парақшам
                     </h1>
                     <div className="w-full gap-7 grid grid-cols-[60%_40%]">
-                        <UserInfoForm/>
-                        <div className="bg-white p-8 rounded-xl">
-                            <h2 className="font-semibold text-[22px]e">
-                                Менің жетістіктерім
-                            </h2>
-                            <div className="w-full p-8">
+                        <ProfileInfoForm/>
+                        <MyAchievments/>
 
-                            </div>
-                        </div>
                         <div className="bg-white p-8 rounded-xl">
                             <h2 className="font-semibold text-[22px]e">
                                 Таңдаулы

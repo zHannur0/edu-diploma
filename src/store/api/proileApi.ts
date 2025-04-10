@@ -14,11 +14,19 @@ export const profileApi = createApi({
         }),
         getCourseProgress: builder.query<CourseProgress, void>({
             query: () => ({
-                url: `users/my-courses/progress`,
+                url: `users/my-courses/progresses/`,
             }),
         }),
+        updateProfile: builder.mutation<void, FormData>({
+            query: (data) => ({
+                url: "users/profile/",
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: ["User"]
+        })
     }),
 });
 
-export const { useGetProfileQuery, useGetCourseProgressQuery
+export const { useGetProfileQuery, useGetCourseProgressQuery, useUpdateProfileMutation
 } = profileApi;

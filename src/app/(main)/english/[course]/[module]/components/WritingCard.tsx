@@ -9,7 +9,7 @@ import {useParams, useRouter} from "next/navigation";
 const WritingCard = ({writing}: {writing: Writing}) => {
     const router = useRouter();
     const {course, module} = useParams();
-    const [writingAnswer, setWritingAnswer] = useState<string>("")
+    const [writingAnswer, setWritingAnswer] = useState<string>("Start writing")
 
     const [submitWriting] = useSubmitWritingMutation();
 
@@ -28,9 +28,7 @@ const WritingCard = ({writing}: {writing: Writing}) => {
         try {
             await submitWriting({
                 id: Number(module),
-                data: {writing: {
-                    text: writingAnswer
-                }}
+                data: {writing: writingAnswer}
             }).unwrap();
 
             router.push(`/english/${course}/${module}/listening`);

@@ -6,8 +6,12 @@ import Button from "@/components/ui/button/Button";
 import Image from "next/image";
 import ReadingCard from "@/app/(main)/english/[course]/[module]/components/ReadingCard";
 import ReadingCardSceleton from "@/components/ui/sceletons/ReadingCardSceleton";
+import SuccessModal from "@/components/modal/SuccessModal";
+import {useParams, useRouter} from "next/navigation";
 
 export default function ReadingPage() {
+    const {course, module} = useParams();
+    const router = useRouter();
     const [startIndex, setStartIndex] = useState(1);
 
     const {
@@ -21,6 +25,8 @@ export default function ReadingPage() {
         questionsPerPage,
         handleSubmit,
         userAnswers,
+        modalOpen,
+        setModalOpen
     } = useReadingTest();
 
     useEffect(() => {
@@ -74,6 +80,11 @@ export default function ReadingPage() {
                     <Image src={"/icon/next.svg"} alt={"next"} width={24} height={24}/>
                 </Button>
             </div>
+            {
+                modalOpen && <SuccessModal onOk={() =>
+                    router.push(`/english/${course}/${module}/writing`)
+                } onClose={() => setModalOpen(false)} />
+            }
         </div>
     );
 }

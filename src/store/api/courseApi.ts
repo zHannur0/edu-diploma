@@ -1,6 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {Course} from "@/types/Course";
 import baseQueryWithReauth from "@/store/api/baseQuery";
+import {Question, TrialQuestions} from "@/types/TrialQuestions";
+import {Answer} from "@/types/Answer";
 
 export const courseApi = createApi({
     reducerPath: "courseApi",
@@ -18,7 +20,21 @@ export const courseApi = createApi({
                 url: `courses/courses/${id}/`,
             }),
         }),
+        getTrialTest: builder.query<Question[], number>({
+            query: (id) => ({
+                url: `general-english/trial-tests/course/${id}/trial-questions/`,
+            }),
+            transformResponse: (response: TrialQuestions) => response.questions,
+        }),
+        finishTrialTest: builder.mutation<{ score: string }, {id: number, data: {answers: Answer[]}}>({
+            query: ({id, data}) => ({
+                url: `general-english/trial-tests/course/${id}/send-answer/`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ["Courses"]
+        }),
     }),
 });
 
-export const { useGetCourseQuery, useGetCoursesQuery } = courseApi;
+export const { useGetCourseQuery, useGetCoursesQuery, useGetTrialTestQuery, useFinishTrialTestMutation } = courseApi;

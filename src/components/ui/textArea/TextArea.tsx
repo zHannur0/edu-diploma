@@ -30,8 +30,8 @@ const Textarea: React.FC<TextareaProps> = ({ label, placeholder, ...props }) => 
 
     useEffect(() => {
         if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto'; // Инициализация: сбрасываем высоту
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`; // Устанавливаем начальную высоту
+            textareaRef.current.style.height = 'auto';
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
     }, []);
 
@@ -47,7 +47,7 @@ const Textarea: React.FC<TextareaProps> = ({ label, placeholder, ...props }) => 
                 ref={textareaRef}
                 onFocus={() => setIsFocused(true)}
                 onBlur={handleBlur}
-                onInput={handleInput} // Отслеживаем ввод текста
+                onInput={handleInput}
                 placeholder={placeholder}
                 className="w-full border-none outline-none focus:outline-none min-h-[100px] resize-none text-sm"
             />

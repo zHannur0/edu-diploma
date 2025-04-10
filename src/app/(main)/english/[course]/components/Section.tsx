@@ -35,7 +35,7 @@ const Section:React.FC<SectionProps> = ({name, image, score, already_passed, mod
                 already_passed && (
                     <div className="flex gap-2">
                         <p>
-                            {score} / {max_score}
+                            {score} / {name === "Writing" ? 100 : max_score}
                         </p>
                         <Image src={"/icon/is_completed.svg"} alt={"done?"} width={24} height={24}/>
                     </div>

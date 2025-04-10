@@ -1,6 +1,6 @@
 import {AnswerTest, QuestionReading} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
-import {useParams, useRouter} from "next/navigation";
+import {useParams} from "next/navigation";
 import {useGetReadingQuery, useSubmitReadingMutation} from "@/store/api/generalEnglishApi";
 
 interface UseReadingTestReturn {
@@ -21,15 +21,18 @@ interface UseReadingTestReturn {
     canGoPrev: boolean;
     isTestCompleted: boolean;
     handleSubmit: () => Promise<void>;
+
+    modalOpen: boolean;
+    setModalOpen: (open: boolean) => void;
 }
 
 const useReadingTest = (): UseReadingTestReturn => {
-    const {course, module} = useParams();
-    const router = useRouter();
+    const {module} = useParams();
     const [userAnswers, setUserAnswers] = useState<AnswerTest[]>([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
 
     const questionsPerPage = 2;
 
@@ -117,7 +120,7 @@ const useReadingTest = (): UseReadingTestReturn => {
             sessionStorage.removeItem('userAnswersReading');
 
             setIsLoading(false);
-            router.push(`/english/${course}/${module}/writing`);
+            setModalOpen(true);
         } catch (error) {
             console.log('Error submitting test:', error);
             setIsError(true);
@@ -159,7 +162,9 @@ const useReadingTest = (): UseReadingTestReturn => {
         canGoNext,
         canGoPrev,
         isTestCompleted,
-        handleSubmit
+        handleSubmit,
+        modalOpen,
+        setModalOpen,
     };
 }
 

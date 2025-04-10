@@ -10,6 +10,7 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     label?: string;
     placeholder?: string;
     type?: string;
+    validate?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, value, onChange, ...props}) => {
@@ -25,7 +26,7 @@ const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, va
     };
 
     return (
-        <div className={`relative w-full flex items-center gap-2 max-w-[520px] rounded-[14px] px-4 py-[10px] border ${isFocused ? "border-[#7B68EE]" : "border-[#E6E8EA]"}`}>
+        <div className={`relative bg-white h-11 w-full flex items-center gap-2 rounded-[14px] px-4 py-[10px] border ${isFocused ? "border-[#7B68EE]" : "border-[#E6E8EA]"}`}>
             {
                 label && (isFocused || hasContent)  ? (
                     <label

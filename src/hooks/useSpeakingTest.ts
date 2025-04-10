@@ -1,6 +1,6 @@
 import {AnswerSpeaking, SpeakingQuestion} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
-import {useParams, useRouter} from "next/navigation";
+import {useParams} from "next/navigation";
 import {useGetSpeakingQuery, useSubmitSpeakingMutation} from "@/store/api/generalEnglishApi";
 
 interface UseSpeakingTestReturn {
@@ -24,8 +24,7 @@ interface UseSpeakingTestReturn {
 }
 
 const useSpeakingTest = (): UseSpeakingTestReturn => {
-    const {course, module} = useParams();
-    const router = useRouter();
+    const {module} = useParams();
     const [userAnswers, setUserAnswers] = useState<AnswerSpeaking[]>([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
@@ -120,7 +119,6 @@ const useSpeakingTest = (): UseSpeakingTestReturn => {
 
             setIsLoading(false);
 
-            router.push(`/english/${course}/${module}/finish`);
         } catch (error) {
             console.log('Error submitting test:', error);
             setIsError(true);

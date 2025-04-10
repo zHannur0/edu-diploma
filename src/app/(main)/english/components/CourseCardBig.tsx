@@ -77,7 +77,7 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
             <div className="mb-5">
                 <div className="flex justify-between items-center mb-2">
                     <p className="text-[#7D7D7D] text-sm">Прогресс</p>
-                    <h3 className="text-[#242424] font-medium">{course?.user_progress || 0}%</h3>
+                    <h3 className="text-[#242424] font-medium">{course?.user_progress?.toFixed(1) || 0}%</h3>
                 </div>
                 <progress
                     value={(course?.user_progress || 0) / 100}

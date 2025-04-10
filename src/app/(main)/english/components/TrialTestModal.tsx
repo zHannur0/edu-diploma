@@ -1,10 +1,10 @@
 import ModalCard from "@/components/modal/ModalCard";
 import React, { useState } from "react";
-import { useFinishTrialTestMutation, useGetTrialTestQuery } from "@/store/api/generalEnglishApi";
 import { Answer } from "@/types/Answer";
 import Button from "@/components/ui/button/Button";
 import TextArea from "@/components/ui/textArea/TextArea";
 import Image from "next/image";
+import {useFinishTrialTestMutation, useGetTrialTestQuery} from "@/store/api/courseApi";
 
 interface TrialTestModalProps {
     course_id: number;
@@ -48,6 +48,12 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
         }
     };
 
+    // Функция для проверки, выбран ли конкретный вариант
+    const isOptionSelected = (questionId: number, optionId: number) => {
+        const answer = answers.find(a => a.question_id === questionId);
+        return answer?.option_id === optionId;
+    };
+
     return (
         <ModalCard onClose={onClose}>
             <div className="w-full text-[#3B3E4B]">
@@ -65,15 +71,16 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
                                         </h3>
                                         {question.question_type === "SINGLE_CHOICE" && (
                                             <div className="flex flex-col gap-2">
-                                                {question.options.map((answer) => (
-                                                    <label key={answer.id} className="flex items-center gap-2">
+                                                {question.options.map((option) => (
+                                                    <label key={option.id} className="flex items-center gap-2">
                                                         <input
                                                             type="radio"
-                                                            name={`question-${answer.id}`}
-                                                            value={answer.id}
-                                                            onChange={() => handleSelectOption(question.id, answer.id)}
+                                                            name={`question-${question.id}`}
+                                                            value={option.id}
+                                                            checked={isOptionSelected(question.id, option.id)}
+                                                            onChange={() => handleSelectOption(question.id, option.id)}
                                                         />
-                                                        {answer.option}
+                                                        {option.option}
                                                     </label>
                                                 ))}
                                             </div>
@@ -82,22 +89,19 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
                                             <TextArea
                                                 placeholder="Жауапты еңгізіңіз"
                                                 className="border p-2 rounded-md w-full"
+                                                value={answers.find(a => a.question_id === question.id)?.text_answer || ''}
                                                 onChange={(e) => handleTextAnswer(question.id, e.target.value)}
                                             />
                                         )}
                                     </div>
                                 ))}
 
-
-                                {!result && (
-                                    <div className="w-full flex justify-center">
-                                        <Button onClick={handleSubmit} disabled={isLoading} width={134} height={44}>
-                                            {isLoading ? "Жіберілуде" : "Тексеру"}
-                                        </Button>
-                                    </div>
-                                )}
+                                <div className="w-full flex justify-center">
+                                    <Button onClick={handleSubmit} disabled={isLoading} width={134} height={44}>
+                                        {isLoading ? "Жіберілуде" : "Тексеру"}
+                                    </Button>
+                                </div>
                             </div>
-
                         </>
                     )
                 }
