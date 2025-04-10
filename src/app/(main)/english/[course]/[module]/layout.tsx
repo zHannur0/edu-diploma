@@ -23,7 +23,9 @@ export default function SectionLayout({
                     {children}
                 </>
                 <div className="w-full flex flex-col gap-2">
-                    <SideSections sections={modulesData?.modules?.find((mod) => mod.id === Number(module))?.sections} />
+                    <SideSections sections={modulesData?.modules?.find((mod) => mod.id === Number(module))?.sections}
+                                    isCompleted={modulesData?.modules?.find((mod) => mod.id === Number(module))?.is_completed || false}
+                    />
                     <SideModules modules={modulesData?.modules as Module[]} lastModuleId={modulesData?.last_module || 0}/>
                 </div>
             </div>

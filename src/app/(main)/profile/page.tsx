@@ -1,13 +1,10 @@
 "use client"
 
 import Wrapper from "@/components/layout/Wrapper";
-import Input from "@/components/ui/input/Input";
-import EmailInput from "@/app/(auth)/components/EmailInput";
-import PasswordInput from "@/app/(auth)/components/PasswordInput";
-import Button from "@/components/ui/button/Button";
 import {useAuth} from "@/hooks/useAuth";
 import {useRouter} from "next/navigation";
 import {useEffect} from "react";
+import UserInfoForm from "@/app/(main)/profile/components/UserInfoForm";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -26,33 +23,7 @@ export default function ProfilePage() {
                         Менің парақшам
                     </h1>
                     <div className="w-full gap-7 grid grid-cols-[60%_40%]">
-                        <div className="bg-white p-8 rounded-xl">
-                            <h2 className="font-semibold text-[22px]e">
-                                Парақша
-                            </h2>
-                            <div className="flex gap-6 w-full">
-                                <div>
-
-                                </div>
-                                <div className="flex flex-col gap-4 w-full">
-                                    <h3>
-                                        Жеке кабинет
-                                    </h3>
-                                    <Input label={"Толық есім"} value={"Дильназ"} disabled={true} onChange={() => {}}/>
-                                    <EmailInput label={"Email"} value={"dilnaz@gmail.com"} disabled={true} onChange={() => {}}/>
-                                    <p className="text-sm mt-2">
-                                        Пароль
-                                    </p>
-                                    <PasswordInput label="Старый пароль" value={"asdf"} className={"mb-2"} onChange={() => {}}/>
-                                    <div className="flex justify-end">
-                                        <Button width={328}
-                                                style={{backgroundColor: "transparent"}}>
-                                            Дұрыстау
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <UserInfoForm/>
                         <div className="bg-white p-8 rounded-xl">
                             <h2 className="font-semibold text-[22px]e">
                                 Менің жетістіктерім

@@ -42,7 +42,7 @@ const tasks = [
     },
 ];
 
-const SideSections = ({sections}:{sections?: { [key: string]: Section }}) => {
+const SideSections = ({sections, isCompleted}: {sections?: { [key: string]: Section }, isCompleted: boolean}) => {
     const pathname = usePathname();
     const {course, module} = useParams();
     const router = useRouter();
@@ -54,7 +54,14 @@ const SideSections = ({sections}:{sections?: { [key: string]: Section }}) => {
             </h3>
             <div className="flex flex-col w-full p-2 rounded-[30px] bg-white gap-2">
                 {tasks.map((task, index) => (
-                    <div key={index} className="flex items-center justify-between cursor-pointer"  onClick={() => router.push(`/english/${course}/${module}/${task.title.toLowerCase()}`)}>
+                    <div key={index} className="flex items-center justify-between cursor-pointer"  onClick={() => {
+                        if(task.title === "Finish") {
+                            if(isCompleted)
+                            router.push(`/english/${course}/${module}/${task.title.toLowerCase()}`)
+                        } else {
+                            router.push(`/english/${course}/${module}/${task.title.toLowerCase()}`)
+                        }
+                    }}>
                         <div className="flex items-center gap-4">
                             <Image src={task.icon} alt={task.title} width={48} height={48}/>
                             <div>
@@ -70,7 +77,7 @@ const SideSections = ({sections}:{sections?: { [key: string]: Section }}) => {
                             ) : (
                                 <>
                                     {
-                                        sections?.[task.title.toLowerCase()]?.already_passed ? (
+                                        sections?.[task.title.toLowerCase()]?.already_passed || (isCompleted && task.title === "Finish") ? (
                                             <Image src={"/icon/checkoutIconGreen.svg"} alt={"up"} height={16} width={16} className="w-4 h-4"/>
                                         ) : (
                                             <div className="w-4 h-4 rounded-sm bg-[#EFF4FF]"/>

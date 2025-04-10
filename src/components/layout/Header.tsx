@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import {usePathname, useRouter} from "next/navigation";
 import {useAuth} from "@/hooks/useAuth";
-import {useEffect, useState} from "react";
 
 const nav = [
     {
