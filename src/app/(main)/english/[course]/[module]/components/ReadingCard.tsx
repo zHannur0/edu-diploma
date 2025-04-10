@@ -11,8 +11,9 @@ interface ReadingCardProps {
     options: OptionTest[];
     setAnswer: (question_id: number, optionId: number) => void;
     userAnswers: AnswerTest[];
+    question: string;
 }
-const ReadingCard = ({id, number, context, options, source, image, setAnswer, userAnswers}: ReadingCardProps) => {
+const ReadingCard = ({id, number, question, context, options, source, image, setAnswer, userAnswers}: ReadingCardProps) => {
     return (
         <div className="w-full p-4 flex flex-col bg-white items-start rounded-3xl">
             <div className="flex gap-3 mb-10 items-start w-full">
@@ -24,7 +25,7 @@ const ReadingCard = ({id, number, context, options, source, image, setAnswer, us
                         Reading
                     </p>
                     <p className="text-sm text-[#737B98]">
-                        {source}
+                        {question}
                     </p>
                 </div>
             </div>

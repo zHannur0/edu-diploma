@@ -32,7 +32,7 @@ const WritingCard = ({writing}: {writing: Writing}) => {
             }).unwrap();
 
             router.push(`/english/${course}/${module}/listening`);
-
+            sessionStorage.removeItem("writingAnswer");
         } catch (e) {
             console.log(e);
         }

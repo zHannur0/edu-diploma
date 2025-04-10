@@ -1,3 +1,4 @@
+
 export interface OptionTest {
     id: number;
     option: string;
@@ -14,6 +15,7 @@ export interface QuestionReading {
     options: OptionTest[];
     source: string;
     image: string;
+    question: string;
 }
 
 export interface Reading {

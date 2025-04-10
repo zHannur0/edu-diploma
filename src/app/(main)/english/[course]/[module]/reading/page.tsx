@@ -55,6 +55,7 @@ export default function ReadingPage() {
                                  image={currentQuestion.image}
                                  setAnswer={setAnswer}
                                  userAnswers={userAnswers}
+                                 question={currentQuestion.question}
                     />
                 ))
             }
