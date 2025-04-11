@@ -18,6 +18,7 @@ interface UseProfileFormReturna {
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: FormEvent<HTMLFormElement>) => Promise<void>;
     setAvatarFile: React.Dispatch<React.SetStateAction<File | null>>;
+    isSuccess: boolean;
 }
 
 const useProfileForm = (): UseProfileFormReturna => {
@@ -33,7 +34,7 @@ const useProfileForm = (): UseProfileFormReturna => {
     });
 
     const {data: user} = useGetProfileQuery();
-    const [updateProfile] = useUpdateProfileMutation();
+    const [updateProfile, {isSuccess, isError}] = useUpdateProfileMutation();
 
     useEffect(() => {
         if (user) {
@@ -127,7 +128,9 @@ const useProfileForm = (): UseProfileFormReturna => {
         values,
         handleChange,
         handleSubmit,
-        setAvatarFile
+        setAvatarFile,
+        isSuccess,
+        isError
     }
 }
 

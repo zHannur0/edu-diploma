@@ -6,13 +6,17 @@ import PasswordInput from "@/app/(auth)/components/PasswordInput";
 import Button from "@/components/ui/button/Button";
 import Image from "next/image";
 import useProfileForm from "@/hooks/useProfileform";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
+import SuccessModal from "@/components/modal/SuccessModal";
+import {useModalLogic} from "@/hooks/useModalLogic";
 
 const ProfileInfoForm = () => {
 
     const [isEdit, setIsEdit] = useState(false);
-    const {values, handleChange, handleSubmit, setAvatarFile} = useProfileForm();
+    const {values, handleChange, handleSubmit, setAvatarFile, isError, isSuccess} = useProfileForm();
     const [isHovering, setIsHovering] = useState(false);
+
+    const modalLogic = useModalLogic();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -40,8 +44,27 @@ const ProfileInfoForm = () => {
         fileInputRef.current?.click();
     };
 
+    useEffect(() => {
+        if (isSuccess) {
+            modalLogic.showSuccess();
+        }
+        if (isError) {
+            modalLogic.showError();
+        }
+    }, [isSuccess, isError])
+
     return (
         <div>
+            {
+                modalLogic.showSuccessModal && (
+                    <SuccessModal onOk={modalLogic.onSuccessModalClose} onClose={modalLogic.onSuccessModalClose}/>
+                )
+            }
+            {
+                modalLogic.showErrorModal && (
+                    <SuccessModal onOk={() => {}} onClose={modalLogic.onErrorModalClose}/>
+                )
+            }
             <div className="bg-[#F9F9F9] p-8 rounded-xl">
                 <h2 className="font-semibold text-[22px] mb-5">
                     Парақша

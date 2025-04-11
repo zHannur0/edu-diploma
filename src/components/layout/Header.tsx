@@ -13,7 +13,7 @@ const nav = [
     },
     {
         id: 2,
-        link: "/",
+        link: "/university",
         title: "Университет"
     },
     {

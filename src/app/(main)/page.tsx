@@ -1,8 +1,8 @@
-import Hero from "@/widgets/landing/Hero";
-import WhyUs from "@/widgets/landing/WhyUs";
-import StepList from "@/widgets/landing/StepList";
-import Advantages from "@/widgets/landing/Advantages";
-import FutureUniversity from "@/widgets/landing/FutureUniversity";
+import Hero from "@/features/landing/Hero";
+import WhyUs from "@/features/landing/WhyUs";
+import StepList from "@/features/landing/StepList";
+import Advantages from "@/features/landing/Advantages";
+import FutureUniversity from "@/features/landing/FutureUniversity";
 
 export default function Home() {
   return (
