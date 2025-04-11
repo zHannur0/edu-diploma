@@ -21,40 +21,44 @@ const ListeningCard = ({ id, number, question, options, setAnswer, userAnswers }
     const [duration, setDuration] = useState(0);
 
     useEffect(() => {
-        const currTime = Number(sessionStorage.getItem(`listening-${id}`));
-        if (audioRef.current) {
-            audioRef.current.currentTime = currTime;
-            setCurrentTime(currTime);
-        }
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        const handleTimeUpdate = () => {
+            setCurrentTime(audio.currentTime);
+
+            if (audio.currentTime >= audio.duration) {
+                audio.pause();
+                audio.currentTime = 0;
+                setIsRecording(false);
+            }
+        };
+
+        const handleLoadedMetadata = () => {
+            setDuration(audio.duration);
+        };
+
+        audio.addEventListener("timeupdate", handleTimeUpdate);
+        audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+
+        return () => {
+            audio.removeEventListener("timeupdate", handleTimeUpdate);
+            audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+        };
     }, []);
 
-    useEffect(() => {
-        if (audioRef.current) {
-            const audio = audioRef.current;
-            audio.addEventListener("timeupdate", () => {
-                setCurrentTime(audio.currentTime);
-                sessionStorage.setItem(`listening-${id}`, String(audio.currentTime))
-            });
-
-            audio.addEventListener("loadedmetadata", () => {
-                setDuration(audio.duration);
-            });
-        }
-    }, []);
 
 
     const playAudio = () => {
         if (audioRef.current) {
             if (isRecording) {
                 audioRef.current.pause();
-                setIsRecording(!isRecording);
             } else {
-                if (currentTime < duration) {
-                    audioRef.current.play();
-                    setIsRecording(!isRecording);
-                }
+                audioRef.current.play();
             }
         }
+        setIsRecording(!isRecording);
+
     };
 
     return (
@@ -84,19 +88,26 @@ const ListeningCard = ({ id, number, question, options, setAnswer, userAnswers }
                         )
                     }
                 </div>
-                <div className="flex flex-col w-full h-full justify-center">
-                    <progress
+                <div className="flex flex-col w-full h-full justify-center gap-1">
+                    <input
+                        type="range"
                         value={currentTime}
                         max={duration}
-                        className="w-full h-2 bg-gray-200 rounded-full"
-                        style={{pointerEvents: "none"}}
+                        step="0.1"
+                        onChange={(e) => {
+                            const newTime = parseFloat(e.target.value);
+                            if (audioRef.current) {
+                                audioRef.current.currentTime = newTime;
+                            }
+                            setCurrentTime(newTime);
+                        }}
+                        className="w-full appearance-none h-2 rounded-full bg-gray-200 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-moz-range-thumb]:bg-blue-500"
                     />
                     <div className="flex justify-between text-xs text-gray-500 w-full">
                         <span>{formatTime(currentTime)}</span>
                         <span>{formatTime(duration)}</span>
                     </div>
                 </div>
-                {/*<p>{context}</p>*/}
             </div>
             <audio ref={audioRef} src={`https://api.aqylshyn.kz/media/${question}`}/>
             <div className="w-full flex justify-between gap-4">
@@ -108,7 +119,7 @@ const ListeningCard = ({ id, number, question, options, setAnswer, userAnswers }
                                  setAnswer(id, option.id)
                              }}>
                             <p>
-                            {option.option}
+                                {option.option}
                             </p>
                             <div className="p-3 rounded-2xl bg-white">
                                 {option.id === userAnswers.filter((item) => item.question_id === id)?.[0]?.option_id ? (

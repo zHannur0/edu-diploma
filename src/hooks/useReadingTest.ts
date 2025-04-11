@@ -12,6 +12,7 @@ interface UseReadingTestReturn {
     isLoading: boolean;
     isError: boolean;
     progress: number;
+    isSuccess: boolean;
 
     setAnswer: (questionId: number, optionId: number) => void;
     goToNextPage: () => void;
@@ -21,9 +22,6 @@ interface UseReadingTestReturn {
     canGoPrev: boolean;
     isTestCompleted: boolean;
     handleSubmit: () => Promise<void>;
-
-    modalOpen: boolean;
-    setModalOpen: (open: boolean) => void;
 }
 
 const useReadingTest = (): UseReadingTestReturn => {
@@ -32,7 +30,6 @@ const useReadingTest = (): UseReadingTestReturn => {
     const [currentPage, setCurrentPage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
-    const [modalOpen, setModalOpen] = useState(false);
 
     const questionsPerPage = 2;
 
@@ -103,7 +100,7 @@ const useReadingTest = (): UseReadingTestReturn => {
 
     const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
 
-    const [submitReading] = useSubmitReadingMutation();
+    const [submitReading, {isSuccess}] = useSubmitReadingMutation();
 
     const handleSubmit = async () => {
         if (!isTestCompleted) {
@@ -120,7 +117,6 @@ const useReadingTest = (): UseReadingTestReturn => {
             sessionStorage.removeItem('userAnswersReading');
 
             setIsLoading(false);
-            setModalOpen(true);
         } catch (error) {
             console.log('Error submitting test:', error);
             setIsError(true);
@@ -163,8 +159,7 @@ const useReadingTest = (): UseReadingTestReturn => {
         canGoPrev,
         isTestCompleted,
         handleSubmit,
-        modalOpen,
-        setModalOpen,
+        isSuccess
     };
 }
 

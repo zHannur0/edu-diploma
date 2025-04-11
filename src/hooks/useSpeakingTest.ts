@@ -12,6 +12,7 @@ interface UseSpeakingTestReturn {
     isLoading: boolean;
     isError: boolean;
     progress: number;
+    isSuccess: boolean;
 
     setAnswer: (speaking_id: number, text: string) => void;
     goToNextPage: () => void;
@@ -101,7 +102,7 @@ const useSpeakingTest = (): UseSpeakingTestReturn => {
 
     const isTestCompleted = userAnswers.every(ua => ua.text !== undefined);
 
-    const [submitSpeaking] = useSubmitSpeakingMutation();
+    const [submitSpeaking, {isSuccess}] = useSubmitSpeakingMutation();
 
     const handleSubmit = async () => {
         if (!isTestCompleted) {
@@ -159,7 +160,8 @@ const useSpeakingTest = (): UseSpeakingTestReturn => {
         canGoNext,
         canGoPrev,
         isTestCompleted,
-        handleSubmit
+        handleSubmit,
+        isSuccess
     };
 }
 

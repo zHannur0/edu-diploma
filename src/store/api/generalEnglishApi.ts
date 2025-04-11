@@ -22,11 +22,13 @@ export const generalEnglishApi = createApi({
             query: (id) => ({
                 url: `courses/courses/${id}/modules/`,
             }),
+            providesTags: ["Modules"]
         }),
         getModule: builder.query<Module, number>({
             query: (id) => ({
                 url: `general-english/modules/${id}/details/`,
             }),
+            providesTags: ["Modules"]
         }),
         getReading: builder.query<QuestionReading[], number>({
             query: (id) => ({
@@ -40,6 +42,7 @@ export const generalEnglishApi = createApi({
                 method: "POST",
                 body: data
             }),
+            invalidatesTags: ["Modules"]
         }),
         getListening: builder.query<QuestionListening[], number>({
             query: (id) => ({
@@ -53,6 +56,7 @@ export const generalEnglishApi = createApi({
                 method: "POST",
                 body: data
             }),
+            invalidatesTags: ["Modules"]
         }),
         getWriting: builder.query<Writing, number>({
             query: (id) => ({
@@ -65,6 +69,7 @@ export const generalEnglishApi = createApi({
                 method: "POST",
                 body: data
             }),
+            invalidatesTags: ["Modules"]
         }),
         getSpeaking: builder.query<SpeakingQuestion[], number>({
             query: (id) => ({
@@ -78,11 +83,13 @@ export const generalEnglishApi = createApi({
                 method: "POST",
                 body: data
             }),
+            invalidatesTags: ["Modules"]
         }),
         finish: builder.query<{ section: string;score: number }[], number>({
             query: (id) => ({
                 url: `general-english/modules/submits/${id}/get-score/`,
             }),
+            providesTags: ["Modules"]
         }),
     }),
 });

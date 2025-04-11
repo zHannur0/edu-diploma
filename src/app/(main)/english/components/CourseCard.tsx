@@ -17,7 +17,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ title, modules, level, image, p
     return (
         <div className={`relative flex flex-col w-[256px] overflow-hidden rounded-t-2xl ${isSelected ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`} onClick={handleClick}>
             <div className="absolute p-2 rounded-[8px] bg-white top-3 left-3 shadow font-semibold text-xs">
-                {progress ? progress : 0}%
+                {progress ? progress.toFixed(1) : 0}%
             </div>
             <Image src={image} alt={title} width={256} height={144} />
             <div className="flex flex-col p-2 gap-1">

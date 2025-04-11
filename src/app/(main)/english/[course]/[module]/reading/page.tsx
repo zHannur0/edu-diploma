@@ -8,11 +8,15 @@ import ReadingCard from "@/app/(main)/english/[course]/[module]/components/Readi
 import ReadingCardSceleton from "@/components/ui/sceletons/ReadingCardSceleton";
 import SuccessModal from "@/components/modal/SuccessModal";
 import {useParams, useRouter} from "next/navigation";
+import {useModalLogic} from "@/hooks/useModalLogic";
+import ErrorModal from "@/components/modal/ErrorModal";
 
 export default function ReadingPage() {
     const {course, module} = useParams();
     const router = useRouter();
     const [startIndex, setStartIndex] = useState(1);
+
+    const modalLogic = useModalLogic();
 
     const {
         currentQuestions,
@@ -25,9 +29,18 @@ export default function ReadingPage() {
         questionsPerPage,
         handleSubmit,
         userAnswers,
-        modalOpen,
-        setModalOpen
+        isSuccess,
+        isError,
     } = useReadingTest();
+
+    useEffect(() => {
+        if (isSuccess) {
+            modalLogic.showSuccess();
+        }
+        if (isError) {
+            modalLogic.showError();
+        }
+    }, [isSuccess, isError])
 
     useEffect(() => {
         if (currentPage === 0) {
@@ -59,7 +72,7 @@ export default function ReadingPage() {
                     />
                 ))
             }
-            <div className="w-full flex justify-between font-['Inter']">
+            <div className="w-full flex justify-between">
                 {
                     canGoPrev ? (
                         <Button
@@ -82,9 +95,19 @@ export default function ReadingPage() {
                 </Button>
             </div>
             {
-                modalOpen && <SuccessModal onOk={() =>
-                    router.push(`/english/${course}/${module}/writing`)
-                } onClose={() => setModalOpen(false)} />
+                modalLogic.showSuccessModal && (
+                    <SuccessModal
+                        onOk={() => router.push(`/english/${course}/${module}/writing`)}
+                        onClose={modalLogic.onSuccessModalClose}
+                    />
+                )
+            }
+            {
+                modalLogic.showErrorModal && (
+                    <ErrorModal
+                        onClose={modalLogic.onErrorModalClose}
+                    />
+                )
             }
         </div>
     );

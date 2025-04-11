@@ -5,17 +5,21 @@ import Image from "next/image";
 import {Writing} from "@/types/Sections";
 import {useSubmitWritingMutation} from "@/store/api/generalEnglishApi";
 import {useParams, useRouter} from "next/navigation";
+import SuccessModal from "@/components/modal/SuccessModal";
+import ErrorModal from "@/components/modal/ErrorModal";
+import {useModalLogic} from "@/hooks/useModalLogic";
 
 const WritingCard = ({writing}: {writing: Writing}) => {
     const router = useRouter();
     const {course, module} = useParams();
     const [writingAnswer, setWritingAnswer] = useState<string>("Start writing")
+    const modalLogic = useModalLogic();
 
     const [submitWriting] = useSubmitWritingMutation();
 
     useEffect(() => {
         const writingAns = sessionStorage.getItem("writingAnswer");
-        setWritingAnswer(String(writingAns));
+        setWritingAnswer(String(writingAns || ""));
     }, [])
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -31,10 +35,11 @@ const WritingCard = ({writing}: {writing: Writing}) => {
                 data: {writing: writingAnswer}
             }).unwrap();
 
-            router.push(`/english/${course}/${module}/listening`);
+            modalLogic.showSuccess();
             sessionStorage.removeItem("writingAnswer");
         } catch (e) {
             console.log(e);
+            modalLogic.showError();
         }
     }
 
@@ -55,6 +60,21 @@ const WritingCard = ({writing}: {writing: Writing}) => {
             <div className="flex justify-end w-full">
                 <Image src={"/icon/send.svg"} alt={"send"} width={40} height={40} onClick={handleSubmit}/>
             </div>
+            {
+                modalLogic.showSuccessModal && (
+                    <SuccessModal
+                        onOk={() => router.push(`/english/${course}/${module}/listening`)}
+                        onClose={modalLogic.onSuccessModalClose}
+                    />
+                )
+            }
+            {
+                modalLogic.showErrorModal && (
+                    <ErrorModal
+                        onClose={modalLogic.onErrorModalClose}
+                    />
+                )
+            }
         </div>
     )
 }

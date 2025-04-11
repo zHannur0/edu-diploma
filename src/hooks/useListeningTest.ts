@@ -15,6 +15,7 @@ interface UseListeningTestReturn {
     isLoading: boolean;
     isError: boolean;
     progress: number;
+    isSuccess: boolean;
 
     setAnswer: (questionId: number, optionId: number) => void;
     goToNextPage: () => void;
@@ -104,7 +105,7 @@ const useReadingTest = (): UseListeningTestReturn => {
 
     const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
 
-    const [submitListening] = useSubmitListeningMutation();
+    const [submitListening, {isSuccess}] = useSubmitListeningMutation();
 
     const handleSubmit = async () => {
         if (!isTestCompleted) {
@@ -165,7 +166,8 @@ const useReadingTest = (): UseListeningTestReturn => {
         canGoNext,
         canGoPrev,
         isTestCompleted,
-        handleSubmit
+        handleSubmit,
+        isSuccess
     };
 }
 
