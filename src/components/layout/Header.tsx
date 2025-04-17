@@ -18,7 +18,7 @@ const nav = [
     },
     {
         id: 3,
-        link: "/",
+        link: "/сhats",
         title: "AI көмекші бот"
     }
 ]

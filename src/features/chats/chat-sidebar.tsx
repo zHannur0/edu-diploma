@@ -1,38 +1,33 @@
 "use client"
 
-import {useState} from "react";
 import {Plus} from "lucide-react";
+import {useGetChatQuery} from "@/store/api/chatApi";
+import {useParams} from "next/navigation";
+import Link from "next/link";
 
 export default function ChatSidebar() {
-    const [activeChat, setActiveChat] = useState("general");
+    const {chatId} = useParams();
 
-    const chatOptions = [
-        {id: "general", name: "General English"},
-        {id: "101", name: "101 сұрақтар тізімі"},
-        {id: "learning", name: "Ағылшын үйренудің жолы"},
-        {id: "toefl", name: "TOEFL дайындық"},
-    ];
+    const {data: chats} = useGetChatQuery();
 
     return (
-        <div className="w-64 bg-indigo-500 text-white flex flex-col h-full shadow-lg">
-            <button
-                onClick={() => {
-                }}
+        <div className="max-w-64 w-full bg-indigo-500 text-white flex flex-col h-full shadow-lg overflow-y-auto">
+            <Link href={"/chats"}
                 className="m-4 flex items-center text-indigo-100 hover:text-white hover:bg-indigo-600 rounded-md p-2 transition-colors"
             >
                 <Plus className="h-4 w-4 mr-2"/>
-                <span>Жаңа чат ашу</span>
-            </button>
+                <p>Жаңа чат ашу</p>
+            </Link>
 
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="overflow-y-auto p-4 h-[80vh]">
                 <h2 className="text-sm font-medium mb-3">Сұрақтар</h2>
                 <div className="space-y-2">
-                    {chatOptions.map((chat) => {
-                        const isActive = chat.id === activeChat;
+                    {chats?.map((chat) => {
+                        const isActive = chat.id === Number(chatId);
                         return (
-                            <button
+                            <Link
+                                href={`/chats/${chat.id}`}
                                 key={chat.id}
-                                onClick={() => setActiveChat(chat.id)}
                                 className={`w-full flex items-center p-2 rounded-md transition-colors ${
                                     isActive ? "bg-indigo-600" : "hover:bg-indigo-600"
                                 }`}
@@ -61,7 +56,7 @@ export default function ChatSidebar() {
                                     )}
                                 </div>
                                 <span className="flex-1 text-left">{chat.name}</span>
-                            </button>
+                            </Link>
                         );
                     })}
                 </div>

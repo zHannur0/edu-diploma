@@ -1,65 +1,97 @@
 "use client"
 
-import {useState} from "react"
-import {Send, Mic, Paperclip} from "lucide-react"
-import ChatSidebar from "@/features/chats/chat-sidebar";
+import {FormEvent, useState, useEffect} from "react"
+import {Send, LoaderCircleIcon} from "lucide-react"
+import {Message} from "@/types/Chat";
+import {useSendMessageMutation} from "@/store/api/chatApi";
+import {useRouter} from "next/navigation";
 
-export default function Home() {
-    const [message, setMessage] = useState("That's great! I real!")
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            sender: "user",
-            content: "Ағылшын тілінде Космонавт қалай болады және суреттерін жібер, Ағылшын тілінде Космонавт қалай болады және суреттерін жібер,Ағылшын тілінде Космонавт қалай болады және суреттерін жібер,Ағылшын тілінде Космонавт қалай болады және суреттерін жібер,Ағылшын тілінде Космонавт қалай болады және суреттерін жібер,",
-            timestamp: "5 мин бұрын",
-            avatar: "/avatar.png",
-            username: "Дильназ",
-        },
-        {
-            id: 2,
-            sender: "AI",
-            content: 'Ағылшынша космонавт сөзі "astronaut" болып аударылады',
-            timestamp: "5 мин бұрын",
-            username: "Aqyl'Shyn'",
-            avatar: "/avatar.png",
-        },
-        {
-            id: 3,
-            sender: "user",
-            content: "Рақмет",
-            timestamp: "5 мин бұрын",
-            avatar: "/avatar.png",
-            username: "Дильназ",
-        },
-    ])
+export default function Chats() {
+    const router = useRouter();
+    const [message, setMessage] = useState("")
+    const [messages, setMessages] = useState<Message[]>([]);
+
+    const [sendMessage, {isLoading}] = useSendMessageMutation();
+
+    // Автоматическая прокрутка к последнему сообщению
+    useEffect(() => {
+        if (messages.length > 0) {
+            const chatContainer = document.querySelector('.chat-messages');
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+    }, [messages]);
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (!message.trim()) return;
+
+        // Сохраняем текущее сообщение перед очисткой
+        const currentMessage = message;
+
+        // Добавляем сообщение пользователя в локальное состояние
+        setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER" }]);
+
+        // Очищаем поле ввода
+        setMessage("");
+
+        try {
+            const res = await sendMessage({
+                chat_id: 0, // В этом случае 0 правильно, так как создаём новый чат
+                message: currentMessage
+            }).unwrap();
+
+            if (res.chat_id) {
+                router.push(`/chats/${res.chat_id}`);
+            } else {
+                console.error("Сервер не вернул ID чата");
+            }
+        } catch (e) {
+            console.error("Ошибка при создании чата:", e);
+        }
+    }
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text).then(() => {
+        }).catch((err) => {
+            console.error("Failed to copy text: ", err);
+        });
+    };
 
     return (
-        <div className="flex h-screen bg-white">
-            <ChatSidebar/>
-            <div className="flex flex-col flex-1 overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-5 bg-[#f0f2f5]">
-                    <div className="max-w-5xl mx-auto space-y-4">
-                        {messages.map((msg) => (
-                            <div key={msg.id} className={`${msg.sender === "user" ? "flex justify-end" : ""}`}>
+        <div className="flex flex-col flex-1 overflow-hidden relative h-full w-full bg-[#f0f2f5]">
+            <div className="flex-1 overflow-y-auto p-5 bg-[#f0f2f5] max-h-[80vh] chat-messages pb-[5vh]">
+                <div className="max-w-5xl mx-auto space-y-4">
+                    {messages.length === 0 ? (
+                        <div className="flex items-center justify-center h-full">
+                            <div className="text-gray-500 text-center">
+                                <p className="text-xl font-medium mb-2">Жаңа чат бастаңыз</p>
+                                <p className="text-sm">Жаңа әңгімені бастау үшін кез-келген нәрсе жазсаңыз болады!</p>
+                            </div>
+                        </div>
+                    ) : (
+                        messages.map((msg, index) => (
+                            <div key={index} className={`${msg.sender === "USER" ? "flex justify-end" : ""}`}>
                                 <div
                                     className={`${
-                                        msg.sender === "user"
-                                            ? "bg-white rounded-2xl p-4 max-w-[50%] shadow-sm"
-                                            : "bg-white rounded-2xl p-4 max-w-[50%] shadow-sm"
+                                        msg?.sender === "USER"
+                                            ? "bg-blue-100 rounded-2xl p-4 w-[50%] shadow-sm"
+                                            : "bg-white rounded-2xl p-4 w-[50%] shadow-sm"
                                     }`}
                                 >
                                     <div className="flex items-center mb-2">
                                         <div className="flex items-center">
-                                            {msg.sender === "user" ? (
+                                            {msg?.sender === "USER" ? (
                                                 <>
-                                                    <div className="font-medium">{msg.username}</div>
-                                                    <div className="text-xs text-gray-500 ml-2">{msg.timestamp}</div>
+                                                    <div className="font-medium">{msg?.sender}</div>
                                                 </>
                                             ) : (
-                                                <div className="font-medium text-indigo-600">{msg.username}</div>
+                                                <div className="font-medium text-indigo-600">{msg.sender}</div>
                                             )}
                                         </div>
-                                        <button className="ml-auto text-gray-400">
+                                        <button className="ml-auto text-gray-400" aria-label="Copy message" onClick={() => copyToClipboard(msg.text)}>
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 width="16"
@@ -76,31 +108,40 @@ export default function Home() {
                                             </svg>
                                         </button>
                                     </div>
-                                    <div className="text-gray-800">{msg.content}</div>
+                                    <div className="text-gray-800 whitespace-pre-wrap break-words">{msg.text}</div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="p-4 border-t bg-[#f0f2f5]">
-                    <div className="max-w-4xl mx-auto">
-                        <div className="flex items-center bg-white rounded-full border p-2 shadow-sm">
-                            <input
-                                type="text"
-                                value={message}
-                                onChange={(e) => setMessage(e.target.value)}
-                                placeholder="Type a message..."
-                                className="flex-1 px-3 py-2 outline-none bg-transparent"
-                            />
-                            <button
-                                className="w-8 h-8 flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 text-white rounded-full ml-1"
-                            >
-                                <Send className="h-4 w-4"/>
-                            </button>
-                        </div>
-                    </div>
+                        ))
+                    )}
                 </div>
             </div>
+            <form className="p-4 border-t bg-[#f0f2f5] absolute max-h-[15vh] bottom-0 w-full" onSubmit={handleSubmit}>
+                <div className="max-w-4xl mx-auto">
+                    <div className="flex items-center bg-white rounded-full border p-2 shadow-sm">
+                        <input
+                            type="text"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Type a message..."
+                            className="flex-1 px-3 py-2 outline-none bg-transparent"
+                            disabled={isLoading}
+                        />
+                        <button
+                            type="submit"
+                            className={`w-8 h-8 flex items-center justify-center ${isLoading ? 'bg-gray-400' : 'bg-indigo-500 hover:bg-indigo-600'} text-white rounded-full ml-1`}
+                            disabled={isLoading || !message.trim()}
+                        >
+                            {
+                                isLoading ? (
+                                    <LoaderCircleIcon className="h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Send className="h-4 w-4" />
+                                )
+                            }
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     )
 }

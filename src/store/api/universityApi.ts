@@ -12,7 +12,6 @@ import {
 export const universityApi = createApi({
     reducerPath: "universityApi",
     baseQuery: fetchBaseQuery({ baseUrl: "https://api.aqylshyn.kz/" }),
-    tagTypes: ["Ielts"],
     endpoints: (builder) => ({
         getUniversities: builder.query<UniversitiesResponse[], void>({
             query: () => ({
