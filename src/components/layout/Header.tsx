@@ -30,6 +30,8 @@ const Header = () => {
 
     const handleNavigateProfile = () => {
         if(pathname.includes("profile")){
+            localStorage.clear();
+            sessionStorage.clear();
             router.push("/login");
         } else {
             router.push("/profile");

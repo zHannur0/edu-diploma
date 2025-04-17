@@ -52,7 +52,7 @@ export default function EnglishPage() {
                             title={course.name}
                             modules={course.modules_count}
                             image="/img/DefaultCourse.png"
-                            trial_passed={!!course.trial_passed}
+                            trial_passed={!!course.trial_passed || !course.has_level_define}
                             progress={course.user_progress}
                             handleClick={() => handleCourseClick(course.id)}
                             isSelected={course.id === selectedCourseId}

@@ -95,7 +95,7 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
                 disabled={!course}
                 onClick={() => router.push(`/english/${course_id}`)}
             >
-                {course?.trial_passed ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
+                {course?.trial_passed || !course?.has_level_define ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
             </Button>
         </motion.div>
     );

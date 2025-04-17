@@ -9,6 +9,6 @@ export default function BasicLayout({
     return <section className="min-h-screen relative flex flex-col items-center font-Montserrat">
         <Header />
         {children}
-        <Footer/>
+        <Footer />
     </section>
 }

@@ -4,6 +4,7 @@ import {courseApi} from "@/store/api/courseApi";
 import {generalEnglishApi} from "@/store/api/generalEnglishApi";
 import {ieltsApi} from "@/store/api/ieltsApi";
 import {profileApi} from "@/store/api/proileApi";
+import {universityApi} from "@/store/api/universityApi";
 
 export const makeStore = () => {
     return configureStore({
@@ -12,7 +13,8 @@ export const makeStore = () => {
             [courseApi.reducerPath]: courseApi.reducer,
             [generalEnglishApi.reducerPath]: generalEnglishApi.reducer,
             [ieltsApi.reducerPath]: ieltsApi.reducer,
-            [profileApi.reducerPath]: profileApi.reducer
+            [profileApi.reducerPath]: profileApi.reducer,
+            [universityApi.reducerPath]: universityApi.reducer
 
         },
         middleware: (getDefaultMiddleware) => {
@@ -21,6 +23,7 @@ export const makeStore = () => {
                 generalEnglishApi.middleware,
                 ieltsApi.middleware,
                 profileApi.middleware,
+                universityApi.middleware,
             );
         }
     })
