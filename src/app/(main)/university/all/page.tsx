@@ -3,6 +3,7 @@ import Wrapper from "@/components/layout/Wrapper";
 import UnivercityCard from "@/app/(main)/university/components/UnivercityCard";
 import Image from "next/image";
 import SideBarFilter from "@/app/(main)/university/components/SideBarFilter";
+import {Suspense} from "react";
 
 const courses = [
     {
@@ -35,11 +36,11 @@ const courses = [
         language: "English",
         type: "Part time",
     },
-    // Добавьте еще 7 объектов с нужными данными...
 ];
 
 export default function AllUniversityPage() {
     return (
+        <Suspense>
         <Wrapper>
             <div className="flex flex-col w-full h-full py-12">
                 <div className="w-full flex justify-between items-center mb-8">
@@ -77,5 +78,6 @@ export default function AllUniversityPage() {
                 </div>
             </div>
         </Wrapper>
+        </Suspense>
     )
 }

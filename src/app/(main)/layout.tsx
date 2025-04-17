@@ -1,5 +1,6 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import {Suspense} from "react";
 
 export default function BasicLayout({
                                        children,
@@ -8,7 +9,9 @@ export default function BasicLayout({
 }) {
     return <section className="min-h-screen relative flex flex-col items-center font-Montserrat">
         <Header />
-        {children}
+        <Suspense>
+            {children}
+        </Suspense>
         <Footer />
     </section>
 }
