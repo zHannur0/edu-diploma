@@ -1,4 +1,5 @@
 import Wrapper from "@/components/layout/Wrapper";
+import Link from "next/link";
 
 const FutureUniversity = () => {
     return (
@@ -10,9 +11,9 @@ const FutureUniversity = () => {
                 <p>
                     Тізімге өту
                 </p>
-                <button className="bg-[#FB9130] rounded-[50px] w-[170px] flex justify-center items-center text-white mt-9 py-2">
+                <Link href={"/university"} className="bg-[#FB9130] rounded-[50px] w-[170px] flex justify-center items-center text-white mt-9 py-2">
                     Университет
-                </button>
+                </Link>
             </div>
         </Wrapper>
     )

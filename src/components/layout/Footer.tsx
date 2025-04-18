@@ -4,17 +4,17 @@ import Link from "next/link";
 const nav = [
     {
         id: 1,
-        link: "/",
+        link: "/english",
         title: "Ағылшын үйрену"
     },
     {
         id: 2,
-        link: "/",
+        link: "/university",
         title: "Университет"
     },
     {
         id: 3,
-        link: "/",
+        link: "/chats",
         title: "AI көмекші бот"
     }
 ]

@@ -18,7 +18,7 @@ const nav = [
     },
     {
         id: 3,
-        link: "/сhats",
+        link: "/chats",
         title: "AI көмекші бот"
     }
 ]
@@ -49,7 +49,7 @@ const Header = () => {
                         <div className="flex gap-8">
                             {
                                 nav.map((navigation) => (
-                                    <Link key={navigation.id} href={navigation.link}>
+                                    <Link key={navigation.id} href={navigation.link} className={pathname.includes(navigation.link) ? "text-[#7B68EE]" : "text-black"}>
                                         {navigation.title}
                                     </Link>
                                 ))

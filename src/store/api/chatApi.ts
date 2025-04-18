@@ -17,6 +17,7 @@ export const chatApi = createApi({
             query: () => ({
                 url: `chats/chats`,
             }),
+            providesTags: ["Chat"]
         }),
         sendMessage: builder.mutation<ChatMessage, ChatMessage>({
             query: (data) => ({

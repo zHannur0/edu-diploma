@@ -33,7 +33,7 @@ const useProfileForm = (): UseProfileFormReturna => {
         last_password: "",
     });
 
-    const {data: user} = useGetProfileQuery();
+    const {data: user} = useGetProfileQuery(undefined, {refetchOnMountOrArgChange: true});
     const [updateProfile, {isSuccess, isError}] = useUpdateProfileMutation();
 
     useEffect(() => {

@@ -38,7 +38,7 @@ export const ieltsApi = createApi({
                 url: `ielts/modules/test/${id}/`,
             }),
             transformResponse: (response: Ielts) => response.writings ,
-        })
+        }),
     }),
 });
 

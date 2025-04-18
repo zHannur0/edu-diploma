@@ -81,7 +81,7 @@ export default function SpeakingPage() {
                 {
                     modalLogic.showSuccessModal && (
                         <SuccessModal
-                            onOk={() => router.push(`/english/${course}/${module}/speaking`)}
+                            onOk={() => router.push(`/english/${course}/${module}/finish`)}
                             onClose={modalLogic.onSuccessModalClose}
                         />
                     )

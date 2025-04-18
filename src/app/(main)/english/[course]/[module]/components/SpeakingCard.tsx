@@ -15,8 +15,6 @@ interface SpeakingCardProps {
 const SpeakingCard = ({id, number, context, setAnswer, userAnswers}: SpeakingCardProps) => {
     const { isRecording, startRecording, stopRecording, transcript } = useVoiceRecorder();
 
-    console.log(transcript);
-
     useEffect(() => {
         if(transcript) setAnswer(id, transcript);
     }, [transcript]);

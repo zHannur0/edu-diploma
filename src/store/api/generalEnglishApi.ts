@@ -12,6 +12,7 @@ import {
     Writing
 } from "@/types/Sections";
 import baseQueryWithReauth from "@/store/api/baseQuery";
+import {ReadingAttempt} from "@/types/Attempts";
 
 export const generalEnglishApi = createApi({
     reducerPath: "generalEnglishApi",
@@ -91,9 +92,19 @@ export const generalEnglishApi = createApi({
             }),
             providesTags: ["Modules"]
         }),
+        getReadingAttempt: builder.mutation<ReadingAttempt, {id: number, section_name: string}>({
+            query: ({id, section_name}) => ({
+                url: `general-english/modules/submits/${id}/get-score/`,
+                method: "POST",
+                params: {
+                    section_name: section_name
+                }
+            }),
+            invalidatesTags: ["Modules"]
+        }),
     }),
 });
 
 export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
-    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery
+    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptMutation
 } = generalEnglishApi;

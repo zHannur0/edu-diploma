@@ -1,42 +1,42 @@
 export const categories = [
     {
-        title: "Health Studies",
+        title: "Денсаулық сақтау",
         icon: "/icon/university/Frame 1618872483.svg",
     },
     {
-        title: "Business",
+        title: "Бизнес",
         icon: "/icon/university/Frame 1618872483-1.svg",
     },
     {
-        title: "Technology Studies",
+        title: "Технология",
         icon: "/icon/university/Frame 1618872483-2.svg",
     },
     {
-        title: "Engineering",
+        title: "Инженерия",
         icon: "/icon/university/Frame 1618872483-3.svg",
     },
     {
-        title: "Natural Science",
+        title: "Табиғи ғылымдар",
         icon: "/icon/university/Frame 1618872483-4.svg",
     },
     {
-        title: "Social Sciences",
+        title: "Әлеуметтік ғылымдар",
         icon: "/icon/university/Frame 1618872483-5.svg",
     },
     {
-        title: "Management",
+        title: "Менеджмент",
         icon: "/icon/university/Frame 1618872483-6.svg",
     },
     {
-        title: "Humanities",
+        title: "Гуманитарлық ғылымдар",
         icon: "/icon/university/Frame 1618872483-7.svg",
     },
     {
-        title: "Law Studies",
+        title: "Құқық",
         icon: "/icon/university/Frame 1618872483-8.svg",
     },
     {
-        title: "Economic Studies",
+        title: "Экономика",
         icon: "/icon/university/Frame 1618872483-9.svg",
     },
 ];

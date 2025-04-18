@@ -8,7 +8,7 @@ import Link from "next/link";
 export default function ChatSidebar() {
     const {chatId} = useParams();
 
-    const {data: chats} = useGetChatQuery();
+    const {data: chats} = useGetChatQuery(undefined, {refetchOnMountOrArgChange: true});
 
     return (
         <div className="max-w-64 w-full bg-indigo-500 text-white flex flex-col h-full shadow-lg overflow-y-auto">
