@@ -5,7 +5,7 @@ import { useGetFieldStudiesQuery } from "@/store/api/universityApi";
 import { FieldOfStudy } from "@/types/University";
 import { useRouter } from 'next/navigation';
 import { categories } from '@/config/categories'; // Иконкалар үшін импорттау
-import { Loader2, AlertTriangle, Book } from 'lucide-react'; // Иконкалар мен индикаторлар
+import {AlertTriangle, Book } from 'lucide-react'; // Иконкалар мен индикаторлар
 
 const ProgramByCategory = () => {
     const router = useRouter();
