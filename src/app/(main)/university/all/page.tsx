@@ -4,6 +4,8 @@ import UnivercityCard from "@/app/(main)/university/components/UnivercityCard";
 import Image from "next/image";
 import SideBarFilter from "@/app/(main)/university/components/SideBarFilter";
 import {Suspense} from "react";
+import {useFilters} from "@/hooks/useFilter";
+import {useGetUniversitiesQuery} from "@/store/api/universityApi";
 
 const courses = [
     {
@@ -39,6 +41,9 @@ const courses = [
 ];
 
 export default function AllUniversityPage() {
+    const {filters} = useFilters();
+
+    const {data: universities} = useGetUniversitiesQuery(filters);
     return (
         <Suspense>
         <Wrapper>
@@ -61,16 +66,17 @@ export default function AllUniversityPage() {
                     <SideBarFilter/>
                     <div>
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-                            {courses.map((course, index) => (
+                            {universities && universities.map((university) => (
                                 <UnivercityCard
-                                    key={index}
-                                    imageUrl={course.imageUrl}
-                                    title={course.title}
-                                    description={course.description}
-                                    duration={course.duration}
-                                    studyMode={course.studyMode}
-                                    language={course.language}
-                                    type={course.type}
+                                    id={university.id}
+                                    key={university.id}
+                                    imageUrl={university.image}
+                                    title={university.name}
+                                    description={university.description}
+                                    duration={university.duration}
+                                    studyMode={university.pace}
+                                    language={university.languages}
+                                    type={university.location}
                                 />
                             ))}
                         </div>

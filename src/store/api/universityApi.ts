@@ -9,14 +9,46 @@ import {
     University
 } from "@/types/University";
 
+type FilterValue = string | number | boolean | undefined | null;
+
+interface GetUniversitiesParams {
+    degree_type?: number | number[];
+    duration?: number | number[];
+    fields_of_study?: number | number[];
+    languages?: number | number[];
+    location?: string | string[];
+    name?: string;
+    study_formats?: string | string[];
+    [key: string]: FilterValue | FilterValue[];
+}
+
+
 export const universityApi = createApi({
     reducerPath: "universityApi",
     baseQuery: fetchBaseQuery({ baseUrl: "https://api.aqylshyn.kz/" }),
     endpoints: (builder) => ({
-        getUniversities: builder.query<UniversitiesResponse[], void>({
-            query: () => ({
-                url: `universities/`,
-            }),
+        getUniversities: builder.query<UniversitiesResponse[], GetUniversitiesParams>({
+            query: (args) => {
+                const apiParams: Record<string, string> = {};
+
+                Object.entries(args).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null) {
+                        if (Array.isArray(value)) {
+                            const filteredValues = value.filter(v => v !== undefined && v !== null && v !== '');
+                            if (filteredValues.length > 0) {
+                                apiParams[key] = filteredValues.join(',');
+                            }
+                        } else if (value !== '') {
+                            apiParams[key] = String(value);
+                        }
+                    }
+                });
+
+                return {
+                    url: `universities/`,
+                    params: apiParams,
+                };
+            },
         }),
         getUniversity: builder.query<University, number>({
             query: (id) => ({
