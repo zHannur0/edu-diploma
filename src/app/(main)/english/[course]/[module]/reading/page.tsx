@@ -10,6 +10,8 @@ import SuccessModal from "@/components/modal/SuccessModal";
 import {useParams, useRouter} from "next/navigation";
 import {useModalLogic} from "@/hooks/useModalLogic";
 import ErrorModal from "@/components/modal/ErrorModal";
+import {AttemptTest} from "@/types/Attempts";
+import {QuestionReading} from "@/types/Sections";
 
 export default function ReadingPage() {
     const {course, module} = useParams();
@@ -31,6 +33,8 @@ export default function ReadingPage() {
         userAnswers,
         isSuccess,
         isError,
+        currentDisplayData,
+        isReviewMode,
     } = useReadingTest();
 
     useEffect(() => {
@@ -50,6 +54,22 @@ export default function ReadingPage() {
         }
     }, [currentPage]);
 
+    const handleRightButtonClick = () => {
+        if (isReviewMode) {
+            if (canGoNext) {
+                goToNextPage();
+            }
+        } else {
+            if (canGoNext) {
+                goToNextPage();
+            } else {
+                handleSubmit();
+            }
+        }
+    };
+
+    const isRightButtonDisabled = isReviewMode && !canGoNext;
+
     return (
         <div className="w-full bg-[#EEF4FF] flex flex-col gap-9">
             {
@@ -57,21 +77,40 @@ export default function ReadingPage() {
                     <ReadingCardSceleton key={index}/>
                 ))
             }
-            {
-                currentQuestions && currentQuestions?.map((currentQuestion, index) => (
-                    <ReadingCard key={currentQuestion.id}
-                                 id={currentQuestion.id}
-                                 number={startIndex + index}
-                                 context={currentQuestion.context}
-                                 options={currentQuestion.options}
-                                 source={currentQuestion.source}
-                                 image={currentQuestion.image}
-                                 setAnswer={setAnswer}
-                                 userAnswers={userAnswers}
-                                 question={currentQuestion.question}
+            {currentDisplayData && currentDisplayData.map((currentData, index) => {
+                const questionId = currentData.id;
+
+                const commonProps = {
+                    id: questionId,
+                    number: startIndex + index, // Номер вопроса
+                    context: currentData.context,
+                    image: currentData.image,
+                    source: currentData.source,
+                    question: currentData.question,
+                };
+
+                return isReviewMode ? (
+                    <ReadingCard
+                        {...commonProps}
+                        isReviewMode={true}
+                        key={questionId}
+                        reviewOptions={(currentData as AttemptTest).options}
+                        options={[]}
+                        userAnswers={[]}
+                        setAnswer={() => {}}
                     />
-                ))
-            }
+                ) : (
+                    <ReadingCard
+                        {...commonProps}
+                        isReviewMode={false}
+                        key={questionId}
+                        options={(currentData as QuestionReading).options}
+                        userAnswers={userAnswers}
+                        setAnswer={setAnswer}
+                        reviewOptions={[]}
+                    />
+                );
+            })}
             <div className="w-full flex justify-between">
                 {
                     canGoPrev ? (
@@ -87,7 +126,8 @@ export default function ReadingPage() {
                 }
                 <Button
                     className="gap-2 py-4 px-8 text-white"
-                    onClick={canGoNext ? goToNextPage : handleSubmit}
+                    onClick={handleRightButtonClick}
+                    disabled={isRightButtonDisabled}
                     width={155}
                 >
                     <p>{canGoNext ? "Келесі" : "Аяқтау"}</p>

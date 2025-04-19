@@ -1,7 +1,8 @@
 import {AnswerTest, QuestionReading} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
 import {useParams} from "next/navigation";
-import {useGetReadingQuery, useSubmitReadingMutation} from "@/store/api/generalEnglishApi";
+import {useGetReadingAttemptQuery, useGetReadingQuery, useSubmitReadingMutation} from "@/store/api/generalEnglishApi";
+import {ReadingAttempt, AttemptTest} from "@/types/Attempts";
 
 interface UseReadingTestReturn {
     questions?: QuestionReading[];
@@ -22,6 +23,10 @@ interface UseReadingTestReturn {
     canGoPrev: boolean;
     isTestCompleted: boolean;
     handleSubmit: () => Promise<void>;
+
+    currentDisplayData?: QuestionReading[] | AttemptTest[];
+    attemptData?: ReadingAttempt;
+    isReviewMode: boolean;
 }
 
 const useReadingTest = (): UseReadingTestReturn => {
@@ -34,11 +39,27 @@ const useReadingTest = (): UseReadingTestReturn => {
     const questionsPerPage = 2;
 
     const {data: questions} = useGetReadingQuery(Number(module));
+    const { data: attempt , isSuccess: isAttemptLoaded } = useGetReadingAttemptQuery(
+        { id: Number(module), section_name: "READING" },
+        { skip: !Number(module) }
+    );
+
+    const isReviewMode = isAttemptLoaded && !!attempt && attempt.score > 0;
+
 
     const currentQuestions = useMemo(() => {
         const startIndex = currentPage * questionsPerPage;
         return questions?.slice(startIndex, startIndex + questionsPerPage);
     }, [questions, currentPage, questionsPerPage]);
+
+    const currentDisplayData = useMemo(() => {
+        const sourceData = isReviewMode ? attempt?.test : questions;
+        if (!sourceData) return undefined;
+        const startIndex = currentPage * questionsPerPage;
+        return sourceData.slice(startIndex, startIndex + questionsPerPage);
+    }, [questions, attempt, isReviewMode, currentPage, questionsPerPage]);
+
+    const isTestCompleted = !isReviewMode && userAnswers.every(ua => ua.option_id !== null);
 
     useEffect(() => {
         if (questions) {
@@ -50,6 +71,7 @@ const useReadingTest = (): UseReadingTestReturn => {
     }, [questions]);
 
     const setAnswer = (questionId: number, optionId: number) => {
+        if (isReviewMode) return;
         setUserAnswers(prev =>
             prev.map(ua =>
                 ua.question_id === questionId
@@ -98,12 +120,11 @@ const useReadingTest = (): UseReadingTestReturn => {
         ? Math.round((answeredQuestions / questions?.length) * 100)
         : 0;
 
-    const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
-
     const [submitReading, {isSuccess}] = useSubmitReadingMutation();
 
     const handleSubmit = async () => {
-        if (!isTestCompleted) {
+
+        if (isReviewMode || !isTestCompleted) {
             return;
         }
 
@@ -125,6 +146,7 @@ const useReadingTest = (): UseReadingTestReturn => {
     }
 
     useEffect(() => {
+        if (isReviewMode || !questions) return;
         const savedAnswers = sessionStorage.getItem('userAnswersReading');
         if (savedAnswers && questions && questions.length > 0) {
             try {
@@ -143,8 +165,10 @@ const useReadingTest = (): UseReadingTestReturn => {
     }, [questions]);
 
     return {
+        attemptData: attempt,
         questions,
         userAnswers,
+        currentDisplayData,
         currentPage,
         questionsPerPage,
         currentQuestions,
@@ -159,7 +183,8 @@ const useReadingTest = (): UseReadingTestReturn => {
         canGoPrev,
         isTestCompleted,
         handleSubmit,
-        isSuccess
+        isSuccess,
+        isReviewMode,
     };
 }
 

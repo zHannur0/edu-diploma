@@ -92,19 +92,18 @@ export const generalEnglishApi = createApi({
             }),
             providesTags: ["Modules"]
         }),
-        getReadingAttempt: builder.mutation<ReadingAttempt, {id: number, section_name: string}>({
+        getReadingAttempt: builder.query<ReadingAttempt, {id: number, section_name: string}>({
             query: ({id, section_name}) => ({
                 url: `general-english/modules/submits/${id}/get-score/`,
-                method: "POST",
                 params: {
                     section_name: section_name
                 }
             }),
-            invalidatesTags: ["Modules"]
+            providesTags: ["Modules"]
         }),
     }),
 });
 
 export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
-    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptMutation
+    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptQuery
 } = generalEnglishApi;
