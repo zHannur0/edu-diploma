@@ -1,86 +1,59 @@
 "use client"
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, { ChangeEvent } from "react"; // Убрали useState, useEffect
 import TextArea from "@/components/ui/textArea/TextArea";
 import Image from "next/image";
-import {useSubmitWritingMutation} from "@/store/api/generalEnglishApi";
-import {useRouter} from "next/navigation";
-import SuccessModal from "@/components/modal/SuccessModal";
-import ErrorModal from "@/components/modal/ErrorModal";
-import {useModalLogic} from "@/hooks/useModalLogic";
-import {IeltsWriting} from "@/types/Ielts";
+// Убрали useRouter, useSubmitWritingMutation, SuccessModal, ErrorModal, useModalLogic
+import { IeltsWriting } from "@/types/Ielts";
 
-const IeltsWritingCard = ({writing}: {writing: IeltsWriting}) => {
-    const router = useRouter();
-    const [writingAnswer, setWritingAnswer] = useState<string>("Start writing");
-    const modalLogic = useModalLogic();
+// Определяем props для компонента
+interface IeltsWritingCardProps {
+    writing: IeltsWriting;
+    answer: string; // Принимаем текущий ответ
+    onAnswerChange: (writingId: number, value: string) => void; // Принимаем функцию обратного вызова
+}
 
-    const [submitWriting] = useSubmitWritingMutation();
-
-    useEffect(() => {
-        const writingAns = sessionStorage.getItem("writingAnswer");
-        setWritingAnswer(String(writingAns || ""));
-    }, [])
+const IeltsWritingCard = ({ writing, answer, onAnswerChange }: IeltsWritingCardProps) => {
 
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const value = e.target.value;
-        setWritingAnswer(value)
-        sessionStorage.setItem("writingAnswer", value);
-    }
-
-    const handleSubmit = async () => {
-        try {
-            await submitWriting({
-                id: Number(module),
-                data: {writing: writingAnswer}
-            }).unwrap();
-
-            modalLogic.showSuccess();
-            sessionStorage.removeItem("writingAnswer");
-        } catch (e) {
-            console.log(e);
-            modalLogic.showError();
-        }
-    }
+        onAnswerChange(writing.id, e.target.value);
+    };
 
     return (
-        <div className="w-full max-w-[1100px] p-4 flex flex-col bg-white items-start rounded-3xl gap-3">
-            <div className="flex flex-col gap-3">
-                <p className="font-bold">
-                    Writing
+        <div className="w-full p-6 flex flex-col bg-white items-start rounded-2xl gap-5 shadow-md min-h-[400px]">
+            <div className="flex flex-col gap-3 w-full">
+                <p className="text-xl font-bold text-gray-800">
+                    {writing?.title || `Writing Task`}
                 </p>
-                <p className="text-sm text-[#737B98] font-medium">
-                    {writing?.title}
-                </p>
-                <p className="text-xs text-[#737B98]">
-                    {writing?.description}
-                </p>
-                {
-                    writing?.images.map((image, i) => (
-                        <Image key={i+12431} src={image} alt={`image-${i}`} width={300} height={170}/>
-                    ))
-                }
+                {writing?.description && (
+                    <p className="text-sm text-[#737B98] font-medium">
+                        {writing.description}
+                    </p>
+                )}
+                {writing?.images && writing.images.length > 0 && (
+                    <div className="flex flex-wrap gap-4 my-3">
+                        {writing.images.map((image, i) => (
+                            <div key={image || i} className="relative w-[300px] h-[170px] overflow-hidden rounded-lg border">
+                                <Image
+                                    src={image || "/img/ListUniversity.png"}
+                                    alt={`Writing task image ${i + 1}`}
+                                    layout="fill"
+                                    objectFit="contain"
+                                />
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-            <TextArea onChange={handleChange} value={writingAnswer || ""} />
-            <div className="flex justify-end w-full">
-                <Image src={"/icon/send.svg"} alt={"send"} width={40} height={40} onClick={handleSubmit}/>
-            </div>
-            {
-                modalLogic.showSuccessModal && (
-                    <SuccessModal
-                        onOk={() => router.push(`/english/2`)}
-                        onClose={modalLogic.onSuccessModalClose}
-                    />
-                )
-            }
-            {
-                modalLogic.showErrorModal && (
-                    <ErrorModal
-                        onClose={modalLogic.onErrorModalClose}
-                    />
-                )
-            }
+
+            <TextArea
+                onChange={handleChange}
+                value={answer}
+                placeholder="Start writing your answer here..." // Добавил плейсхолдер
+                className="w-full min-h-[250px] border border-gray-300 rounded-md p-3 focus:ring-2 focus:ring-blue-500 focus:border-transparent" // Добавил стили
+            />
+
         </div>
-    )
-}
+    );
+};
 
 export default IeltsWritingCard;

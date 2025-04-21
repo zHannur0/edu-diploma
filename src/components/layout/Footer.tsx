@@ -4,7 +4,7 @@ import Link from "next/link";
 const nav = [
     {
         id: 1,
-        link: "/english",
+        link: "/listening",
         title: "Ағылшын үйрену"
     },
     {

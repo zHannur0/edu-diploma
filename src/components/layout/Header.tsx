@@ -8,7 +8,7 @@ import {useAuth} from "@/hooks/useAuth";
 const nav = [
     {
         id: 1,
-        link: "/english",
+        link: "/listening",
         title: "Ағылшын үйрену"
     },
     {

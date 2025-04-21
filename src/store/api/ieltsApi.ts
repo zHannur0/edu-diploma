@@ -1,6 +1,28 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import baseQueryWithReauth from "@/store/api/baseQuery";
-import {Ielts, IeltsModule, IeltsReading, IeltsSubModule, IeltsWriting} from "@/types/Ielts";
+import {
+    Ielts,
+    IeltsListening,
+    IeltsModule,
+    IeltsReading,
+    IeltsSpeaking,
+    IeltsSubModule,
+    IeltsWriting
+} from "@/types/Ielts";
+
+export interface ListeningSubmit {
+    listenings: {
+        listening_id: number;
+        options: {
+            option_id: number;
+            question_id: number;
+        }[];
+        fills: {
+            question_id: number;
+            answer: string[];
+        }[];
+    }[];
+}
 
 export const ieltsApi = createApi({
     reducerPath: "ieltsApi",
@@ -27,20 +49,78 @@ export const ieltsApi = createApi({
                 url: `ielts/modules/test/${id}/`,
             }),
         }),
-        getIeltsReading: builder.query<IeltsReading, number>({
+        getIeltsReading: builder.query<IeltsReading[], number>({
             query: (id) => ({
                 url: `ielts/modules/test/${id}/`,
             }),
-            transformResponse: (response: Ielts) => response.readings ,
+            transformResponse: (response: Ielts) => response.reading_passages ,
+        }),
+        submitIeltsReading: builder.mutation<string, {id: number, data:
+                {
+                    readings: {
+                        reading_id: number;
+                        options: { // Добавляем '[]' для обозначения массива
+                            answer: string; // Уточни тип!
+                            question_id: number;
+                        }[]; // Массив!
+                        fills: { // Добавляем '[]'
+                            question_id: number; // Тип из твоего кода
+                            answer: string;     // Тип из твоего кода
+                        }[]; // Массив!
+                        selects: { // Добавляем '[]'
+                            question_id: number; // Тип из твоего кода
+                            answer: number;
+                        }[]; // Массив!
+                    }[]
+        }
+        }>({
+            query: ({id, data}) => ({
+                url: `ielts/modules/tests/${id}/reading-submit/`,
+                method: "POST",
+                body: data
+            }),
         }),
         getIeltsWriting: builder.query<IeltsWriting[], number>({
             query: (id) => ({
                 url: `ielts/modules/test/${id}/`,
             }),
-            transformResponse: (response: Ielts) => response.writings ,
+            transformResponse: (response: Ielts) => response.writing_tasks ,
+        }),
+        submitIeltsWriting: builder.mutation<string, {id: number, data: {writings: {answer: string, writing_id: number }[]}}>({
+            query: ({id, data}) => ({
+                url: `ielts/modules/tests/${id}/writing-submit/`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        getIeltsSpeaking: builder.query<IeltsSpeaking[], number>({
+            query: (id) => ({
+                url: `ielts/modules/test/${id}/`,
+            }),
+            transformResponse: (response: Ielts) => response.speaking_parts ,
+        }),
+        submitIeltsSpeaking: builder.mutation<string, {id: number, data: {speakings: {answer: string, speaking_id: number }[]}}>({
+            query: ({id, data}) => ({
+                url: `ielts/modules/tests/${id}/speaking-submit/`,
+                method: "POST",
+                body: data
+            }),
+        }),
+        getIeltsListening: builder.query<IeltsListening[], number>({
+            query: (id) => ({
+                url: `ielts/modules/test/${id}/`,
+            }),
+            transformResponse: (response: Ielts) => response.listening_parts ,
+        }),
+        submitIeltsListening: builder.mutation<string, {id: number, data: ListeningSubmit[]}>({
+            query: ({id, data}) => ({
+                url: `ielts/modules/tests/${id}/listening-submit/`,
+                method: "POST",
+                body: data
+            }),
         }),
     }),
 });
 
-export const { useGetIeltsModulesQuery, useGetIeltsTestsQuery, useGetIeltsReadingQuery, useGetIeltsWritingQuery
+export const { useGetIeltsModulesQuery, useGetIeltsTestsQuery, useGetIeltsReadingQuery, useGetIeltsWritingQuery, useSubmitIeltsWritingMutation, useGetIeltsSpeakingQuery, useSubmitIeltsSpeakingMutation, useSubmitIeltsReadingMutation, useGetIeltsListeningQuery, useSubmitIeltsListeningMutation
 } = ieltsApi;

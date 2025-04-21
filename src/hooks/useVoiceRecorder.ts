@@ -67,7 +67,7 @@ const useVoiceRecorder = (): UseVoiceRecorderReturn => {
     const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
     const [transcript, setTranscript] = useState<string>("");
     const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
-
+    console.log(transcript)
     useEffect(() => {
         const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
 

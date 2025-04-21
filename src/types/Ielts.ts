@@ -2,21 +2,36 @@
 export interface Ielts {
     id: number;
     name: string;
-    readings: IeltsReading;
-    listenings: IeltsListening[];
-    writings: IeltsWriting[];
+    reading_passages: IeltsReading[];
+    listening_parts: IeltsListening[];
+    writing_tasks: IeltsWriting[];
+    speaking_parts: IeltsSpeaking[];
+}
+
+export interface IeltsSpeakingQuestion {
+    id: number;
+    question: string;
+    additional_information: string | null;
+}
+
+export interface IeltsSpeaking {
+    part: number;
+    speaking_questions: IeltsSpeakingQuestion[];
 }
 
 export interface IeltsReading {
     id: number;
     title: string;
     content: string;
+    passage_number: number;
     questions: QuestionIelts[];
 }
 
-interface IeltsListening {
+export interface IeltsListening {
     id: number;
     title: string;
+    part: number;
+    part_label: string;
     audio_file: string;
     questions: QuestionIelts[];
 }
@@ -26,18 +41,19 @@ export interface IeltsWriting {
     title: string;
     description: string;
     images: string[];
+    part: number;
 }
 
 export interface QuestionIelts {
     id: number;
     question_content: string;
     question_type: QuestionType;
-    options: Option[] | string[];
+    options: OptionIelts[] | string[];
 }
 
 type QuestionType = 'OPTIONS' | 'FILL_BLANK' | 'SELECT_INSERT_ANSWER';
 
-interface Option {
+export interface OptionIelts {
     id: number;
     option: string;
 }

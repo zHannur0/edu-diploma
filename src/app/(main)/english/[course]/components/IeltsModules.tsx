@@ -12,7 +12,7 @@ const IeltsModules = () => {
                     ieltsModules?.map((module) => (
                             <div className="flex gap-6" key={module.id}>
                                 <Image src={module?.cover || ""} alt={module?.title || ""} width={60}
-                                       height={60}/>
+                                       height={80} className={"max-h-[100px] rounded-sm w-[80px]"}/>
                                 <div>
                                     <h3 className="font-medium mb-3">
                                         {module?.title || ""}

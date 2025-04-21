@@ -73,7 +73,7 @@
 //             {
 //                 modalLogic.showSuccessModal && (
 //                     <SuccessModal
-//                         onOk={() => router.push(`/english/2`)}
+//                         onOk={() => router.push(`/listening/2`)}
 //                         onClose={modalLogic.onSuccessModalClose}
 //                     />
 //                 )
