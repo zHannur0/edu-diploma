@@ -2,7 +2,7 @@ import {AnswerTest, QuestionReading} from "@/types/Sections";
 import {useEffect, useMemo, useState} from "react";
 import {useParams} from "next/navigation";
 import {useGetReadingAttemptQuery, useGetReadingQuery, useSubmitReadingMutation} from "@/store/api/generalEnglishApi";
-import {ReadingAttempt, AttemptTest} from "@/types/Attempts";
+import {ReadingAttempt, AttemptReadingTest} from "@/types/Attempts";
 
 interface UseReadingTestReturn {
     questions?: QuestionReading[];
@@ -24,7 +24,7 @@ interface UseReadingTestReturn {
     isTestCompleted: boolean;
     handleSubmit: () => Promise<void>;
 
-    currentDisplayData?: QuestionReading[] | AttemptTest[];
+    currentDisplayData?: QuestionReading[] | AttemptReadingTest[];
     attemptData?: ReadingAttempt;
     isReviewMode: boolean;
 }

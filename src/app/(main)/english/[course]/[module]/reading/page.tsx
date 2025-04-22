@@ -10,7 +10,7 @@ import SuccessModal from "@/components/modal/SuccessModal";
 import {useParams, useRouter} from "next/navigation";
 import {useModalLogic} from "@/hooks/useModalLogic";
 import ErrorModal from "@/components/modal/ErrorModal";
-import {AttemptTest} from "@/types/Attempts";
+import {AttemptReadingTest} from "@/types/Attempts";
 import {QuestionReading} from "@/types/Sections";
 
 export default function ReadingPage() {
@@ -94,7 +94,7 @@ export default function ReadingPage() {
                         {...commonProps}
                         isReviewMode={true}
                         key={questionId}
-                        reviewOptions={(currentData as AttemptTest).options}
+                        reviewOptions={(currentData as AttemptReadingTest).options}
                         options={[]}
                         userAnswers={[]}
                         setAnswer={() => {}}

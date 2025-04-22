@@ -12,7 +12,7 @@ import {
     Writing
 } from "@/types/Sections";
 import baseQueryWithReauth from "@/store/api/baseQuery";
-import {ReadingAttempt} from "@/types/Attempts";
+import {ListeningAttempt, ReadingAttempt, WritingAttempt} from "@/types/Attempts";
 
 export const generalEnglishApi = createApi({
     reducerPath: "generalEnglishApi",
@@ -101,9 +101,30 @@ export const generalEnglishApi = createApi({
             }),
             providesTags: ["Modules"]
         }),
+        getListeningAttempt: builder.query<ListeningAttempt, {id: number}>({
+            query: ({id}) => ({
+                url: `general-english/modules/submits/${id}/get-score/`,
+                params: {
+                    section_name: "LISTENING"
+                }
+            }),
+            providesTags: ["Modules"]
+        }),
+        getWritingAttempt: builder.query<WritingAttempt, {id: number}>({
+            query: ({id}) => ({
+                url: `general-english/modules/submits/${id}/get-score/`,
+                params: {
+                    section_name: "WRITING"
+                }
+            }),
+            providesTags: ["Modules"]
+        }),
     }),
 });
 
-export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery, useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
-    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery, useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptQuery
+export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery,
+    useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
+    useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery,
+    useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptQuery,
+    useGetListeningAttemptQuery, useGetWritingAttemptQuery
 } = generalEnglishApi;

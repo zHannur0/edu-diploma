@@ -1,22 +1,22 @@
-import {AnswerTest, QuestionListening} from "@/types/Sections";
-import {useEffect, useMemo, useState} from "react";
-import {useParams, useRouter} from "next/navigation";
+import { AnswerTest, QuestionListening } from "@/types/Sections";
+import {AttemptListeningTest, ListeningAttempt} from "@/types/Attempts";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import {
+    useGetListeningAttemptQuery,
     useGetListeningQuery,
     useSubmitListeningMutation,
 } from "@/store/api/generalEnglishApi";
 
 interface UseListeningTestReturn {
-    questions?: QuestionListening[];
     userAnswers: AnswerTest[];
     currentPage: number;
     questionsPerPage: number;
-    currentQuestions?: QuestionListening[];
+    currentDisplayData?: (QuestionListening | AttemptListeningTest)[];
     isLoading: boolean;
     isError: boolean;
     progress: number;
     isSuccess: boolean;
-
     setAnswer: (questionId: number, optionId: number) => void;
     goToNextPage: () => void;
     goToPrevPage: () => void;
@@ -25,54 +25,88 @@ interface UseListeningTestReturn {
     canGoPrev: boolean;
     isTestCompleted: boolean;
     handleSubmit: () => Promise<void>;
+    isReviewMode: boolean;
+    attemptData?: ListeningAttempt | null;
 }
 
-const useReadingTest = (): UseListeningTestReturn => {
-    const {course, module} = useParams();
-    const router = useRouter();
+const useListeningTest = (): UseListeningTestReturn => {
+    const { module } = useParams();
     const [userAnswers, setUserAnswers] = useState<AnswerTest[]>([]);
     const [currentPage, setCurrentPage] = useState(0);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isError, setIsError] = useState(false);
+    const [submissionError, setSubmissionError] = useState(false);
+    const [internalIsLoading, setInternalIsLoading] = useState(false);
 
     const questionsPerPage = 3;
 
-    const {data: questions} = useGetListeningQuery(Number(module));
+    const { data: questions, isLoading: isLoadingQuestions } = useGetListeningQuery(Number(module), {
+        skip: !Number(module)
+    });
 
-    const currentQuestions = useMemo(() => {
-        const startIndex = currentPage * questionsPerPage;
-        return questions?.slice(startIndex, startIndex + questionsPerPage);
-    }, [questions, currentPage, questionsPerPage]);
+    const { data: attempt, isLoading: isLoadingAttempt, isSuccess: isAttemptLoaded } = useGetListeningAttemptQuery(
+        { id: Number(module)},
+        { skip: !Number(module) }
+    );
 
+    const isReviewMode = isAttemptLoaded && !!attempt;
 
     useEffect(() => {
-        if (questions) {
-            setUserAnswers(questions.map((q) => ({
-                question_id: q.id,
-                option_id: null
-            })));
+        if (isReviewMode || !questions) return;
+
+        const savedAnswers = sessionStorage.getItem('userAnswersListening');
+        let initialAnswers: AnswerTest[];
+
+        if (savedAnswers) {
+            try {
+                const parsedAnswers = JSON.parse(savedAnswers) as AnswerTest[];
+                const questionIds = new Set(questions.map(q => q.id));
+                const validAnswers = parsedAnswers.filter(
+                    answer => questionIds.has(answer.question_id) && answer.option_id !== null && answer.option_id !== undefined
+                );
+
+                const validAnswerMap = new Map(validAnswers.map(a => [a.question_id, a.option_id]));
+                initialAnswers = questions.map(q => ({
+                    question_id: q.id,
+                    option_id: validAnswerMap.get(q.id) ?? null
+                }));
+
+            } catch (error) {
+                console.error('Error restoring listening progress:', error);
+                initialAnswers = questions.map((q) => ({ question_id: q.id, option_id: null }));
+                sessionStorage.removeItem('userAnswersListening');
+            }
+        } else {
+            initialAnswers = questions.map((q) => ({ question_id: q.id, option_id: null }));
         }
-    }, [questions]);
+        setUserAnswers(initialAnswers);
+
+    }, [questions, isReviewMode]);
 
     const setAnswer = (questionId: number, optionId: number) => {
-        setUserAnswers(prev =>
-            prev.map(ua =>
-                ua.question_id === questionId
-                    ? { ...ua, option_id: optionId }
-                    : ua
-            )
-        );
+        if (isReviewMode) return;
 
-        sessionStorage.setItem('userAnswersListening', JSON.stringify(
-            userAnswers.map(ua =>
-                ua.question_id === questionId
-                    ? { ...ua, option_id: optionId }
-                    : ua
-            )
-        ));
+        const nextAnswers = userAnswers.map(ua =>
+            ua.question_id === questionId
+                ? { ...ua, option_id: optionId }
+                : ua
+        );
+        setUserAnswers(nextAnswers);
+        sessionStorage.setItem('userAnswersListening', JSON.stringify(nextAnswers));
     };
 
-    const totalPages =  Math.ceil((questions?.length || 0) / questionsPerPage);
+    const currentDisplayData = useMemo(() => {
+        const sourceData = isReviewMode ? attempt?.test : questions;
+        if (!sourceData) return undefined;
+        const startIndex = currentPage * questionsPerPage;
+        return sourceData.slice(startIndex, startIndex + questionsPerPage);
+    }, [questions, attempt, isReviewMode, currentPage, questionsPerPage]);
+
+
+    const totalPages = useMemo(() => {
+        const totalQuestionsCount = isReviewMode ? attempt?.test?.length : questions?.length;
+        return Math.ceil((totalQuestionsCount || 0) / questionsPerPage);
+    }, [questions, attempt, isReviewMode, questionsPerPage]);
+
+
     const canGoNext = currentPage < totalPages - 1;
     const canGoPrev = currentPage > 0;
 
@@ -97,65 +131,54 @@ const useReadingTest = (): UseListeningTestReturn => {
         }
     };
 
-    const answeredQuestions = userAnswers.filter(ua => ua.option_id).length;
+    const answeredQuestionsCount = useMemo(() => {
+        return userAnswers.filter(ua => ua.option_id !== null).length;
+    }, [userAnswers]);
 
-    const progress = questions && questions?.length > 0
-        ? Math.round((answeredQuestions / questions?.length) * 100)
-        : 0;
+    const totalQuestionsCount = useMemo(() => {
+        return questions?.length ?? 0;
+    }, [questions]);
 
-    const isTestCompleted = userAnswers.every(ua => ua.option_id !== undefined);
 
-    const [submitListening, {isSuccess}] = useSubmitListeningMutation();
+    const progress = !isReviewMode && totalQuestionsCount > 0
+        ? Math.round((answeredQuestionsCount / totalQuestionsCount) * 100)
+        : (isReviewMode ? 100 : 0);
+
+    const isTestCompleted = !isReviewMode && totalQuestionsCount > 0 && answeredQuestionsCount === totalQuestionsCount;
+
+    const [submitListening, { isSuccess: isSubmitSuccess }] = useSubmitListeningMutation();
 
     const handleSubmit = async () => {
-        if (!isTestCompleted) {
-            return;
-        }
+        if (isReviewMode || !isTestCompleted) return;
 
+        setInternalIsLoading(true);
+        setSubmissionError(false);
         try {
-            setIsLoading(true);
             await submitListening({
                 id: Number(module),
-                data: {options: userAnswers}
+                data: { options: userAnswers.filter(ua => ua.option_id !== null) } // Отправляем только отвеченные
             }).unwrap();
 
             sessionStorage.removeItem('userAnswersListening');
 
-            setIsLoading(false);
-
-            router.push(`/english/${course}/${module}/speaking`);
 
         } catch (error) {
-            console.log('Error submitting test:', error);
-            setIsError(true);
-            setIsLoading(false);
+            console.error('Error submitting listening test:', error);
+            setSubmissionError(true);
+        } finally {
+            setInternalIsLoading(false);
         }
-    }
+    };
 
-    useEffect(() => {
-        const savedAnswers = sessionStorage.getItem('userAnswersListening');
-        if (savedAnswers && questions && questions.length > 0) {
-            try {
-                const parsedAnswers = JSON.parse(savedAnswers);
-                const validAnswers = parsedAnswers.filter(
-                    (answer: AnswerTest) => questions.some(q => q.id === answer.question_id)
-                );
+    const isLoading = isLoadingQuestions || isLoadingAttempt || internalIsLoading;
+    const isError = submissionError; // Ошибка только при отправке
 
-                if (validAnswers.length > 0) {
-                    setUserAnswers(validAnswers);
-                }
-            } catch (error) {
-                console.log('Error restoring progress:', error);
-            }
-        }
-    }, [questions]);
 
     return {
-        questions,
         userAnswers,
         currentPage,
         questionsPerPage,
-        currentQuestions,
+        currentDisplayData,
         isLoading,
         isError,
         progress,
@@ -167,8 +190,10 @@ const useReadingTest = (): UseListeningTestReturn => {
         canGoPrev,
         isTestCompleted,
         handleSubmit,
-        isSuccess
+        isSuccess: isSubmitSuccess,
+        isReviewMode,
+        attemptData: attempt,
     };
 }
 
-export default useReadingTest;
+export default useListeningTest;
