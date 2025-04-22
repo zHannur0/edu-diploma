@@ -6,6 +6,7 @@ import {ieltsApi} from "@/store/api/ieltsApi";
 import {profileApi} from "@/store/api/proileApi";
 import {universityApi} from "@/store/api/universityApi";
 import {chatApi} from "@/store/api/chatApi";
+import {favoritesApi} from "@/store/api/favoritesApi";
 
 export const makeStore = () => {
     return configureStore({
@@ -16,7 +17,8 @@ export const makeStore = () => {
             [ieltsApi.reducerPath]: ieltsApi.reducer,
             [profileApi.reducerPath]: profileApi.reducer,
             [universityApi.reducerPath]: universityApi.reducer,
-            [chatApi.reducerPath]: chatApi.reducer
+            [chatApi.reducerPath]: chatApi.reducer,
+            [favoritesApi.reducerPath]: favoritesApi.reducer
         },
         middleware: (getDefaultMiddleware) => {
             return getDefaultMiddleware().concat(authApi.middleware,
@@ -26,6 +28,7 @@ export const makeStore = () => {
                 profileApi.middleware,
                 universityApi.middleware,
                 chatApi.middleware,
+                favoritesApi.middleware,
             );
         }
     })

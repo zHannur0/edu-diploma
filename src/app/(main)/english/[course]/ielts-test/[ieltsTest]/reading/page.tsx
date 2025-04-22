@@ -144,7 +144,6 @@ export default function IeltsReadingPage() {
 
     return (
         <div className="w-full min-h-screen bg-[#EEF4FF] flex flex-col py-12 px-4 md:px-8">
-            {/* Header с таймером и кнопкой Submit */}
             <div className="w-full max-w-[1400px] mx-auto flex justify-between items-center mb-6 flex-wrap gap-4">
                 <p className="text-3xl font-semibold text-[#737B98]">IELTS Reading</p>
                 <div className="flex items-center gap-6">
@@ -161,7 +160,6 @@ export default function IeltsReadingPage() {
                 </div>
             </div>
 
-            {/* Навигация по пассажам */}
             {readingPassages && readingPassages.length > 0 && (
                 <div className="w-full max-w-[1400px] mx-auto flex justify-center gap-4 mb-6 flex-wrap">
                     {readingPassages.map((passage, index) => (
@@ -180,13 +178,11 @@ export default function IeltsReadingPage() {
                 </div>
             )}
 
-            {/* Основной контент: Пассаж слева, Вопросы справа */}
             <div className="w-full max-w-[1400px] mx-auto flex-grow flex flex-col md:flex-row gap-6 md:gap-8">
                 {isLoadingData && <p className="text-center w-full">Loading reading passages...</p>}
                 {loadingError && <p className="text-center text-red-500 w-full">Failed to load passages.</p>}
                 {!isLoadingData && !loadingError && currentPassage && (
                     <>
-                        {/* Левая колонка: Пассаж */}
                         <div className="w-full md:w-1/2 lg:w-7/12">
                             <PassageDisplay
                                 title={currentPassage.title}
@@ -194,7 +190,6 @@ export default function IeltsReadingPage() {
                             />
                         </div>
 
-                        {/* Правая колонка: Вопросы */}
                         <div className="w-full md:w-1/2 lg:w-5/12">
                             <QuestionDisplay
                                 questions={currentPassage.questions}

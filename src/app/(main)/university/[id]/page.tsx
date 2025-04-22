@@ -18,7 +18,7 @@ import {
 
 const DetailItem: React.FC<{ icon: React.ReactNode; label: string; value: React.ReactNode }> = ({ icon, label, value }) => (
     <div className="flex items-start gap-3">
-        <div className="mt-1 text-blue-600">{icon}</div>
+        <div className="mt-1 text-[#7B68EE]">{icon}</div>
         <div className="flex-1">
             <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div> {/* Кіші әріппен жазуға болады */}
             <div className="font-medium text-sm">{value || '-'}</div>
@@ -43,10 +43,10 @@ const ContentSection: React.FC<{ title: string; content: string | null | undefin
 function ProgramDetailContent() {
     const params = useParams();
     const universityId = params?.id ? Number(params.id) : undefined;
-
     const { data: university, isLoading, isError } = useGetUniversityQuery(universityId!, {
         skip: universityId === undefined,
     });
+
 
     if (isLoading) {
         return <div className="flex justify-center items-center min-h-[50vh]"><p>Жүктелуде...</p></div>;
@@ -58,7 +58,6 @@ function ProgramDetailContent() {
 
     const formatDuration = (durationData: University['duration'] | null | undefined): string => {
         if (!durationData) return '-';
-        // Қазақша жыл/ай атауларын қосуға болады
         return `${durationData.duration} ${durationData.prefix || ''}`.trim();
     }
 
@@ -82,9 +81,9 @@ function ProgramDetailContent() {
             </div>
 
             <div className={`relative w-full h-[350px] md:h-[450px] bg-cover bg-center bg-no-repeat rounded-2xl mb-12 md:mb-20 ${!university.image ? 'bg-gray-200' : ''}`}
-                 style={{ backgroundImage: university.image ? `url(${university.image})` : 'none' }}>
+                 style={{ backgroundImage: `url(/img/UniverBg.png)`  }}>
                 <div className="absolute bottom-[-40px] md:bottom-[-60px] left-1/2 transform -translate-x-1/2 w-[90%] max-w-[1000px] bg-white p-6 md:p-8 rounded-xl shadow-lg">
-                    <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 md:gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 md:gap-8">
                         <div>
                             <h3 className="font-semibold mb-3 text-lg">Негізгі ақпарат</h3>
                             <p className="text-sm text-gray-700 mb-4 prose prose-sm max-w-none">
@@ -92,7 +91,7 @@ function ProgramDetailContent() {
                             </p>
                         </div>
 
-                        <div className="space-y-4">
+                        <div className="gap-y-4 gap-x-2 grid grid-cols-2">
                             <DetailItem
                                 icon={<Globe size={20} />}
                                 label="Оқыту тілдері"
@@ -130,7 +129,9 @@ function ProgramDetailContent() {
                                     value={university.degree_type.name}
                                 />
                             )}
-
+                            <p className="text-sm text-gray-600 mb-4 prose prose-sm max-w-none">
+                                Баға оқу ақысына жасалған жеңілдікті қамтиды. Толық мәліметтерді университет вебсайтынан қараңыз.
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -143,7 +144,6 @@ function ProgramDetailContent() {
                     <div>
                         <h2 className="text-2xl font-bold mb-4">Мұнда оқу нені білдіреді?</h2>
                         <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm">
-                            {/* Бұл тізімдерді API-дан алуға болады немесе қазақшаға аудару керек */}
                             <li>Оқу бағдарламасы ағылшын тілінде оқытылады.</li>
                             <li>Барлық оқу материалдары цифрлық түрде ұсынылады.</li>
                             <li>Онлайн сабақтар мен Германиядағы кампустағы кездесулердің аралас түрі.</li>
@@ -153,7 +153,6 @@ function ProgramDetailContent() {
                     <div>
                         <h2 className="text-2xl font-bold mb-4">Неге бұл бағдарламаны таңдау керек?</h2>
                         <ul className="list-disc list-inside space-y-2 text-gray-700 text-sm">
-                            {/* Бұл тізімдерді API-дан алуға болады немесе қазақшаға аудару керек */}
                             <li>Максималды икемділік: оқуды кестеңізге бейімдеңіз.</li>
                             <li>Халықаралық орта және мәдениетаралық дағдыларды дамыту.</li>
                             <li>Қосымша оқу және жұмыс істеу мүмкіндіктерін зерттеңіз.</li>
@@ -164,14 +163,12 @@ function ProgramDetailContent() {
                 </div>
 
 
-                {/* Академиялық талаптар */}
                 {university.academic_requirements && (
                     <div className="bg-gray-50 p-6 md:p-8 rounded-xl">
                         <ContentSection title="Академиялық талаптар" content={university.academic_requirements} />
                     </div>
                 )}
 
-                {/* Стипендиялар және қаржыландыру */}
                 {university.scholarships_funding && (
                     <div className="bg-blue-50 p-6 md:p-8 rounded-xl">
                         <ContentSection title="Стипендиялар және қаржыландыру" content={university.scholarships_funding} />

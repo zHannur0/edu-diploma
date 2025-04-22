@@ -11,7 +11,7 @@ export interface CourseProgress {
     course_name: string;
     last_module: number;
     last_module_name: string;
-    progress_percentage: string;
+    progress_percentage: number;
     modules_count: string;
     level: string;
 }

@@ -65,7 +65,7 @@ const ProfileInfoForm = () => {
                     <SuccessModal onOk={() => {}} onClose={modalLogic.onErrorModalClose}/>
                 )
             }
-            <div className="bg-[#F9F9F9] p-8 rounded-xl">
+            <div className="bg-[#F9F9F9] p-8 rounded-xl h-auto min-h-[400px]">
                 <h2 className="font-semibold text-[22px] mb-5">
                     Парақша
                 </h2>

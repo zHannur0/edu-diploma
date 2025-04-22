@@ -2,8 +2,8 @@ import {createApi} from "@reduxjs/toolkit/query/react";
 import baseQueryWithReauth from "@/store/api/baseQuery";
 import {FavoritesData} from "@/types/University";
 
-export const universityApi = createApi({
-    reducerPath: "universityApi",
+export const favoritesApi = createApi({
+    reducerPath: "favoritesApi",
     baseQuery: baseQueryWithReauth,
     endpoints: (builder) => ({
         getFavorites: builder.query<FavoritesData[], void>({
@@ -28,5 +28,5 @@ export const universityApi = createApi({
 });
 
 export const {
-    useDeleteFavoritesMutation, useAddFavoritesMutation
-} = universityApi;
+    useDeleteFavoritesMutation, useAddFavoritesMutation, useGetFavoritesQuery
+} = favoritesApi;

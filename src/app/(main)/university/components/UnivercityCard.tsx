@@ -48,12 +48,12 @@ const UniversityCard = ({
                 await addFavoriteMutation({ university: id }).unwrap();
             }
         } catch (error) {
-            console.error("Failed to toggle favorite:", error);
+            console.log("Failed to toggle favorite:", error);
         }
     };
 
     return (
-        <Link href={`/university/${id}`} className="relative bg-[#EEF4FF] rounded-[4px] p-3 w-full max-w-[325px] block group"> {/* Добавили block group */}
+        <Link href={`/university/${id}`} className="relative bg-[#EEF4FF] rounded-[4px] p-3 w-full max-w-[325px] block group">
             <button
                 onClick={handleFavoriteToggle}
                 disabled={isLoading}
@@ -61,7 +61,7 @@ const UniversityCard = ({
                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
                 <Image
-                    src={"/icon/favoriteWhite.svg"}
+                    src={isFavorite ? "/icon/favoriteRed.svg" : "/icon/favoriteWhite.svg"}
                     alt={isFavorite ? "Remove from favorites" : "Add to favorites"}
                     width={24}
                     height={24}

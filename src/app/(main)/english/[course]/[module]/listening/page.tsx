@@ -77,6 +77,7 @@ export default function ListeningPage() {
                             className="gap-2 py-4 px-8 border border-[#7B68EE] rounded-[10px] font-medium text-[#7B68EE] bg-transparent"
                             onClick={goToPrevPage}
                             width={155}
+                            style={{color: "#7B68EE"}}
                         >
                             <Image src={"/icon/back.svg"} alt={"back"} width={24} height={24}/>
                             <p>Артқа</p>

@@ -63,6 +63,7 @@ export default function SpeakingPage() {
                         <Button
                             className="gap-2 py-4 px-8 border border-[#7B68EE] rounded-[10px] font-medium text-[#7B68EE] bg-transparent"
                             onClick={goToPrevPage}
+                            style={{color: "#7B68EE"}}
                             width={155}
                         >
                             <Image src={"/icon/back.svg"} alt={"back"} width={24} height={24}/>

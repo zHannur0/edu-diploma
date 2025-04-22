@@ -16,6 +16,7 @@ export const profileApi = createApi({
             query: () => ({
                 url: `users/my-courses/progresses/`,
             }),
+            transformResponse: (res: CourseProgress[]) => res?.[0] as CourseProgress,
         }),
         updateProfile: builder.mutation<void, FormData>({
             query: (data) => ({
