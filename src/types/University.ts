@@ -61,3 +61,21 @@ export interface University {
     pace: string;
     application_deadline: string;
 }
+
+
+interface FavoritesUniversity {
+    id: number;
+    name: string;
+    image: string;
+    duration: string;
+    pace: string;
+    location: string;
+    languages: string;
+    description: string;
+}
+
+export interface FavoritesData {
+    id: number;
+    university: FavoritesUniversity;
+    created_at: string;
+}

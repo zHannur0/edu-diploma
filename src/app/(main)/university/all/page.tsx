@@ -1,44 +1,11 @@
 "use client"
 import Wrapper from "@/components/layout/Wrapper";
-import UnivercityCard from "@/app/(main)/university/components/UnivercityCard";
 import Image from "next/image";
 import SideBarFilter from "@/app/(main)/university/components/SideBarFilter";
 import {Suspense} from "react";
 import {useFilters} from "@/hooks/useFilter";
 import {useGetUniversitiesQuery} from "@/store/api/universityApi";
-
-const courses = [
-    {
-        imageUrl: "https://example.com/image1.jpg",
-        title: "MBA Health Care Management",
-        description:
-            "This Certificate in Health and Social Care is focused on two things. It provides a valuable introduction to learning in higher education and also provides an authoritative overview of...",
-        duration: "2 years",
-        studyMode: "Distance Learning",
-        language: "English",
-        type: "Full time",
-    },
-    {
-        imageUrl: "https://example.com/image2.jpg",
-        title: "MBA Business Administration",
-        description:
-            "This course focuses on leadership, business strategy, and entrepreneurship, preparing you for senior management positions in a variety of industries.",
-        duration: "2 years",
-        studyMode: "Full time",
-        language: "English",
-        type: "Full time",
-    },
-    {
-        imageUrl: "https://example.com/image3.jpg",
-        title: "MSc Data Science",
-        description:
-            "This master's program offers in-depth study of machine learning, artificial intelligence, and big data technologies.",
-        duration: "1 year",
-        studyMode: "Distance Learning",
-        language: "English",
-        type: "Part time",
-    },
-];
+import UniversityCard from "@/app/(main)/university/components/UnivercityCard";
 
 export default function AllUniversityPage() {
     const {filters} = useFilters();
@@ -62,12 +29,12 @@ export default function AllUniversityPage() {
                         </div>
                     </div>
                 </div>
-                <div className="flex gap-10 w-full">
+                <div className="flex gap-10 w-full items-start">
                     <SideBarFilter/>
                     <div>
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                             {universities && universities.map((university) => (
-                                <UnivercityCard
+                                <UniversityCard
                                     id={university.id}
                                     key={university.id}
                                     imageUrl={university.image}
@@ -77,6 +44,7 @@ export default function AllUniversityPage() {
                                     studyMode={university.pace}
                                     language={university.languages}
                                     type={university.location}
+                                    isFavorite={false}
                                 />
                             ))}
                         </div>

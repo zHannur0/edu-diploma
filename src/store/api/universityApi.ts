@@ -84,5 +84,5 @@ export const universityApi = createApi({
 });
 
 export const { useGetUniversitiesQuery, useGetDegreeTypesQuery, useGetLanguagesQuery,
-    useGetFieldStudiesQuery, useGetStudyFormatsQuery, useGetUniversityQuery, useGetLocationsQuery
+    useGetFieldStudiesQuery, useGetStudyFormatsQuery, useGetUniversityQuery, useGetLocationsQuery,
 } = universityApi;

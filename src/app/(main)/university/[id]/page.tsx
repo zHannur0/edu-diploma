@@ -81,12 +81,10 @@ function ProgramDetailContent() {
                 {university.location?.name || 'Орналасқан жері көрсетілмеген'}
             </div>
 
-            {/* Баннер суреті және ақпарат картасы */}
             <div className={`relative w-full h-[350px] md:h-[450px] bg-cover bg-center bg-no-repeat rounded-2xl mb-12 md:mb-20 ${!university.image ? 'bg-gray-200' : ''}`}
                  style={{ backgroundImage: university.image ? `url(${university.image})` : 'none' }}>
                 <div className="absolute bottom-[-40px] md:bottom-[-60px] left-1/2 transform -translate-x-1/2 w-[90%] max-w-[1000px] bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 md:gap-8">
-                        {/* Сол жақ баған: Негізгі ақпарат */}
                         <div>
                             <h3 className="font-semibold mb-3 text-lg">Негізгі ақпарат</h3>
                             <p className="text-sm text-gray-700 mb-4 prose prose-sm max-w-none">
@@ -94,7 +92,6 @@ function ProgramDetailContent() {
                             </p>
                         </div>
 
-                        {/* Оң жақ баған: Мәліметтер */}
                         <div className="space-y-4">
                             <DetailItem
                                 icon={<Globe size={20} />}
