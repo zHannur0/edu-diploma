@@ -20,9 +20,7 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
 
         switch (question.question_type) {
             case 'OPTIONS':
-                // Проверяем тип options
                 if (Array.isArray(question.options) && question.options.length > 0 && typeof question.options[0] === 'object') {
-                    // Тип Option[]
                     const options = question.options as OptionIelts[];
                     return (
                         <div className="flex flex-col gap-2 mt-2">
@@ -34,7 +32,7 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
                                         value={option.id}
                                         checked={currentAnswer === option.id}
                                         onChange={(e) => onAnswerChange(question.id, Number(e.target.value))}
-                                        className="form-radio h-4 w-4 text-blue-600"
+                                        className="form-radio h-4 w-4 text-[#7B68EE]"
                                     />
                                     <span className="text-sm text-gray-700">{option.option}</span>
                                 </label>
@@ -42,7 +40,6 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
                         </div>
                     );
                 } else if (Array.isArray(question.options)) {
-                    // Тип string[]
                     const options = question.options as string[];
                     return (
                         <div className="flex flex-col gap-2 mt-2">
@@ -55,7 +52,7 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
                                         value={optionText}
                                         checked={currentAnswer === optionText}
                                         onChange={(e) => onAnswerChange(question.id, e.target.value)}
-                                        className="form-radio h-4 w-4 text-blue-600"
+                                        className="form-radio h-4 w-4 text-[#7B68EE]"
                                     />
                                     <span className="text-sm text-gray-700">{optionText}</span>
                                 </label>
@@ -65,39 +62,37 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
                 }
                 return <p className="text-red-500 text-xs mt-1">Invalid options format for OPTIONS type.</p>;
 
-            case 'FILL_BLANK':
+            case 'FILL':
                 return (
                     <input
                         type="text"
                         value={typeof currentAnswer === 'string' ? currentAnswer : ""}
                         onChange={(e) => onAnswerChange(question.id, e.target.value)}
-                        className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#7B68EE] focus:border-[#7B68EE] sm:text-sm"
                         placeholder="Type your answer here"
                     />
                 );
 
-            case 'SELECT_INSERT_ANSWER':
-                // Предполагаем, что options это Option[] или string[] для выпадающего списка
-                if (Array.isArray(question.options) && question.options.length > 0) {
-                    const isObjectOptions = typeof question.options[0] === 'object';
-                    const optionsList = question.options as (OptionIelts[] | string[]);
-
+            case 'SELECT_INSERT':
+                if (question.options) {
+                    // const isObjectOptions = typeof question.options === 'object';
+                    const optionsList = question.options as OptionIelts;
+                    console.log(question.options)
                     return (
                         <select
-                            value={currentAnswer ?? ""} // Используем пустую строку для невыбранного значения
+                            value={currentAnswer ?? ""}
                             onChange={(e) => {
                                 const value = e.target.value;
-                                // Пытаемся преобразовать в число если это были ID опций
-                                const answerValue = isObjectOptions ? (value ? Number(value) : null) : (value || null);
+                                const answerValue = value ? Number(value) : null;
                                 onAnswerChange(question.id, answerValue);
                             }}
-                            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
+                            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[#7B68EE] focus:border-[#7B68EE] sm:text-sm bg-white"
                         >
                             <option value="">-- Select Answer --</option>
-                            {optionsList.map((option, index) => {
-                                const value = isObjectOptions ? (option as OptionIelts).id : (option as string);
-                                const text = isObjectOptions ? (option as OptionIelts).option : (option as string);
-                                return <option key={isObjectOptions ? (option as OptionIelts).id : index} value={value}>{text}</option>;
+                            {optionsList.options?.map((option, index) => {
+                                const value = (option as string);
+                                const text = (option as string);
+                                return <option key={index} value={value}>{text}</option>;
                             })}
                         </select>
                     );
@@ -110,20 +105,15 @@ export default function QuestionDisplay({ questions, answers, onAnswerChange }: 
     };
 
     return (
-        // Обертка для скролла только вопросов
         <div className="bg-white p-5 md:p-6 rounded-xl shadow-md h-full max-h-[calc(100vh-200px)] overflow-y-auto flex flex-col gap-6">
             <h2 className="text-xl font-bold text-gray-800 text-center sticky top-0 bg-white py-2 -mt-5 md:-mt-6">Questions</h2>
             {questions.map((question, index) => (
                 <div key={question.id} className="border-b border-gray-200 pb-4">
-                    {/* Используем dangerouslySetInnerHTML для контента вопроса, если он может содержать HTML */}
                     <p className="text-sm font-medium text-gray-800 mb-1">Question {index + 1}</p>
                     <div
                         className="text-sm text-gray-700"
                         dangerouslySetInnerHTML={{ __html: question.question_content }}
                     />
-                    {/* Альтернатива для простого текста:
-                     <p className="text-sm text-gray-700">{question.question_content}</p>
-                    */}
                     {renderQuestionInput(question)}
                 </div>
             ))}

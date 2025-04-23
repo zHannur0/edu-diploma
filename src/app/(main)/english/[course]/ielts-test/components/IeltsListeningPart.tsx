@@ -64,7 +64,7 @@ export default function IeltsListeningPart({ partData, answers, onAnswerChange, 
                 }
                 return <p className="text-red-500 text-xs mt-1">Invalid options format for OPTIONS.</p>;
 
-            case 'FILL_BLANK':
+            case 'FILL':
                 return (
                     <input
                         type="text"
@@ -75,7 +75,7 @@ export default function IeltsListeningPart({ partData, answers, onAnswerChange, 
                     />
                 );
 
-            case 'SELECT_INSERT_ANSWER':
+            case 'SELECT_INSERT':
                 if (Array.isArray(question.options) && question.options.length > 0) {
                     const isObjectOptions = typeof question.options[0] === 'object';
                     const optionsList = question.options as (Option[] | string[]);

@@ -26,7 +26,7 @@ export default function SpeakingPart3Content({ questions, currentIndex, topic, a
                 <p className='mb-4'>{"Now we'll discuss more general questions related to the topic:"} <span className='font-medium'>{topic}</span></p>
 
                 {currentQuestion ? (
-                    <div className={`p-6 bg-gray-50 rounded-lg min-h-[100px] flex items-center justify-center text-center shadow-inner ${currentQuestion.id === activeQuestionId ? 'ring-2 ring-blue-300' : ''}`}>
+                    <div className={`p-6 bg-gray-50 rounded-lg min-h-[100px] flex items-center justify-center text-center shadow-inner ${currentQuestion.id === activeQuestionId ? 'ring-2 ring-[#7B68EE]' : ''}`}>
                         <p className="text-lg font-semibold text-gray-700">
                             {currentQuestion.question}
                         </p>

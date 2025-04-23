@@ -1,41 +1,59 @@
 import ModalCard from "@/components/modal/ModalCard";
 import React from "react";
+import Button from "@/components/ui/button/Button"; // Button компонентін қолданамыз (егер бар болса)
 
 interface SuccessModalProps {
     title?: string;
     message?: string;
     onOk: () => void;
     onClose: () => void;
+    okText?: string; // OK түймесінің текстін өзгерту мүмкіндігі
+    closeText?: string; // Жабу түймесінің текстін өзгерту мүмкіндігі
 }
 
-const SuccessModal: React.FC<SuccessModalProps> = ({ title = "Сәтті!", message = "Операция сәтті өтті!", onOk, onClose }) => {
+const SuccessModal: React.FC<SuccessModalProps> = ({
+                                                       title = "Сәтті!",
+                                                       message = "Операция сәтті аяқталды!",
+                                                       onOk,
+                                                       onClose,
+                                                       okText = "OK", // OK -> Ок деп өзгертуге болады
+                                                       closeText = "Жабу"
+                                                   }) => {
     return (
         <ModalCard onClose={onClose}>
-            <div className="flex flex-col items-center w-100">
-                <div className="bg-green-200 rounded-full p-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <div className="flex flex-col items-center text-center p-6"> {/* Ішкі отступтарды реттеу */}
+                {/* Иконка */}
+                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <h2 className="mt-4 text-xl font-semibold text-green-600">{title}</h2>
-                <p className="text-sm text-gray-600 mt-2">{message}</p>
-                <div className="mt-5 flex gap-2 w-full justify-end">
-                    <button
+
+                {/* Тақырып */}
+                <h2 className="text-lg font-semibold text-gray-800 mb-1">{title}</h2>
+
+                {/* Хабарлама */}
+                <p className="text-sm text-gray-600 mb-6">{message}</p>
+
+                {/* Түймелер */}
+                <div className="flex flex-col sm:flex-row gap-3 w-full justify-center"> {/* Адаптивті түймелер */}
+                    <Button
                         onClick={onClose}
-                        className="px-3 py-2 bg-gray-200 text-black rounded-2xl hover:bg-gray-300"
+                        className="w-full sm:w-auto order-2 sm:order-1" // Мобильдіде ретін ауыстыру
                     >
-                        Жабу
-                    </button>
-                    <button
+                        {closeText}
+                    </Button>
+                    <Button
                         onClick={onOk}
-                        className="px-3 py-2 bg-green-600 text-white rounded-2xl hover:bg-green-700"
+                        className="w-full sm:w-auto order-1 sm:order-2"
+                        autoFocus // OK түймесіне авто-фокус
                     >
-                        Окей
-                    </button>
+                        {okText}
+                    </Button>
                 </div>
             </div>
         </ModalCard>
     );
-}
+};
 
 export default SuccessModal;

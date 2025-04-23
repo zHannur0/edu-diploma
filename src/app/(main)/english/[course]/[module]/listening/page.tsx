@@ -49,15 +49,17 @@ export default function ListeningPage() {
         if (currentPage === 0) {
             setStartIndex(1);
         } else {
-            // Исправлена логика startIndex для пагинации
             setStartIndex(currentPage * questionsPerPage + 1);
         }
     }, [currentPage, questionsPerPage]);
 
     const handleRightButtonClick = () => {
         if (isReviewMode) {
+            console.log("a")
             if (canGoNext) {
                 goToNextPage();
+            } else {
+                router.push(`/english/${course}/${module}/speaking`);
             }
         } else {
             if (canGoNext) {
@@ -67,8 +69,6 @@ export default function ListeningPage() {
             }
         }
     };
-
-    const isRightButtonDisabled = isReviewMode && !canGoNext;
 
     return (
         <div className="w-full min-h-screen bg-[#EEF4FF] px-4 py-8 md:px-8 md:py-12 flex flex-col gap-6 md:gap-9 pb-20">
@@ -129,7 +129,6 @@ export default function ListeningPage() {
                     <Button
                         className="gap-2 py-4 px-8 text-white"
                         onClick={handleRightButtonClick}
-                        disabled={isRightButtonDisabled}
                         width={155}
                     >
                         <p>{canGoNext ? "Келесі" : "Аяқтау"}</p>
@@ -141,9 +140,6 @@ export default function ListeningPage() {
             {modalLogic.showSuccessModal && (
                 <SuccessModal
                     onOk={() => {
-                        // Реши, что делать после успеха (переход на speaking, перезагрузка для ревью?)
-                        // modalLogic.onSuccessModalClose();
-                        // window.location.reload(); // Для ревью
                         router.push(`/english/${course}/${module}/speaking`); // Как было
                     }}
                     onClose={modalLogic.onSuccessModalClose}

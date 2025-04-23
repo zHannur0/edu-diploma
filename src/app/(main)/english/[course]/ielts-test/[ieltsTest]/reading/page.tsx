@@ -44,11 +44,8 @@ export default function IeltsReadingPage() {
             ...prevAnswers,
             [questionId]: answer,
         }));
-        // Опционально: сохранять в sessionStorage
-        // sessionStorage.setItem(`readingAnswers_${ieltsTestId}`, JSON.stringify({...answers, [questionId]: answer}));
     }, []);
 
-    // Загрузка ответов из sessionStorage при монтировании (опционально)
     /*
     useEffect(() => {
         const savedAnswers = sessionStorage.getItem(`readingAnswers_${ieltsTestId}`);
@@ -63,18 +60,11 @@ export default function IeltsReadingPage() {
     const handleSubmitReading = async () => {
         if (!readingPassages || isSubmitting) return;
 
-        // --- ФОРМИРОВАНИЕ PAYLOAD ---
-        // !!! Важно: Структура payload в твоем submitIeltsReading очень странная.
-        // Она ожидает { readings: [{ options: {}, fills: {}, selects: {}, reading_id: ... }] }
-        // Но логичнее было бы отправлять плоский список ответов { question_id, answer }.
-        // Этот код ниже пытается сформировать данные согласно СТРАННОЙ структуре.
-        // Вероятно, тебе нужно будет переделать его под реальные требования API.
-
         const payloadData: {
             readings: {
                 reading_id: number;
-                options: { // Добавляем '[]' для обозначения массива
-                    answer: string; // Уточни тип!
+                options: {
+                    answer: string;
                     question_id: number;
                 }[]; // Массив!
                 fills: { // Добавляем '[]'
@@ -100,16 +90,10 @@ export default function IeltsReadingPage() {
                 const answer = answers[q.id];
                 if (answer !== undefined && answer !== null) {
                     if (q.question_type === 'OPTIONS') {
-                        // Предполагаем, что answer - это ID опции (number). API хочет answer: string? Странно.
-                        // Возможно, нужно найти текст опции по ID? Или API ждет ID как строку?
-                        // Пока отправляем ID как строку. УТОЧНИТЬ!
                         passageAnswers.options.push({ question_id: q.id, answer: String(answer) });
-                    } else if (q.question_type === 'FILL_BLANK') {
-                        // Здесь answer должен быть string. API ждет number? Очень странно.
-                        // Пока отправляем как строку. УТОЧНИТЬ!
+                    } else if (q.question_type === 'FILL') {
                         passageAnswers.fills.push({ question_id: q.id, answer: String(answer) });
-                    } else if (q.question_type === 'SELECT_INSERT_ANSWER') {
-                        // Здесь answer должен быть ID опции (number). API ждет number. Ок.
+                    } else if (q.question_type === 'SELECT_INSERT') {
                         if (typeof answer === 'number') {
                             passageAnswers.selects.push({ question_id: q.id, answer: answer });
                         } else {
@@ -119,19 +103,14 @@ export default function IeltsReadingPage() {
                 }
             });
 
-            // Добавляем данные пассажа, только если были ответы на его вопросы (или всегда?)
-            // if (passageAnswers.options.length > 0 || passageAnswers.fills.length > 0 || passageAnswers.selects.length > 0) {
             payloadData.readings.push(passageAnswers);
-            // }
         });
-        // --- КОНЕЦ ФОРМИРОВАНИЯ PAYLOAD ---
 
         console.log("Submitting Reading Payload:", JSON.stringify(payloadData, null, 2));
 
         try {
             await submitReading({ id: ieltsTestId, data: payloadData }).unwrap();
             modalLogic.showSuccess();
-            // sessionStorage.removeItem(`readingAnswers_${ieltsTestId}`); // Очищаем при успехе
         } catch (e) {
             console.error("Failed to submit reading:", e);
             modalLogic.showError();
@@ -167,7 +146,7 @@ export default function IeltsReadingPage() {
                             key={passage.id}
                             className={`text-center py-2 px-5 border border-[#737B98] rounded-lg transition-colors duration-200 ${
                                 index === currentPassageIndex
-                                    ? "bg-white text-[#333] font-semibold ring-2 ring-blue-500"
+                                    ? "bg-white text-[#333] font-semibold ring-1 ring-[#7B68EE]"
                                     : "bg-transparent text-[#737B98] hover:bg-white hover:text-[#333] cursor-pointer"
                             }`}
                             onClick={() => handlePassageChange(index)}

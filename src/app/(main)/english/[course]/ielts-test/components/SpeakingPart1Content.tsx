@@ -25,7 +25,7 @@ export default function SpeakingPart1Content({ questions, currentIndex, activeQu
                 <p className='mb-6'>Answer the questions about familiar topics.</p>
 
                 {currentQuestion ? (
-                    <div className={`p-6 bg-gray-50 rounded-lg min-h-[100px] flex items-center justify-center text-center shadow-inner ${currentQuestion.id === activeQuestionId ? 'ring-2 ring-blue-300' : ''}`}>
+                    <div className={`p-6 bg-gray-50 rounded-lg min-h-[100px] flex items-center justify-center text-center shadow-inner ${currentQuestion.id === activeQuestionId ? 'ring-2 ring-[#7B68EE]' : ''}`}>
                         <p className="text-lg font-semibold text-gray-700">
                             {currentQuestion.question}
                         </p>

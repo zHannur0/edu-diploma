@@ -1,9 +1,9 @@
 "use client"
 
 import WritingCard from "@/app/(main)/english/[course]/[module]/components/WritingCard";
-import { useGetWritingQuery, useGetWritingAttemptQuery } from "@/store/api/generalEnglishApi"; // Добавляем useGetWritingAttemptQuery
+import { useGetWritingQuery, useGetWritingAttemptQuery } from "@/store/api/generalEnglishApi";
 import { useParams } from "next/navigation";
-import { WritingAttempt } from "@/types/Attempts"; // Импортируем тип попытки
+import { WritingAttempt } from "@/types/Attempts";
 
 export default function WritingPage() {
     const { module } = useParams();

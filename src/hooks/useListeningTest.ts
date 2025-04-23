@@ -161,7 +161,6 @@ const useListeningTest = (): UseListeningTestReturn => {
 
             sessionStorage.removeItem('userAnswersListening');
 
-
         } catch (error) {
             console.error('Error submitting listening test:', error);
             setSubmissionError(true);
@@ -171,7 +170,7 @@ const useListeningTest = (): UseListeningTestReturn => {
     };
 
     const isLoading = isLoadingQuestions || isLoadingAttempt || internalIsLoading;
-    const isError = submissionError; // Ошибка только при отправке
+    const isError = submissionError;
 
 
     return {

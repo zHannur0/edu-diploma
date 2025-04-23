@@ -1,5 +1,6 @@
 import Wrapper from "@/components/layout/Wrapper";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
     return (
@@ -13,9 +14,9 @@ const Hero = () => {
                         <p className="text-lg mb-[60px]">
                             Ағылшын деңгейіңізді анықтау үшін тесттен өтіңіз!
                         </p>
-                        <button className="font-bold w-full p-2 rounded-4xl text-sm flex items-center justify-center bg-[#363E4A]">
+                        <Link href={"/english"} className="font-bold w-full p-2 rounded-4xl text-sm flex items-center justify-center bg-[#363E4A]">
                             Өз деңгейіңізді анықтаңыз
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <Image src={"/img/HeroInfo.png"} alt={"info"} width={702} height={499} className={"h-[500px]"}/>

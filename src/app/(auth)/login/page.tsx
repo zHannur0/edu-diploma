@@ -12,23 +12,24 @@ export default function LoginPage() {
     return (
         <div className="flex flex-col w-full max-w-[520px]">
             <h1 className="mb-6 text-[#363E4A] text-[28px] font-bold">
-                {"Let's Learn English Creatively!"}
+                Ағылшынды жеңіл үйренейік
             </h1>
             <p className="mb-14 text-[#363E4A] text-lg font-medium">
-                Master English with AI-powered learning and engaging <br/> lessons!
+                AI көмегімен тілді үйреніп, қызықты сабақтар арқылы <br/> ағылшын тілін меңгер! <br/> Және өзің
+                армандаған оқу орыны жайлы ақпараттар біл!
             </p>
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <EmailInput value={values.email} onChange={handleChange} name="email" />
                 <PasswordInput value={values.password} onChange={handleChange} typeLabel={1} name="password" />
                 <div className="flex w-full justify-between">
                     <div></div>
-                    <CustomLink href={"#"} label={"Forgot Password?"}/>
+                    <CustomLink href={"/forgot-password"} label={"Құпия сөзді ұмыттыңыз ба?"}/>
                 </div>
                 <Button type="submit" disabled={isLoading}>
-                    {isLoading ? "Loading..." : "Continue"}
+                    {isLoading ? "Жүктелуде..." : "Кіру"}
                 </Button>
                 <div className="w-full text-center">
-                    <span className="text-[#99A0AB] font-semibold">{"Don't have an account?"}</span> <CustomLink href={"/register"} label={"Sign Up"}/>
+                    <span className="text-[#99A0AB] font-semibold">{"Don't have an account?"}</span> <CustomLink href={"/register"} label={"Тіркелу"}/>
                 </div>
             </form>
         </div>

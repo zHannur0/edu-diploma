@@ -1,6 +1,5 @@
 "use client"
 import Wrapper from "@/components/layout/Wrapper";
-import Image from "next/image";
 import SideBarFilter from "@/app/(main)/university/components/SideBarFilter";
 import {Suspense} from "react";
 import {useFilters} from "@/hooks/useFilter";
@@ -19,15 +18,15 @@ export default function AllUniversityPage() {
                     <h2 className="text-4xl font-bold">
                         Университеттер тізімі
                     </h2>
-                    <div className="flex items-center gap-2">
-                        <Image src={"/icon/refresh.svg"} alt={"time"} width={18} height={18} className="min-w-5"/>
-                        <Image src={"/icon/actions.svg"} alt={"time"} width={16} height={16}/>
-                        <div
-                            className="flex items-center justify-center gap px-4 py-2 rounded-xl bg-[#2E79EA] text-white">
-                            <Image src={"/icon/plus.svg"} alt={"time"} width={16} height={16}/>
-                            Filter
-                        </div>
-                    </div>
+                    {/*<div className="flex items-center gap-2">*/}
+                    {/*    <Image src={"/icon/refresh.svg"} alt={"time"} width={18} height={18} className="min-w-5"/>*/}
+                    {/*    <Image src={"/icon/actions.svg"} alt={"time"} width={16} height={16}/>*/}
+                    {/*    <div*/}
+                    {/*        className="flex items-center justify-center gap px-4 py-2 rounded-xl bg-[#2E79EA] text-white">*/}
+                    {/*        <Image src={"/icon/plus.svg"} alt={"time"} width={16} height={16}/>*/}
+                    {/*        Filter*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
                 <div className="flex gap-10 w-full items-start">
                     <SideBarFilter/>
@@ -44,7 +43,7 @@ export default function AllUniversityPage() {
                                     studyMode={university.pace}
                                     language={university.languages}
                                     type={university.location}
-                                    isFavorite={false}
+                                    isFavorite={university.is_favorite}
                                 />
                             ))}
                         </div>

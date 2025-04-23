@@ -56,7 +56,7 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Дайындық</p>
-                                <p className="font-semibold text-gray-900">IELTS</p>
+                                <p className="font-semibold text-gray-900">General English</p>
                             </div>
                         </li>
                     </ul>

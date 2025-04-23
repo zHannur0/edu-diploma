@@ -58,6 +58,8 @@ export default function ReadingPage() {
         if (isReviewMode) {
             if (canGoNext) {
                 goToNextPage();
+            } else {
+                router.push(`/english/${course}/${module}/writing`);
             }
         } else {
             if (canGoNext) {
@@ -67,8 +69,6 @@ export default function ReadingPage() {
             }
         }
     };
-
-    const isRightButtonDisabled = isReviewMode && !canGoNext;
 
     return (
         <div className="w-full bg-[#EEF4FF] flex flex-col gap-9">
@@ -128,7 +128,6 @@ export default function ReadingPage() {
                 <Button
                     className="gap-2 py-4 px-8 text-white"
                     onClick={handleRightButtonClick}
-                    disabled={isRightButtonDisabled}
                     width={155}
                 >
                     <p>{canGoNext ? "Келесі" : "Аяқтау"}</p>

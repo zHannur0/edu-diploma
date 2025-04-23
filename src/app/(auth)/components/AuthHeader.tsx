@@ -11,7 +11,7 @@ const AuthHeader = () => {
             <Image src={"/icon/logo.svg"} alt={"logo"} width={24} height={24}/>
             {
                 !pathname.includes("login") && (
-                    <CustomLink href={"/login"} label={"Log in"} />
+                    <CustomLink href={"/login"} label={"Кіру"} />
                 )
             }
         </div>

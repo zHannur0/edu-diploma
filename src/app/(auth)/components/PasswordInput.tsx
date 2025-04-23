@@ -10,8 +10,8 @@ const PasswordInput: React.FC<PasswordInputProps> = ({ typeLabel = 1, ...props }
         <Input
             iconEnd="/icon/auth/closed.svg"
             type="password"
-            label={typeLabel === 1 ? "Password" : "Repeat Password"}
-            placeholder={typeLabel === 1 ? "Password" : "Repeat Password"}
+            label={typeLabel === 1 ? "Құпия сөз" : "Құпия сөзді қайта теріңіз"}
+            placeholder={typeLabel === 1 ? "Құпия сөз" : "Құпия сөзді қайта теріңіз"}
             {...props}
         />
     );

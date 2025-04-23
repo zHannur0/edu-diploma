@@ -34,8 +34,8 @@ export default function AudioRecorderControls({ isRecording, startRecording, sto
                     disabled={disabled}
                     className={`p-4 rounded-full transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                         isRecording
-                            ? 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500'
-                            : 'bg-blue-500 hover:bg-blue-600 text-white focus:ring-blue-500'
+                            ? 'bg-[#7B68EE] text-white focus:ring-[#7B68EE]'
+                            : 'bg-[#7B68EE] text-white focus:ring-[#7B68EE]'
                     } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                     aria-label={isRecording ? "Stop Recording" : "Start Recording"}
                 >

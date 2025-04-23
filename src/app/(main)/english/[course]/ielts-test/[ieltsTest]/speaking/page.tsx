@@ -82,7 +82,6 @@ export default function IeltsSpeakingPage() {
         return false;
     }, [speakingPartsData, questionIndices, answers]);
 
-    // useEffect для сохранения промежуточного транскрипта остается
     useEffect(() => {
         if (voiceRecorder.isRecording && activeQuestion?.id) {
             if (voiceRecorder.transcript && voiceRecorder.transcript.trim().length > 0) {
@@ -95,7 +94,6 @@ export default function IeltsSpeakingPage() {
     }, [voiceRecorder.transcript, voiceRecorder.isRecording, activeQuestion?.id]);
 
 
-    // --- НОВЫЙ useEffect для обработки ЗАВЕРШЕНИЯ записи и перехода ---
     useEffect(() => {
         if (!voiceRecorder.isRecording && stopRequestedForQuestionId !== null && voiceRecorder.transcript) {
             console.log(`Effect triggered: Recording stopped for question ${stopRequestedForQuestionId}`);
@@ -197,11 +195,9 @@ export default function IeltsSpeakingPage() {
             }
         }
 
-        // Если запись идет при ручном переходе, останавливаем ее, но НЕ инициируем авто-переход
         if (voiceRecorder.isRecording) {
             setStopRequestedForQuestionId(null); // Отменяем запрос на авто-переход
             voiceRecorder.stopRecording();
-            // Здесь не сохраняем транскрипт принудительно, полагаемся на сохранение в useEffect
         }
         voiceRecorder.setTranscript(""); // Очищаем транскрипт для новой части
         setCurrentPart(partNumber);
@@ -264,7 +260,6 @@ export default function IeltsSpeakingPage() {
         3: "Part 3: Discussion",
     };
 
-    // renderPartContent остается без изменений (кроме удаления ненужных пропсов)
     const renderPartContent = () => {
         if (isLoadingData) return <p className="text-center">Loading questions...</p>;
         if (loadingError) return <p className="text-center text-red-500">Failed to load questions.</p>;
@@ -309,12 +304,10 @@ export default function IeltsSpeakingPage() {
         <div className="w-full min-h-screen bg-[#EEF4FF] flex flex-col py-12 items-center px-4">
             <div className="w-full max-w-[900px] flex flex-col gap-6">
 
-                {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                     <p className="text-3xl font-semibold text-[#737B98]">IELTS Speaking</p>
                 </div>
 
-                {/* Part Navigation */}
                 {speakingPartsData && speakingPartsData.length > 0 && (
                     <div className="w-full grid grid-cols-3 gap-4 mb-6">
                         {speakingPartsData.map((part) => {
@@ -325,7 +318,7 @@ export default function IeltsSpeakingPage() {
                                     disabled={!isEnabled}
                                     className={`text-center py-2 px-4 border border-[#737B98] rounded-lg transition-colors duration-200 ${
                                         part.part === currentPart
-                                            ? "bg-white text-[#333] font-semibold ring-2 ring-blue-500"
+                                            ? "bg-white text-[#333] font-semibold ring-2 ring-[#7B68EE]"
                                             : isEnabled
                                                 ? "bg-transparent text-[#737B98] hover:bg-white hover:text-[#333] cursor-pointer"
                                                 : "bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed"
@@ -355,7 +348,7 @@ export default function IeltsSpeakingPage() {
                             stopRecording={requestStopRecordingAndTransition} // Передаем новую функцию запроса остановки
                             disabled={isAudioControlDisabled}
                         />
-                        {stopRequestedForQuestionId !== null && <p className="text-center text-sm text-blue-500 mt-2">Processing answer...</p>}
+                        {stopRequestedForQuestionId !== null && <p className="text-center text-sm text-[#7B68EE] mt-2">Processing answer...</p>}
                     </div>
                 </div>
 

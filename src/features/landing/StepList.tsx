@@ -1,6 +1,7 @@
 import {steps} from "@/config/steps";
 import Image from "next/image";
 import Wrapper from "@/components/layout/Wrapper";
+import Link from "next/link";
 
 const StepList = () => {
     return (
@@ -19,9 +20,9 @@ const StepList = () => {
                         ))
                     }
                 </div>
-                <button className="bg-[#FB9130] rounded-[50px] py-4 px-13 text-white font-bold">
+                <Link href={"/english"} className="bg-[#FB9130] rounded-[50px] py-4 px-13 text-white font-bold">
                     Өз деңгейінді анықта
-                </button>
+                </Link>
             </div>
         </Wrapper>
 )

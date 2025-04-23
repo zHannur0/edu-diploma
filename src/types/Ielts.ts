@@ -48,14 +48,15 @@ export interface QuestionIelts {
     id: number;
     question_content: string;
     question_type: QuestionType;
-    options: OptionIelts[] | string[];
+    options: OptionIelts | OptionIelts[] | string[];
 }
 
-type QuestionType = 'OPTIONS' | 'FILL_BLANK' | 'SELECT_INSERT_ANSWER';
+type QuestionType = 'OPTIONS' | 'FILL' | 'SELECT_INSERT';
 
 export interface OptionIelts {
     id: number;
     option: string;
+    options?: string[];
 }
 
 export interface IeltsModule {

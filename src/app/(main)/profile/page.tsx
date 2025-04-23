@@ -25,7 +25,7 @@ export default function ProfilePage() {
     const {data: userProgress} = useGetCourseProgressQuery();
     const {data: favorites} = useGetFavoritesQuery();
     return (
-            <div className="w-full bg-[#EEF4FF] flex flex-col gap-5">
+            <div className="w-full bg-[#EEF4FF] flex flex-col gap-5 py-8">
                 <Wrapper>
                     <h1 className="font-bold text-[32px] mb-8">
                         Менің парақшам

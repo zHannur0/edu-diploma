@@ -125,6 +125,6 @@ export const generalEnglishApi = createApi({
 export const { useGetModulesQuery, useGetModuleQuery, useGetReadingQuery,
     useSubmitReadingMutation, useGetListeningQuery, useSubmitListeningMutation,
     useGetWritingQuery, useSubmitWritingMutation, useGetSpeakingQuery,
-    useSubmitSpeakingMutation, useFinishQuery, useGetReadingAttemptQuery,
+    useSubmitSpeakingMutation, useGetReadingAttemptQuery,
     useGetListeningAttemptQuery, useGetWritingAttemptQuery
 } = generalEnglishApi;

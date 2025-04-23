@@ -7,6 +7,7 @@ export interface UniversitiesResponse {
     location: string;
     languages: string;
     description: string;
+    is_favorite: boolean;
 }
 
 export interface Location {

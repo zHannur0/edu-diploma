@@ -2,7 +2,7 @@ import Button from "@/components/ui/button/Button";
 import React from "react";
 import { useGetCourseQuery } from "@/store/api/courseApi";
 import { motion } from "framer-motion";
-import {useRouter} from "next/navigation";
+import {useParams, useRouter} from "next/navigation";
 import CustomLink from "@/components/ui/link/CustomLink";
 
 interface CourseCardBigProps {
@@ -11,7 +11,8 @@ interface CourseCardBigProps {
 }
 
 const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
-    const { data: course, isLoading, error } = useGetCourseQuery(course_id);
+    const {course} = useParams();
+    const { data: courseData, isLoading, error } = useGetCourseQuery(course_id);
     const router = useRouter();
     if (isLoading || error) {
         return (
@@ -54,18 +55,18 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
                     background: "linear-gradient(102deg, #A697FF 0%, #7B68EE 100%)",
                 }}
             >
-                {course?.name || "Курс атауы"}
+                {courseData?.name || "Курс атауы"}
             </div>
 
             {[
-                {label: "Курс атауы", value: course?.name},
+                {label: "Курс атауы", value: courseData?.name},
                 {
                     label: "Деңгей анықтау",
-                    value: course?.has_level_define ? "Бар" : "Жоқ"
+                    value: courseData?.has_level_define ? "Бар" : "Жоқ"
                 },
                 {
                     label: "Өту уақыты",
-                    value: `${course?.duration} сағат`
+                    value: `${courseData?.duration} сағат`
                 },
             ].map(({label, value}) => (
                 <div key={label} className="mb-5">
@@ -74,29 +75,33 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
                 </div>
             ))}
 
-            <div className="mb-5">
-                <div className="flex justify-between items-center mb-2">
-                    <p className="text-[#7D7D7D] text-sm">Прогресс</p>
-                    <h3 className="text-[#242424] font-medium">{course?.user_progress?.toFixed(1) || 0}%</h3>
-                </div>
-                <progress
-                    value={(course?.user_progress || 0) / 100}
-                    className="w-full h-6 rounded-xl appearance-none"
-                />
-            </div>
-
-            <div className="mb-4">
-                <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
-                <CustomLink href={`/english/${course_id}/${course?.last_module || "#"}`}
-                            label={course?.last_module_name || "Аяқталмаған бөлім"}/>
-            </div>
-
-            <Button
-                disabled={!course}
-                onClick={() => router.push(`/english/${course_id}`)}
-            >
-                {course?.trial_passed || !course?.has_level_define ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
-            </Button>
+            {!courseData?.name?.toLowerCase().includes("ielts") && (
+                <>
+                    <div className="mb-5">
+                        <div className="flex justify-between items-center mb-2">
+                            <p className="text-[#7D7D7D] text-sm">Прогресс</p>
+                            <h3 className="text-[#242424] font-medium">{courseData?.user_progress?.toFixed(1) || 0}%</h3>
+                        </div>
+                        <progress
+                            value={(courseData?.user_progress || 0) / 100}
+                            className="w-full h-6 rounded-xl appearance-none"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
+                        <CustomLink href={`/english/${course_id}/${courseData?.last_module || "#"}`}
+                                    label={courseData?.last_module_name || "Аяқталмаған бөлім"}/>
+                    </div>
+                </>
+            )
+            }
+            {!course &&
+                <Button
+                    onClick={() => router.push(`/english/${course_id}`)}
+                >
+                    {courseData?.trial_passed || !courseData?.has_level_define ? "Оқуды жалғастыру" : "Өз деңгейіңізді анықтаңыз"}
+                </Button>
+            }
         </motion.div>
     );
 };

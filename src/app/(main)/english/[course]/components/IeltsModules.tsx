@@ -1,35 +1,47 @@
 import React from "react";
-import {useGetIeltsModulesQuery} from "@/store/api/ieltsApi";
-import Image from "next/image";
+import { useGetIeltsModulesQuery } from "@/store/api/ieltsApi";
 import IeltsSubModuleCard from "@/app/(main)/english/[course]/components/IeltsSubModule";
+import { IeltsModule } from "@/types/Ielts"; // Убедись, что тип импортирован
 
 const IeltsModules = () => {
-    const {data: ieltsModules} = useGetIeltsModulesQuery();
+    const { data: ieltsModules, isLoading, isError } = useGetIeltsModulesQuery();
+
+    if (isLoading) {
+        return <div className="p-8 text-center text-gray-500">Загрузка модулей...</div>; // Состояние загрузки
+    }
+
+    if (isError || !ieltsModules) {
+        return <div className="p-8 text-center text-red-500">Не удалось загрузить модули.</div>; // Состояние ошибки
+    }
+
     return (
-        <div>
-            <div className="w-full p-8 bg-white rounded-xl">
-                {
-                    ieltsModules?.map((module) => (
-                            <div className="flex gap-6" key={module.id}>
-                                <Image src={module?.cover || ""} alt={module?.title || ""} width={60}
-                                       height={80} className={"max-h-[100px] rounded-sm w-[80px]"}/>
-                                <div>
-                                    <h3 className="font-medium mb-3">
-                                        {module?.title || ""}
-                                    </h3>
-                                    {
-                                        module.sub_modules?.map((submodule, index) => (
-                                            <IeltsSubModuleCard key={submodule.id} index={index + 1}
-                                                                title={submodule.title} tests={submodule.tests}/>
-                                        ))
-                                    }
-                                </div>
+        <div className="space-y-8">
+            {ieltsModules.map((module: IeltsModule) => (
+                <div key={module.id} className="w-full p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+
+                        <div className="flex-grow">
+                            <h3 className="font-semibold text-xl text-gray-800 mb-4">
+                                {module.title || "IELTS Module"}
+                            </h3>
+                            <div className="space-y-2">
+                                {module.sub_modules?.map((submodule, index) => (
+                                    <IeltsSubModuleCard
+                                        key={submodule.id}
+                                        id={submodule.id} // Передаем ID сабмодуля
+                                        index={index + 1}
+                                        title={submodule.title}
+                                        tests={submodule.tests}
+                                    />
+                                ))}
+                                {!module.sub_modules?.length && (
+                                    <p className="text-sm text-gray-500">Подмодули отсутствуют.</p>
+                                )}
+                            </div>
                         </div>
-                    ))
-                }
-            </div>
+                </div>
+            ))}
         </div>
-    )
-}
+    );
+};
 
 export default IeltsModules;

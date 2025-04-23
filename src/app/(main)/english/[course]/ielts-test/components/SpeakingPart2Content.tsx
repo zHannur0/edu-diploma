@@ -134,7 +134,7 @@ export default function SpeakingPart2Content({ cueCardData, activeQuestionId, st
             )}
 
             {cueCardData ? (
-                <div className={`mt-4 p-4 border border-dashed border-[#737B98] rounded-lg bg-gray-50 transition-all duration-300 ${cueCardData.questionId === activeQuestionId ? 'ring-2 ring-blue-300' : ''} ${phase !== 'preparing' ? 'opacity-70' : ''}`}>
+                <div className={`mt-4 p-4 border border-dashed border-[#737B98] rounded-lg bg-gray-50 transition-all duration-300 ${cueCardData.questionId === activeQuestionId ? 'ring-2 ring-[#7B68EE]' : ''} ${phase !== 'preparing' ? 'opacity-70' : ''}`}>
                     <p className="font-semibold text-base text-center mb-3">{cueCardData.topic}</p>
                     <p className="font-medium mb-2">You should say:</p>
                     <ul className="list-disc list-inside space-y-1 ml-4">
@@ -152,7 +152,7 @@ export default function SpeakingPart2Content({ cueCardData, activeQuestionId, st
                 {phase === 'preparing' && (
                     <div>
                         <p className="font-medium text-base text-[#333]">Preparation Time Left:</p>
-                        <p className={`text-lg font-semibold ${prepTime <= 10 ? 'text-red-600 animate-pulse' : 'text-blue-600'}`}>{formatTime(prepTime)}</p>
+                        <p className={`text-lg font-semibold ${prepTime <= 10 ? 'text-red-600 animate-pulse' : 'text-[#7B68EE]'}`}>{formatTime(prepTime)}</p>
                     </div>
                 )}
                 {phase === 'speaking' && (

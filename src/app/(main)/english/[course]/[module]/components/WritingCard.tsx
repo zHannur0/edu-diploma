@@ -10,19 +10,20 @@ import ErrorModal from "@/components/modal/ErrorModal";
 import { useModalLogic } from "@/hooks/useModalLogic";
 import {Writing} from "@/types/Sections";
 import Button from "@/components/ui/button/Button";
+import RenderFeedbackWithHighlight from "@/app/(main)/english/[course]/components/RenderFeedbackWithHighlight";
 
 interface WritingCardProps {
-    writing: Writing; // Используем WritingSection или Writing в зависимости от твоих типов
+    writing: Writing;
     isReviewMode?: boolean;
     attemptData?: WritingAttempt;
-    onSuccessfulSubmit?: () => void; // Сделаем опциональным на всякий случай
+    onSuccessfulSubmit?: () => void;
 }
 
 const WritingCard = ({ writing, isReviewMode = false, attemptData, onSuccessfulSubmit }: WritingCardProps) => {
     const router = useRouter();
     const { course, module } = useParams();
-    const [writingAnswer, setWritingAnswer] = useState<string>(""); // Убрал "Start writing" по умолчанию
-    const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // Добавил состояние загрузки
+    const [writingAnswer, setWritingAnswer] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const modalLogic = useModalLogic();
 
     const [submitWriting] = useSubmitWritingMutation();
@@ -30,7 +31,6 @@ const WritingCard = ({ writing, isReviewMode = false, attemptData, onSuccessfulS
     useEffect(() => {
         if (!isReviewMode) {
             const writingAns = sessionStorage.getItem("writingAnswer");
-            // Проверяем на null или undefined перед установкой
             setWritingAnswer(writingAns ?? "");
         }
     }, [isReviewMode]);
@@ -52,13 +52,13 @@ const WritingCard = ({ writing, isReviewMode = false, attemptData, onSuccessfulS
             }).unwrap();
 
             sessionStorage.removeItem("writingAnswer");
-            modalLogic.showSuccess(); // Показываем модалку успеха
+            modalLogic.showSuccess();
 
         } catch (e) {
             console.log(e);
             modalLogic.showError();
         } finally {
-            setIsSubmitting(false); // Снимаем загрузку
+            setIsSubmitting(false);
         }
     };
 
@@ -112,7 +112,7 @@ const WritingCard = ({ writing, isReviewMode = false, attemptData, onSuccessfulS
                     <div className="w-full flex flex-col gap-4 mt-2 pt-3 border-t border-gray-200">
                         {attemptData.score !== null && attemptData.score !== undefined && (
                             <p className="text-sm font-medium text-gray-800">
-                                Баға (Score): <span className="font-bold text-blue-600">{attemptData.score}</span>
+                                Баға (Score): <span className="font-bold text-[#7B68EE]">{attemptData.score}</span>
                             </p>
                         )}
                         <div>
@@ -125,9 +125,9 @@ const WritingCard = ({ writing, isReviewMode = false, attemptData, onSuccessfulS
                             <div>
                                 <p className="text-sm font-semibold text-gray-600 mb-1">AI Кері байланыс:</p>
                                 <div
-                                    className="text-sm p-3 bg-green-50 rounded border border-green-200 whitespace-pre-line prose prose-sm max-w-none"
-                                    dangerouslySetInnerHTML={{ __html: attemptData?.writing?.ai_feedback }}
-                                />
+                                    className="text-sm text-gray-800 whitespace-pre-line p-3 bg-green-50 rounded border border-green-200 prose prose-sm max-w-none">
+                                    <RenderFeedbackWithHighlight htmlString={attemptData.writing.ai_feedback}/>
+                                </div>
                             </div>
                         )}
                         <div className="flex justify-end w-full mt-2">

@@ -8,7 +8,7 @@ import { formatTime } from "@/utils/audio";
 interface ListeningCardProps {
     id: number;
     number: number;
-    question: string; // Audio URL
+    question: string;
     options: OptionTest[];
     context?: string;
     setAnswer: (question_id: number, optionId: number) => void;
@@ -22,7 +22,6 @@ const ListeningCard = ({
                            number,
                            question: audioUrl,
                            options,
-                           context,
                            setAnswer,
                            userAnswers,
                            isReviewMode = false,
@@ -116,11 +115,9 @@ const ListeningCard = ({
                     <p className="font-semibold text-base md:text-lg text-gray-800">
                         Listening Task #{number}
                     </p>
-                    {context && (
                         <p className="text-sm text-[#737B98]">
-                            {context}
+                            Бүл бөлімде сізге аудиода айтылған сөздерге мән беріп түсініп, сол жердегі сұрақтарға жауап беру керек.
                         </p>
-                    )}
                 </div>
             </div>
 

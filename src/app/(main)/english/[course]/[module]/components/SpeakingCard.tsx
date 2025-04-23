@@ -25,14 +25,17 @@ const SpeakingCard = ({id, number, context, setAnswer, userAnswers}: SpeakingCar
                 <div className="font-bold text-lg rounded-full bg-[#EFF4FF] flex items-center justify-center h-11 w-11">
                     {number < 10 && 0}{number}
                 </div>
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-">
                     <p className="font-bold">
                         Speaking
+                    </p>
+                    <p className="text-xs text-[#737B98] whitespace-pre-line">
+                        Бұл бөлімде сіздің сөздерді дұрыс айта алуыңызды тексеретін боламыз. Сондықтан мұқият болыңыз!
                     </p>
                 </div>
             </div>
             <div className="flex gap-10 mb-3 w-full justify-center">
-                <p  className="text-sm text-[#737B98]">
+                <p className="text-sm text-[#737B98]">
                     {context}
                 </p>
             </div>

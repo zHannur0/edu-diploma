@@ -142,18 +142,18 @@ const SideBarFilter: React.FC = () => {
                         return (
                             <li
                                 key={item.id}
-                                className={`flex justify-between items-center mb-2 cursor-pointer ${isSelected ? 'font-semibold text-blue-600' : 'text-gray-700'}`}
+                                className={`flex justify-between items-center mb-2 cursor-pointer ${isSelected ? 'font-semibold text-[#7B68EE]' : 'text-gray-700'}`}
                                 onClick={() => handleFilterClick(filterKey, item)}
                             >
                                 <span >{item.name}</span>
-                                {isSelected && <span className="text-blue-600">✓</span>}
+                                {isSelected && <span className="text-[#7B68EE]">✓</span>}
                             </li>
                         );
                     })}
                 </ul>
                 {items.length > DISPLAY_LIMIT && (
                     <button
-                        className="text-blue-600 hover:text-blue-800 text-sm mt-2"
+                        className="text-blue-600 hover:text-[#7B68EE] text-sm mt-2"
                         onClick={() => setShowAll(!showAll)}
                     >
                         {showAll ? 'Жабу' : `Қалғандарын көрсету (${items.length - DISPLAY_LIMIT})`}

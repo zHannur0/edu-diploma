@@ -96,9 +96,9 @@ export default function IeltsListeningPage() {
                 if (answer !== undefined && answer !== null) {
                     if (q.question_type === 'OPTIONS' && typeof answer === 'number') {
                         partSubmission.options.push({ question_id: q.id, option_id: answer });
-                    } else if (q.question_type === 'FILL_BLANK' && typeof answer === 'string') {
+                    } else if (q.question_type === 'FILL' && typeof answer === 'string') {
                         partSubmission.fills.push({ question_id: q.id, answer: [answer] });
-                    } else if (q.question_type === 'SELECT_INSERT_ANSWER') {
+                    } else if (q.question_type === 'SELECT_INSERT') {
                         console.warn(`Submit logic for SELECT_INSERT_ANSWER (QID: ${q.id}) not implemented.`);
                     }
                 }
