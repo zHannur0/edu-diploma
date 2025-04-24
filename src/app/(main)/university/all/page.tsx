@@ -9,10 +9,10 @@ import UniversityCard from "@/app/(main)/university/components/UnivercityCard";
 export default function AllUniversityPage() {
     const {filters} = useFilters();
 
-    const {data: universities} = useGetUniversitiesQuery(filters);
+    const {data: universities, isLoading} = useGetUniversitiesQuery(filters);
     return (
         <Suspense>
-        <Wrapper>
+        <Wrapper isLoading={isLoading}>
             <div className="flex flex-col w-full h-full py-12">
                 <div className="w-full flex justify-between items-center mb-8">
                     <h2 className="text-4xl font-bold">
@@ -31,6 +31,7 @@ export default function AllUniversityPage() {
                 <div className="flex gap-10 w-full items-start">
                     <SideBarFilter/>
                     <div>
+
                         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
                             {universities && universities.map((university) => (
                                 <UniversityCard
@@ -44,6 +45,7 @@ export default function AllUniversityPage() {
                                     language={university.languages}
                                     type={university.location}
                                     isFavorite={university.is_favorite}
+                                    isUniversityLoading={isLoading}
                                 />
                             ))}
                         </div>

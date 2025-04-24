@@ -13,7 +13,7 @@ interface SuccessModalProps {
 
 const SuccessModal: React.FC<SuccessModalProps> = ({
                                                        title = "Сәтті!",
-                                                       message = "Операция сәтті аяқталды!",
+                                                       message = "Сіз сәтті тапсырдыңыз!",
                                                        onOk,
                                                        onClose,
                                                        okText = "OK", // OK -> Ок деп өзгертуге болады

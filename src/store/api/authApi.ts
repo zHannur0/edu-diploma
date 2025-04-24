@@ -43,14 +43,14 @@ export const authApi = createApi({
         }),
         resetPasswordEmail: builder.mutation<void, { email: string }>({
             query: (credentials) => ({
-                url: "auth/request_to_reset_password/",
+                url: "auth/request-reset-password/",
                 method: "POST",
                 body: credentials,
             }),
         }),
         verifyResetPassword: builder.mutation<{ session_token:string }, { email: string, otp: string }>({
             query: (credentials) => ({
-                url: "auth/verify_request_to_reset_password/",
+                url: "auth/verify-request-password/",
                 method: "POST",
                 body: credentials,
             }),

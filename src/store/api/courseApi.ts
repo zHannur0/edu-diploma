@@ -26,7 +26,7 @@ export const courseApi = createApi({
             }),
             transformResponse: (response: TrialQuestions) => response.questions,
         }),
-        finishTrialTest: builder.mutation<{ score: string }, {id: number, data: {answers: Answer[]}}>({
+        finishTrialTest: builder.mutation<{ score: string, user_level: string }, {id: number, data: {answers: Answer[]}}>({
             query: ({id, data}) => ({
                 url: `general-english/trial-tests/course/${id}/send-answer/`,
                 method: "POST",

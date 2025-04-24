@@ -14,7 +14,7 @@ const Advantages = () => {
                 </div>
                 <div className="flex flex-col items-center justify-between rounded-2xl bg-[#7B68EE] pt-13 pl-13 text-center gap-12 overflow-hidden ">
                     <h2 className="font-bold leading-normal text-[28px] text-white pr-13">
-                        Өз табысыңызды кез келген жерден біліңіз
+                        Шетелдік университеттер туралы ақпарат қазақ тілінде
                     </h2>
                     <div className="w-full flex justify-end">
                         <Image src={"/img/IncomeBg.png"} alt={"income"} height={420} width={700}

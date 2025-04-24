@@ -9,8 +9,8 @@ import MyAchievments from "@/app/(main)/profile/components/MyAchievments";
 import {useGetCourseProgressQuery} from "@/store/api/proileApi";
 import CustomLink from "@/components/ui/link/CustomLink";
 import Button from "@/components/ui/button/Button";
-import {useGetFavoritesQuery} from "@/store/api/favoritesApi";
 import UnivercityCard from "@/app/(main)/university/components/UnivercityCard";
+import {useGetFavoritesQuery} from "@/store/api/universityApi";
 
 export default function ProfilePage() {
     const router = useRouter();
@@ -23,7 +23,7 @@ export default function ProfilePage() {
     }, [isAuthenticated, router]);
 
     const {data: userProgress} = useGetCourseProgressQuery();
-    const {data: favorites} = useGetFavoritesQuery();
+    const {data: favorites, isLoading} = useGetFavoritesQuery();
     return (
             <div className="w-full bg-[#EEF4FF] flex flex-col gap-5 py-8">
                 <Wrapper>
@@ -38,7 +38,7 @@ export default function ProfilePage() {
                             <h2 className="font-semibold text-[22px]e">
                                 Таңдаулы
                             </h2>
-                            <div className="w-full p-8 grid grid-cols-2 gap-6">
+                            <div className="w-full p-8 grid grid-cols-2 gap-6 max-h-125 overflow-y-auto">
                                 {
                                     favorites?.map((favorite) => (
                                         <UnivercityCard
@@ -52,6 +52,7 @@ export default function ProfilePage() {
                                             language={favorite.university.languages}
                                             type={favorite.university.location}
                                             isFavorite={true}
+                                            isUniversityLoading={isLoading}
                                         />
                                     ))
                                 }

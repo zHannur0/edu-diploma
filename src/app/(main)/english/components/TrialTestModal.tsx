@@ -16,6 +16,7 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [sendAnswer, { isLoading }] = useFinishTrialTestMutation();
     const [result, setResult] = useState<null | string>(null);
+    const [level, setLevel] = useState<null | string>(null);
 
     const handleSelectOption = (question_id: number, option_id: number) => {
         setAnswers((prev) => [
@@ -42,6 +43,7 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
 
             if (response) {
                 setResult(response.score);
+                setLevel(response.user_level)
             }
         } catch (err) {
             console.log("Ошибка отправки ответов:", err);
@@ -114,7 +116,7 @@ const TrialTestModal: React.FC<TrialTestModalProps> = ({ course_id, onClose }) =
                         </div>
                         <p className="text-xl font-medium mb-4">Тест қорытындысы бойынша</p>
                         <p className="text-sm mb-4">
-                            {result}/{trialQuestions?.length}, сенің деңгейің: <span className="font-bold">{result}</span>
+                            {result}/{trialQuestions?.length}, сенің деңгейің: <span className="font-bold">{level}</span>
                         </p>
                         <Button width={300} height={44} onClick={onClose}>
                             OK

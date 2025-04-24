@@ -1,6 +1,6 @@
 export const categories = [
     {
-        title: "Денсаулық сақтау",
+        title: "Денсаулық",
         icon: "/icon/university/Frame 1618872483.svg",
     },
     {
@@ -16,11 +16,11 @@ export const categories = [
         icon: "/icon/university/Frame 1618872483-3.svg",
     },
     {
-        title: "Табиғи ғылымдар",
+        title: "Жара",
         icon: "/icon/university/Frame 1618872483-4.svg",
     },
     {
-        title: "Әлеуметтік ғылымдар",
+        title: "Әлеуметтік",
         icon: "/icon/university/Frame 1618872483-5.svg",
     },
     {
@@ -28,7 +28,7 @@ export const categories = [
         icon: "/icon/university/Frame 1618872483-6.svg",
     },
     {
-        title: "Гуманитарлық ғылымдар",
+        title: "Гумани",
         icon: "/icon/university/Frame 1618872483-7.svg",
     },
     {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useGetFieldStudiesQuery } from "@/store/api/universityApi";
 import { FieldOfStudy } from "@/types/University";
 import { useRouter } from 'next/navigation';
-import {categoriesEn} from '@/config/categories'; // Иконкалар үшін импорттау
+import {categories} from '@/config/categories'; // Иконкалар үшін импорттау
 import {AlertTriangle, Book } from 'lucide-react'; // Иконкалар мен индикаторлар
 
 const ProgramByCategory = () => {
@@ -12,7 +12,7 @@ const ProgramByCategory = () => {
     const { data: fieldsOfStudy = [], isLoading, isError } = useGetFieldStudiesQuery();
 
     const getIconForField = (fieldName: string): string | undefined => {
-        const category = categoriesEn.find(cat => fieldName.toLowerCase().includes(cat.title.toLowerCase()));
+        const category = categories.find(cat => fieldName.toLowerCase().includes(cat.title.toLowerCase()));
         return category?.icon;
     };
 

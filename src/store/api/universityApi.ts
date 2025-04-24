@@ -1,6 +1,6 @@
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
+import {createApi} from "@reduxjs/toolkit/query/react";
 import {
-    DegreeType,
+    DegreeType, FavoritesData,
     FieldOfStudy,
     Language,
     Location,
@@ -8,6 +8,7 @@ import {
     UniversitiesResponse,
     University
 } from "@/types/University";
+import baseQueryWithReauth from "@/store/api/baseQuery";
 
 type FilterValue = string | number | boolean | undefined | null;
 
@@ -25,7 +26,8 @@ interface GetUniversitiesParams {
 
 export const universityApi = createApi({
     reducerPath: "universityApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "https://api.aqylshyn.kz/" }),
+    baseQuery: baseQueryWithReauth,
+    tagTypes: ["University"],
     endpoints: (builder) => ({
         getUniversities: builder.query<UniversitiesResponse[], GetUniversitiesParams>({
             query: (args) => {
@@ -49,6 +51,7 @@ export const universityApi = createApi({
                     params: apiParams,
                 };
             },
+            providesTags: ["University"]
         }),
         getUniversity: builder.query<University, number>({
             query: (id) => ({
@@ -80,9 +83,33 @@ export const universityApi = createApi({
                 url: `universities/study-formats/`,
             }),
         }),
+        getFavorites: builder.query<FavoritesData[], void>({
+            query: () => ({
+                url: `universities/favorites/`,
+            }),
+            providesTags: ["University"]
+
+        }),
+        addFavorites: builder.mutation<string, { university: number }>({
+            query: (data) => ({
+                url: `universities/favorites/`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ["University"]
+        }),
+        deleteFavorites: builder.mutation<string, { university: number }>({
+            query: (data) => ({
+                url: `universities/favorites/`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ["University"]
+        }),
     }),
 });
 
 export const { useGetUniversitiesQuery, useGetDegreeTypesQuery, useGetLanguagesQuery,
     useGetFieldStudiesQuery, useGetStudyFormatsQuery, useGetUniversityQuery, useGetLocationsQuery,
+    useDeleteFavoritesMutation, useAddFavoritesMutation, useGetFavoritesQuery
 } = universityApi;

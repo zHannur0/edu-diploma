@@ -137,7 +137,7 @@ export default function IeltsWritingPage() {
 
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Your answers have been submitted successfully!"
+                    message="Сіз сәтті тапсырдыңыз!"
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />

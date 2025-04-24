@@ -13,7 +13,6 @@ export default function Chats() {
 
     const [sendMessage, {isLoading}] = useSendMessageMutation();
 
-    // Автоматическая прокрутка к последнему сообщению
     useEffect(() => {
         if (messages.length > 0) {
             const chatContainer = document.querySelector('.chat-messages');
@@ -122,7 +121,7 @@ export default function Chats() {
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type a message..."
+                            placeholder="Хабарлама жазу"
                             className="flex-1 px-3 py-2 outline-none bg-transparent"
                             disabled={isLoading}
                         />
