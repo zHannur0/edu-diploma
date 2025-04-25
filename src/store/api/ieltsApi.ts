@@ -59,18 +59,18 @@ export const ieltsApi = createApi({
                 {
                     readings: {
                         reading_id: number;
-                        options: { // Добавляем '[]' для обозначения массива
-                            answer: string; // Уточни тип!
+                        options: {
+                            answer: string;
                             question_id: number;
-                        }[]; // Массив!
-                        fills: { // Добавляем '[]'
-                            question_id: number; // Тип из твоего кода
-                            answer: string;     // Тип из твоего кода
-                        }[]; // Массив!
-                        selects: { // Добавляем '[]'
-                            question_id: number; // Тип из твоего кода
+                        }[];
+                        fills: {
+                            question_id: number;
+                            answer: string;
+                        }[];
+                        selects: {
+                            question_id: number;
                             answer: number;
-                        }[]; // Массив!
+                        }[];
                     }[]
         }
         }>({

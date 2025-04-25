@@ -31,7 +31,7 @@ export default function ChatIdPage() {
 
         const currentMessage = message;
 
-        setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER" }]);
+        setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER", sender_name: prevMessages[0].sender_name }]);
 
         setMessage("");
 
@@ -83,7 +83,7 @@ export default function ChatIdPage() {
                                     <div className="flex items-center">
                                         {msg?.sender === "USER" ? (
                                             <>
-                                                <div className="font-medium">{msg?.sender}</div>
+                                                <div className="font-medium">{msg?.sender_name}</div>
                                             </>
                                         ) : (
                                             <div className="font-medium text-indigo-600">AQYLBEK</div>
@@ -119,7 +119,7 @@ export default function ChatIdPage() {
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Type a message..."
+                            placeholder="Хабарлама жазыңыз..."
                             className="flex-1 px-3 py-2 outline-none bg-transparent"
                             disabled={isLoading}
                         />

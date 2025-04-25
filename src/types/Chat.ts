@@ -2,6 +2,7 @@ export interface Message {
     id?: number;
     text: string;
     sender: 'USER' | 'ADMIN' | 'AQYLBEK';
+    sender_name?: string;
 }
 
 export interface ChatHistory {

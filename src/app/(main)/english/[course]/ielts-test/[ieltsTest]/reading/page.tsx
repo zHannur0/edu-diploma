@@ -2,14 +2,14 @@
 
 import React, { useState, useMemo, useCallback } from 'react';
 import { useParams, useRouter } from "next/navigation";
-import { useGetIeltsReadingQuery, useSubmitIeltsReadingMutation } from "@/store/api/ieltsApi"; // Убедись, что путь и имена верны
+import { useGetIeltsReadingQuery, useSubmitIeltsReadingMutation } from "@/store/api/ieltsApi";
 import { useModalLogic } from "@/hooks/useModalLogic";
 import SuccessModal from "@/components/modal/SuccessModal";
 import ErrorModal from "@/components/modal/ErrorModal";
-import PassageDisplay from "@/app/(main)/english/[course]/ielts-test/components/PassageDisplay"; // Путь к новому компоненту
-import QuestionDisplay from "@/app/(main)/english/[course]/ielts-test/components/QuestionDisplay"; // Путь к новому компоненту
+import PassageDisplay from "@/app/(main)/english/[course]/ielts-test/components/PassageDisplay";
+import QuestionDisplay from "@/app/(main)/english/[course]/ielts-test/components/QuestionDisplay";
 import Button from "@/components/ui/button/Button";
-import Timer from "@/components/Timer"; // Предполагаем, что таймер есть
+import Timer from "@/components/Timer";
 
 type ReadingAnswersState = { [questionId: number]: string | number | null };
 

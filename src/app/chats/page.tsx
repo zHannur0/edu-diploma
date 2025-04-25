@@ -28,18 +28,15 @@ export default function Chats() {
 
         if (!message.trim()) return;
 
-        // Сохраняем текущее сообщение перед очисткой
         const currentMessage = message;
 
-        // Добавляем сообщение пользователя в локальное состояние
         setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER" }]);
 
-        // Очищаем поле ввода
         setMessage("");
 
         try {
             const res = await sendMessage({
-                chat_id: 0, // В этом случае 0 правильно, так как создаём новый чат
+                chat_id: 0,
                 message: currentMessage
             }).unwrap();
 
@@ -64,8 +61,7 @@ export default function Chats() {
         <div className="flex flex-col flex-1 overflow-hidden relative h-full w-full bg-[#f0f2f5]">
             {
                 isAuthenticated !== null && !isAuthenticated && (
-                    <div className="fixed w-full flex items-center flex-col left-0 p-6">
-                        {/* max-w-sm mx-auto ортаға келтіреді */}
+                    <div className="fixed w-full flex items-center flex-col left-0 p-6 h-screen bg-white z-[1000]">
                         <svg className="mx-auto h-12 w-12 text-indigo-400 mb-3" fill="none" viewBox="0 0 24 24"
                              stroke="currentColor" strokeWidth="1.5">
                             <path strokeLinecap="round" strokeLinejoin="round"
@@ -145,7 +141,7 @@ export default function Chats() {
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Хабарлама жазу"
+                            placeholder="Хабарлама жазыңыз..."
                             className="flex-1 px-3 py-2 outline-none bg-transparent"
                             disabled={isLoading}
                         />
