@@ -23,6 +23,7 @@ interface CardProps {
 const UniversityCard = ({
                             id,
                             title,
+    imageUrl,
                             description,
                             duration,
                             studyMode,
@@ -142,7 +143,7 @@ const UniversityCard = ({
                     <div className="overflow-hidden rounded-[8px] mb-3">
                         <img
                             className="w-full h-[230px] object-cover transition-transform duration-300 group-hover:scale-105"
-                            src={"/img/University.png"} // Use actual imageUrl prop if available: imageUrl
+                            src={imageUrl ? imageUrl : "/img/University.png"} // Use actual imageUrl prop if available: imageUrl
                             alt={title}
                         />
                     </div>

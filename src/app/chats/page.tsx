@@ -5,12 +5,13 @@ import {Send, LoaderCircleIcon} from "lucide-react"
 import {Message} from "@/types/Chat";
 import {useSendMessageMutation} from "@/store/api/chatApi";
 import {useRouter} from "next/navigation";
+import {useAuth} from "@/hooks/useAuth";
 
 export default function Chats() {
     const router = useRouter();
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState<Message[]>([]);
-
+    const {isAuthenticated} = useAuth();
     const [sendMessage, {isLoading}] = useSendMessageMutation();
 
     useEffect(() => {
@@ -61,6 +62,29 @@ export default function Chats() {
 
     return (
         <div className="flex flex-col flex-1 overflow-hidden relative h-full w-full bg-[#f0f2f5]">
+            {
+                isAuthenticated !== null && !isAuthenticated && (
+                    <div className="fixed w-full flex items-center flex-col left-0 p-6">
+                        {/* max-w-sm mx-auto ортаға келтіреді */}
+                        <svg className="mx-auto h-12 w-12 text-indigo-400 mb-3" fill="none" viewBox="0 0 24 24"
+                             stroke="currentColor" strokeWidth="1.5">
+                            <path strokeLinecap="round" strokeLinejoin="round"
+                                  d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                        </svg>
+                        <p className="text-base font-semibold text-gray-700">
+                            Өтінемін тіркеліңіз
+                        </p>
+                        <p className="text-sm text-gray-500 mt-1 mb-3">
+                            Сайттың толық мүмкіндіктерін пайдалану үшін тіркелу қажет.
+                        </p>
+                        <button className="bg-[#7B68EE] text-white px-11 py-3 rounded-xl"
+                                onClick={() => router.push("/login")}>
+                            Тіркелу
+                        </button>
+                    </div>
+
+                )
+            }
             <div className="flex-1 overflow-y-auto p-5 bg-[#f0f2f5] max-h-[80vh] chat-messages pb-[5vh]">
                 <div className="max-w-5xl mx-auto space-y-4">
                     {messages.length === 0 ? (

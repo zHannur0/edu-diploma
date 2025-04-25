@@ -20,20 +20,18 @@ const DetailItem: React.FC<{ icon: React.ReactNode; label: string; value: React.
     <div className="flex items-start gap-3">
         <div className="mt-1 text-[#7B68EE]">{icon}</div>
         <div className="flex-1">
-            <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div> {/* Кіші әріппен жазуға болады */}
+            <div className="text-xs text-gray-500 uppercase tracking-wide">{label}</div>
             <div className="font-medium text-sm">{value || '-'}</div>
         </div>
     </div>
 );
 
-// Тақырыбы бар мәтінді көрсетуге арналған компонент
 const ContentSection: React.FC<{ title: string; content: string | null | undefined; className?: string }> = ({ title, content, className = "" }) => {
     if (!content) return null;
     return (
         <div className={className}>
             <h2 className="text-2xl font-bold mb-4">{title}</h2>
             <div className="prose prose-sm max-w-none text-gray-700" dangerouslySetInnerHTML={{ __html: content }}>
-                {/* Немесе қарапайым мәтін болса: <p className="text-gray-700 whitespace-pre-wrap">{content}</p> */}
             </div>
         </div>
     );
@@ -68,7 +66,6 @@ function ProgramDetailContent() {
 
     return (
         <>
-            {/* Тақырып */}
             <div className="mb-2 text-sm text-gray-500">
                 {university.location?.name || 'Университет атауы'}
             </div>
@@ -81,7 +78,7 @@ function ProgramDetailContent() {
             </div>
 
             <div className={`relative w-full h-[350px] md:h-[450px] bg-cover bg-center bg-no-repeat rounded-2xl mb-12 md:mb-20 ${!university.image ? 'bg-gray-200' : ''}`}
-                 style={{ backgroundImage: `url(/img/UniverBg.png)`  }}>
+                 style={{ backgroundImage: university?.image ? `url(${university?.image})`  :  `url(/img/UniverBg.png)`  }}>
                 <div className="absolute bottom-[-40px] md:bottom-[-60px] left-1/2 transform -translate-x-1/2 w-[90%] max-w-[1000px] bg-white p-6 md:p-8 rounded-xl shadow-lg">
                     <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 md:gap-8">
                         <div>
