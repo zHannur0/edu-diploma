@@ -7,7 +7,7 @@ import Button from "@/components/ui/button/Button";
 import {useLoginForm} from "@/hooks/useLoginForm";
 
 export default function LoginPage() {
-    const {values, handleChange, handleSubmit, isLoading} = useLoginForm()
+    const {values, handleChange, handleSubmit, isLoading, isError} = useLoginForm()
 
     return (
         <div className="flex flex-col w-full max-w-[520px]">
@@ -21,6 +21,11 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                 <EmailInput value={values.email} onChange={handleChange} name="email" />
                 <PasswordInput value={values.password} onChange={handleChange} typeLabel={1} name="password" />
+                {isError && (
+                    <p className="text-red-600 text-sm text-center font-medium">
+                        Пошта немесе құпия сөз қате енгізілді
+                    </p>
+                )}
                 <div className="flex w-full justify-between">
                     <div></div>
                     <CustomLink href={"/forgot-password"} label={"Құпия сөзді ұмыттыңыз ба?"}/>

@@ -9,6 +9,7 @@ import useProfileForm from "@/hooks/useProfileform";
 import React, {useEffect, useRef, useState} from "react";
 import SuccessModal from "@/components/modal/SuccessModal";
 import {useModalLogic} from "@/hooks/useModalLogic";
+import {UserIcon} from "lucide-react";
 
 const ProfileInfoForm = () => {
 
@@ -99,9 +100,11 @@ const ProfileInfoForm = () => {
                             >
                                 {isEdit ? (
                                     <div className="text-center">
-                                        <span className="text-center text-[#7B68EE] text-xs">Фотосурет қосу</span>
+                                        <span className="text-center text-[#7B68EE] text-xs ">Фотосурет қосу</span>
                                     </div>
-                                ) : null}
+                                ) :
+                                    <UserIcon className={"h-20 w-10 text-[#7B68EE]"}/>
+                                }
                             </div>
                         )}
                         <input

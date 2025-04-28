@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useFilters } from '@/hooks/useFilter'; // useFilter қажет болса, бастапқы күйді оқу үшін қалдырамыз
 import { useRouter } from 'next/navigation'; // useRouter импорттау
 import {
-    useGetDegreeTypesQuery,
+    useGetDegreeTypesQuery, useGetDurationsQuery,
     useGetFieldStudiesQuery,
     useGetLanguagesQuery,
     useGetLocationsQuery,
@@ -14,8 +14,10 @@ import { Loader2 } from 'lucide-react';
 import Button from "@/components/ui/button/Button";
 
 interface OptionType {
-    id: number | string;
-    name: string;
+    id?: number | string;
+    name?: string;
+    duration?: number;
+    prefix?:string;
 }
 
 const SelectPlaceholder: React.FC<{ label: string; isLoading: boolean }> = ({ label, isLoading }) => (
@@ -40,12 +42,12 @@ const UniversityFilters = () => {
     const { data: languages = [], isLoading: isLoadingLanguages, isError: isErrorLanguages } = useGetLanguagesQuery();
     const { data: locations = [], isLoading: isLoadingLocations, isError: isErrorLocations } = useGetLocationsQuery();
     const { data: studyFormats = [], isLoading: isLoadingFormats, isError: isErrorFormats } = useGetStudyFormatsQuery();
+    const { data: durations = [], isLoading: isLoadingDurations, isError: isErrorDurations } = useGetDurationsQuery();
 
-    const durationOptions: OptionType[] = [ /* ... */ { id: '1', name: '1 жыл' }, { id: '2', name: '2 жыл' }, { id: '3', name: '3 жыл' }, { id: '4', name: '4+ жыл' }];
+    // const durationOptions: OptionType[] = [ /* ... */ { id: '1', name: '1 жыл' }, { id: '2', name: '2 жыл' }, { id: '3', name: '3 жыл' }, { id: '4', name: '4+ жыл' }];
     const academicScoreOptions: OptionType[] = [ /* ... */ { id: 'any', name: 'Кез келген' }, { id: '4.5', name: 'Жоғары (>4.5)' }, { id: '3.5', name: 'Орташа (3.5-4.4)' }, { id: '0', name: 'Төмен (<3.5)' }];
 
 
-    // ... (Фильтрлердің жергілікті күйі - бұрынғы код)
     const [selectedField, setSelectedField] = useState<string>(filters.fields_of_study?.toString() || '');
     const [selectedScore, setSelectedScore] = useState<string>(filters.academic_score?.toString() || '');
     const [selectedDuration, setSelectedDuration] = useState<string>(filters.duration?.toString() || '');
@@ -54,7 +56,6 @@ const UniversityFilters = () => {
     const [selectedFormat, setSelectedFormat] = useState<string>(filters.study_formats?.toString() || '');
     const [selectedDegree, setSelectedDegree] = useState<string>(filters.degree_type?.toString() || '');
 
-    // ... (useEffect - бұрынғы код)
     useEffect(() => {
         setSelectedField(filters.fields_of_study?.toString() || '');
         setSelectedScore(filters.academic_score?.toString() || '');
@@ -98,13 +99,12 @@ const UniversityFilters = () => {
         label: string, value: string, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
         options: OptionType[], isLoading: boolean, isError: boolean
     ) => {
-        // ... renderSelect ішіндегі бұрынғы код ...
         if (isLoading || isError) { return <SelectPlaceholder label={label} isLoading={isLoading} />; }
         return (
             <div className="relative w-full">
                 <select value={value} onChange={onChange} className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-300 focus:border-blue-500 appearance-none bg-white cursor-pointer" aria-label={label} >
                     <option value="">{label}</option>
-                    {options.map(option => (<option key={option.id} value={option.id}>{option.name}</option>))}
+                    {options.map(option => (<option key={option.id} value={option.id}>{option.name || `${option.duration + " " + option.prefix}`}</option>))}
                 </select>
                 <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
                     <svg className="w-4 h-4 text-gray-500 fill-current" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" fillRule="evenodd"></path></svg>
@@ -116,11 +116,10 @@ const UniversityFilters = () => {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-            {/* ... (renderSelect шақырулары - бұрынғы код) ... */}
             <div className={"grid grid-cols-2 gap-4 col-span-3 col-start-1"}>
                 {renderSelect("Оқу саласы", selectedField, (e) => setSelectedField(e.target.value), fieldsOfStudy, isLoadingFields, isErrorFields)}
                 {renderSelect("Академиялық балл", selectedScore, (e) => setSelectedScore(e.target.value), academicScoreOptions, false, false)}
-                {renderSelect("Ұзақтығы", selectedDuration, (e) => setSelectedDuration(e.target.value), durationOptions, false, false)}
+                {renderSelect("Ұзақтығы", selectedDuration, (e) => setSelectedDuration(e.target.value), durations, isLoadingDurations, isErrorDurations)}
                 {renderSelect("Оқыту тілі", selectedLanguage, (e) => setSelectedLanguage(e.target.value), languages, isLoadingLanguages, isErrorLanguages)}
                 {renderSelect("Орналасқан жері", selectedLocation, (e) => setSelectedLocation(e.target.value), locations, isLoadingLocations, isErrorLocations)}
                 {renderSelect("Оқу форматы", selectedFormat, (e) => setSelectedFormat(e.target.value), studyFormats, isLoadingFormats, isErrorFormats)}

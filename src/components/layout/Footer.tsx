@@ -40,8 +40,8 @@ const Footer = () => {
             </div>
             <div className="flex w-full pt-8 pb-18 px-12 justify-between border-t border-[#1A1E18]">
                 <p className=" text-[#7D7C81]">
-                    © 2025 AqulShyn’ <br/>
-                    Все права защищены.
+                    © 2025 AqylShyn’ <br/>
+                    Барлық құқықтар қорғалған.
                 </p>
                 <div className="flex gap-7 items-center">
                     {

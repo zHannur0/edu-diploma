@@ -1,5 +1,6 @@
 import React, {FormEvent, useState} from "react";
 import {useSignUpMutation} from "@/store/api/authApi";
+import {useRouter} from "next/navigation";
 
 interface RegisterFormValues {
     username: string;
@@ -25,6 +26,7 @@ interface UseRegisterFormReturn {
 }
 
 export const useRegisterForm = (): UseRegisterFormReturn => {
+    const router = useRouter();
     const [values, setValues] = useState<RegisterFormValues>({
         username: "",
         email: "",
@@ -59,18 +61,15 @@ export const useRegisterForm = (): UseRegisterFormReturn => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
+        console.log("asdf")
         try {
-            const result = await signUp({
+            await signUp({
                 first_name: values.username,
                 email: values.email,
                 password: values.password,
                 password2: values.repeatPassword
             }).unwrap()
-            console.log(result)
-            // if (result.id) {
-            //     router.push("/login");
-            // }
+            router.push("/login");
         } catch (err) {
             console.log(err)
         }

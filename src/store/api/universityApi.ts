@@ -1,6 +1,6 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import {
-    DegreeType, FavoritesData,
+    DegreeType, Duration, FavoritesData,
     FieldOfStudy,
     Language,
     Location,
@@ -83,6 +83,11 @@ export const universityApi = createApi({
                 url: `universities/study-formats/`,
             }),
         }),
+        getDurations: builder.query<Duration[], void>({
+            query: () => ({
+                url: `universities/durations/`,
+            }),
+        }),
         getFavorites: builder.query<FavoritesData[], void>({
             query: () => ({
                 url: `universities/favorites/`,
@@ -111,5 +116,5 @@ export const universityApi = createApi({
 
 export const { useGetUniversitiesQuery, useGetDegreeTypesQuery, useGetLanguagesQuery,
     useGetFieldStudiesQuery, useGetStudyFormatsQuery, useGetUniversityQuery, useGetLocationsQuery,
-    useDeleteFavoritesMutation, useAddFavoritesMutation, useGetFavoritesQuery
+    useDeleteFavoritesMutation, useAddFavoritesMutation, useGetFavoritesQuery, useGetDurationsQuery
 } = universityApi;

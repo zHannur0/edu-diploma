@@ -89,7 +89,7 @@ const CourseCardBig: React.FC<CourseCardBigProps> = ({ course_id, width }) => {
                     </div>
                     <div className="mb-4">
                         <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
-                        <CustomLink href={`/english/${course_id}/${courseData?.last_module || "#"}`}
+                        <CustomLink href={`/english/${course_id}/${courseData?.last_module || "#"}/reading`}
                                     label={courseData?.last_module_name || "Аяқталмаған бөлім"}/>
                     </div>
                 </>

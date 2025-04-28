@@ -17,7 +17,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
                                                }) => {
     return (
         <ModalCard onClose={onClose}>
-            <div className="flex flex-col items-center text-center p-6">
+            <div className="flex flex-col items-center text-center px-20">
                 <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
                     <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -32,6 +32,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
                     <Button
                         onClick={onClose}
                         className="w-full sm:w-auto"
+                        height={40}
                         autoFocus
                     >
                         {closeText}

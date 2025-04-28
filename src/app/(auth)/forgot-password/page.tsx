@@ -115,7 +115,7 @@ export default function ForgotPage() {
                 setCurrentStep(4);
             }
         } catch (err) {
-            console.error("Password reset error:", err);
+            console.log("Password reset error:", err);
             const apiErrorMessage = "Белгісіз қате пайда болды.";
             setErrors({ api: apiErrorMessage });
         }

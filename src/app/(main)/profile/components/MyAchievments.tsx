@@ -1,5 +1,7 @@
+import {useGetProfileQuery} from "@/store/api/proileApi";
 
 const MyAchievments = () => {
+    const {data: user} = useGetProfileQuery(undefined, {refetchOnMountOrArgChange: true});
 
     return (
         <div className="bg-[#F9F9F9] p-8 rounded-xl max-h-[400px] min-h-[400px]">
@@ -17,7 +19,7 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Күнделікті прогресс</p>
-                                <p className="font-semibold text-gray-900">200</p>
+                                <p className="font-semibold text-gray-900">{user?.achievement?.progress?.toFixed(1)}</p>
                             </div>
                         </li>
 
@@ -30,7 +32,7 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Ұпайлар</p>
-                                <p className="font-semibold text-gray-900">34</p>
+                                <p className="font-semibold text-gray-900">{user?.achievement?.scores}</p>
                             </div>
                         </li>
 
@@ -43,7 +45,7 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Деңгей</p>
-                                <p className="font-semibold text-blue-600">Beginner</p>
+                                <p className="font-semibold text-blue-600">{user?.achievement?.level}</p>
                             </div>
                         </li>
 
@@ -56,7 +58,14 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Дайындық</p>
-                                <p className="font-semibold text-gray-900">General English</p>
+                                <div className="flex">
+                                    {
+                                        user?.achievement?.courses?.map((course, index) => (
+                                            <p key={index} className="font-semibold text-gray-900">{course}{index < user?.achievement?.courses?.length - 1 && ", "}</p>
+                                        ))
+                                    }
+                                </div>
+
                             </div>
                         </li>
                     </ul>

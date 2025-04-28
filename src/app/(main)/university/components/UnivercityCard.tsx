@@ -35,17 +35,12 @@ const UniversityCard = ({
     const [addFavoriteMutation, { isLoading: isAdding }] = useAddFavoritesMutation();
     const [deleteFavoriteMutation, { isLoading: isDeleting }] = useDeleteFavoritesMutation();
 
-    // --- Оптимистичное обновление ---
-    // Локальное состояние для *отображаемой* иконки
     const [optimisticFavorite, setOptimisticFavorite] = useState(isFavorite);
 
-    // Синхронизируем локальное состояние, если пропс isFavorite изменился извне
     useEffect(() => {
         setOptimisticFavorite(isFavorite);
     }, [isFavorite]);
-    // --- Конец оптимистичного обновления ---
 
-    // Состояние загрузки именно для действия с избранным
     const isFavoriteActionLoading = isAdding || isDeleting;
 
     const handleFavoriteToggle = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,33 +49,24 @@ const UniversityCard = ({
 
         if (isFavoriteActionLoading) return;
 
-        // --- Оптимистичное обновление ---
-        // Сохраняем предыдущее состояние на случай ошибки
         const previousOptimisticState = optimisticFavorite;
-        // *Сразу* меняем локальное состояние для мгновенного отклика UI
         setOptimisticFavorite(!previousOptimisticState);
-        // --- Конец оптимистичного обновления ---
 
         try {
-            if (previousOptimisticState) { // Используем СОХРАНЕННОЕ состояние для определения действия
+            if (previousOptimisticState) {
                 console.log(`Deleting favorite for university ID: ${id}`);
                 await deleteFavoriteMutation({ university: id }).unwrap();
             } else {
                 console.log(`Adding favorite for university ID: ${id}`);
                 await addFavoriteMutation({ university: id }).unwrap();
             }
-            // При успехе ничего не делаем с optimisticFavorite, оно уже правильное.
-            // RTK Query обновит isFavorite в фоне.
         } catch (error) {
             console.error("Failed to toggle favorite:", error);
-            // !!! Важно: При ошибке откатываем изменение в UI
             setOptimisticFavorite(previousOptimisticState);
-            // TODO: Показать пользователю сообщение об ошибке (например, toast)
         }
     };
 
     const getAriaLabel = () => {
-        // Можно оставить aria-label зависимым от optimisticFavorite для большей точности
         if (isFavoriteActionLoading) {
             return optimisticFavorite ? "Removing from favorites..." : "Adding to favorites...";
         }
@@ -96,7 +82,6 @@ const UniversityCard = ({
             <button
                 type="button"
                 onClick={handleFavoriteToggle}
-                // Блокируем кнопку только во время сетевого запроса
                 disabled={isFavoriteActionLoading || isUniversityLoading}
                 className={`absolute right-4 top-4 z-10 p-2 rounded-full transition-all duration-200 ease-in-out flex items-center justify-center
                            ${isFavoriteActionLoading ? 'opacity-70 cursor-wait bg-black/20' : 'opacity-100 hover:bg-black/10 active:bg-black/20'}
@@ -105,27 +90,20 @@ const UniversityCard = ({
                 aria-label={getAriaLabel()}
                 style={{ width: '40px', height: '40px' }}
             >
-                {/* Показываем спиннер, только когда идет реальный запрос */}
                 {isFavoriteActionLoading && (
                     <LoaderCircleIcon className="h-6 w-6 animate-spin text-white" />
                 )}
 
-                {/* Иконка сердца показывается всегда, когда НЕТ загрузки.
-                    Её цвет определяется ОПТИМИСТИЧНЫМ состоянием. */}
                 {!isFavoriteActionLoading && (
                     <Image
-                        // !!! Используем optimisticFavorite для определения цвета
                         src={optimisticFavorite ? "/icon/favoriteRed.svg" : "/icon/favoriteWhite.svg"}
                         alt=""
                         width={24}
                         height={24}
-                        // Можно убрать transition-opacity отсюда, если не нужно
-                        // className="transition-opacity duration-150 ease-in-out"
                     />
                 )}
             </button>
 
-            {/* Остальной контент карты */}
             {isUniversityLoading ? (
                 <div className="animate-pulse">
                     {/* Skeleton loader */}

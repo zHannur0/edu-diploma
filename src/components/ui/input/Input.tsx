@@ -5,15 +5,27 @@ import {useState} from "react";
 import Image from "next/image";
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-    iconStart?: string;
-    iconEnd?: string;
+    iconStart?: string | React.ReactNode;
+    iconEnd?: string | React.ReactNode;
     label?: string;
     placeholder?: string;
     type?: string;
     validate?: boolean;
+    onIconEndClick?: () => void;
 }
 
-const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, value, onChange, ...props}) => {
+const renderIcon = (icon: string | React.ReactNode | undefined, altText: string = "icon") => {
+    if (!icon) return null;
+    // Если это строка, используем next/image (предполагаем, что это путь)
+    if (typeof icon === 'string') {
+        return <Image src={icon} alt={altText} width={24} height={24} className="w-6 h-6 flex-shrink-0" />;
+    }
+    // Иначе рендерим как React узел (компонент lucide-react)
+    // Оборачиваем в span для выравнивания и размера, если нужно
+    return <span className="flex items-center justify-center w-6 h-6 flex-shrink-0">{icon}</span>;
+};
+
+const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, value, onChange, onIconEndClick, ...props}) => {
     const [isFocused, setIsFocused] = useState(false);
     const [hasContent, setHasContent] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -36,11 +48,7 @@ const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, va
                     </label>
                 ) : null
             }
-            {
-                iconStart && (
-                    <Image src={iconStart} alt={"iconStart"} width={24} height={24} className={"w-6 h-6"}/>
-                )
-            }
+            {renderIcon(iconStart, "iconStart")}
             <input
                 {...props}
                 ref={inputRef}
@@ -51,11 +59,17 @@ const Input: React.FC<InputProps> = ({label, iconStart, iconEnd, placeholder, va
                 placeholder={placeholder}
                 className="w-full border-none outline-none focus:outline-none h-full text-sm"
             />
-            {
-                iconEnd && (
-                    <Image src={iconEnd} alt={"iconEnd"} width={24} height={24} className={"w-6 h-6"}/>
-                )
-            }
+            {iconEnd && (
+                <button
+                    type="button"
+                    onClick={onIconEndClick}
+                    className={"p-0 border-none bg-transparent cursor-pointer flex-shrink-0"}
+                    aria-label="Toggle password visibility" // Можно сделать более специфичным в PasswordInput
+                    data-testid="icon-end-button"
+                >
+                    {renderIcon(iconEnd, "iconEnd")}
+                </button>
+            )}
         </div>
     );
 }

@@ -66,9 +66,6 @@ export const useLoginForm = (): UseLoginFormReturn => {
         if (!values.password) {
             newErrors.password = 'Пароль обязателен';
             isValid = false;
-        } else if (values.password.length < 3) {
-            newErrors.password = 'Пароль должен содержать минимум 6 символов';
-            isValid = false;
         }
 
         setErrors(newErrors);

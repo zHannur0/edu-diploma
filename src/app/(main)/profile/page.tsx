@@ -24,8 +24,9 @@ export default function ProfilePage() {
 
     const {data: userProgress} = useGetCourseProgressQuery();
     const {data: favorites, isLoading} = useGetFavoritesQuery();
+
     return (
-            <div className="w-full bg-[#EEF4FF] flex flex-col gap-5 py-8">
+            <div className="w-full bg-[#EEF4FF] flex flex-col gap-5 py-8 items-center">
                 <Wrapper>
                     <h1 className="font-bold text-[32px] mb-8">
                         Менің парақшам
@@ -87,7 +88,7 @@ export default function ProfilePage() {
                                         <div className="mb-4">
                                             <p className="text-black mb-2">Сіздің тоқтаған бөліміңіз:</p>
                                             <CustomLink
-                                                href={`/english/${userProgress?.course_id}/${userProgress?.last_module || "#"}`}
+                                                href={`/english/${userProgress?.course_id}/${userProgress?.last_module || "#"}/reading`}
                                                 label={userProgress?.last_module_name || "Аяқталмаған бөлім"}/>
                                         </div>
 

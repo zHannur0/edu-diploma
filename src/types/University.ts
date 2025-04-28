@@ -61,6 +61,9 @@ export interface University {
     tuition_fees: string;
     pace: string;
     application_deadline: string;
+    study_highlights: string[];
+    program_benefits: string[];
+    is_favorite: boolean;
 }
 
 

@@ -18,7 +18,7 @@ const Advantages = () => {
                     </h2>
                     <div className="w-full flex justify-end">
                         <Image src={"/img/IncomeBg.png"} alt={"income"} height={420} width={700}
-                               className="min-w-[500px]"/>
+                               className="min-w-[500px] h-[570px] rounded-xl object-cover object-center"/>
                     </div>
 
                 </div>

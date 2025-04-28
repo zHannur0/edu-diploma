@@ -3,6 +3,8 @@ import WhyUs from "@/features/landing/WhyUs";
 import StepList from "@/features/landing/StepList";
 import Advantages from "@/features/landing/Advantages";
 import FutureUniversity from "@/features/landing/FutureUniversity";
+import AboutUs from "@/features/landing/AboutUs";
+import UsCarousel from "@/features/landing/UsCarousel";
 
 export default function Home() {
   return (
@@ -17,6 +19,8 @@ export default function Home() {
           </h2>
           <StepList/>
           <Advantages/>
+          <AboutUs/>
+          <UsCarousel/>
           <FutureUniversity/>
       </div>
   );
