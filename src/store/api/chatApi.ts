@@ -19,13 +19,13 @@ export const chatApi = createApi({
             }),
             providesTags: ["Chat"]
         }),
-        sendMessage: builder.mutation<ChatMessage, ChatMessage>({
-            query: (data) => ({
+        sendMessage: builder.mutation<ChatMessage, FormData>({
+            query: (formData) => ({
                 url: "chats/messages/",
                 method: "POST",
-                body: data,
+                body: formData,
             }),
-            invalidatesTags: ["Chat"]
+            invalidatesTags: ["Chat"],
         }),
         deleteChat: builder.mutation<void, { id: number }>({
             query: ({id}) => ({

@@ -3,20 +3,15 @@
 
 import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-// Убираем EffectCoverflow, используем стандартные
 import { Navigation, Pagination, Autoplay } from 'swiper/modules';
 
-// Импорты стилей Swiper
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Путь к вашей карточке
 import TeamMemberCard from "@/features/landing/TeamMemberCard";
-// Путь к вашему Wrapper
 import Wrapper from "@/components/layout/Wrapper";
 
-// Данные команды
 const teamData = [
     { id: 1, name: "Сейтмуханова Альмира", role: "Project Manager", imageUrl: "/img/almira.jpg" },
     { id: 2, name: "Нұрланов Эдуард", role: "Frontend Developer", imageUrl: "/img/edu.jpg" },
@@ -28,7 +23,6 @@ const teamData = [
 const UsCarousel = () => {
     return (
         <Wrapper>
-            {/* Обертка для секции и стилизации Swiper */}
             <div className="team-carousel-section py-16 mb-[100px] md:mb-[140px]"> {/* Уменьшил немного mb */}
                 <div className="max-w-6xl mx-auto px-4">
                     <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-12 md:mb-16">
@@ -36,28 +30,23 @@ const UsCarousel = () => {
                     </h2>
 
                     <Swiper
-                        // Подключаем модули
                         modules={[Navigation, Pagination, Autoplay]}
-                        // Убираем effect, по умолчанию будет 'slide'
-                        spaceBetween={30} // Расстояние между слайдами
-                        slidesPerView={1} // По одному слайду по умолчанию (на мобильных)
+                        spaceBetween={30}
+                        slidesPerView={1}
                         loop={true}
-                        centeredSlides={false} // Обычно false для 'slide' с несколькими slidesPerView
+                        centeredSlides={false}
                         pagination={{ clickable: true }}
                         navigation={true}
                         autoplay={{
-                            delay: 5000, // Немного увеличим задержку
-                            disableOnInteraction: true, // Отключать при взаимодействии - часто лучше для UX
+                            delay: 5000,
+                            disableOnInteraction: true,
                         }}
-                        className="w-full pb-14" // Добавим больше места снизу для пагинации
-                        // Брейкпоинты для адаптивности
+                        className="w-full pb-14"
                         breakpoints={{
-                            // Когда ширина экрана >= 640px
                             640: {
                                 slidesPerView: 2,
                                 spaceBetween: 20,
                             },
-                            // Когда ширина экрана >= 1024px
                             1024: {
                                 slidesPerView: 3,
                                 spaceBetween: 30,
@@ -65,7 +54,6 @@ const UsCarousel = () => {
                         }}
                     >
                         {teamData.map((member) => (
-                            // Убираем фиксированную ширину, slidesPerView управляет этим
                             <SwiperSlide key={member.id} className="h-auto pb-1"> {/* Добавим pb-1 на слайд для тени */}
                                 <TeamMemberCard
                                     name={member.name}
@@ -77,8 +65,6 @@ const UsCarousel = () => {
                     </Swiper>
                 </div>
             </div>
-            {/* Глобальные стили или стили в <style jsx> для Swiper */}
-            {/* Рекомендуется вынести в отдельный CSS файл */}
             <style jsx global>{`
                 .team-carousel-section .swiper-pagination-bullet {
                     background-color: #D1D5DB; /* gray-300 */
@@ -115,13 +101,8 @@ const UsCarousel = () => {
                    background-color: rgba(255, 255, 255, 0.9);
                 }
 
-                /* Позиционирование стрелок (можно настроить) */
-                /* .team-carousel-section .swiper-button-prev { left: 5px; }
-                .team-carousel-section .swiper-button-next { right: 5px; } */
-
-                 /* Стили для слайдов, чтобы карточки занимали всю высоту */
                  .team-carousel-section .swiper-slide {
-                    height: auto; /* Позволяет слайду подстраиваться под контент */
+                    height: auto;
                     display: flex;
                  }
                  .team-carousel-section .swiper-slide > div { /* Обращение к дочернему div (карточке) */

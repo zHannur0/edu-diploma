@@ -19,4 +19,5 @@ export interface Chat {
 export interface ChatMessage {
     message: string;
     chat_id: number;
+    files: string[];
 }

@@ -1,9 +1,9 @@
 "use client"
 
-import {FormEvent, useState, useEffect} from "react"
-import {Send, LoaderCircleIcon} from "lucide-react"
+import {FormEvent, useState, useEffect, useRef, ChangeEvent} from "react"
+import {Send, LoaderCircleIcon, Paperclip, X as XIcon} from "lucide-react"
 import {Message} from "@/types/Chat";
-import {useSendMessageMutation} from "@/store/api/chatApi";
+import {useSendMessageMutation} from "@/store/api/chatApi"; // Убедитесь, что эта мутация принимает FormData
 import {useRouter} from "next/navigation";
 import {useAuth} from "@/hooks/useAuth";
 
@@ -11,6 +11,8 @@ export default function Chats() {
     const router = useRouter();
     const [message, setMessage] = useState("")
     const [messages, setMessages] = useState<Message[]>([]);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const {isAuthenticated} = useAuth();
     const [sendMessage, {isLoading}] = useSendMessageMutation();
 
@@ -23,30 +25,66 @@ export default function Chats() {
         }
     }, [messages]);
 
+    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+        } else {
+            setSelectedFile(null);
+        }
+        if(e.target) e.target.value = '';
+    };
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (!message.trim()) return;
+        if (!message.trim() && !selectedFile) return;
 
         const currentMessage = message;
+        const currentFile = selectedFile;
 
-        setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER" }]);
+        if (currentMessage.trim()) {
+            setMessages(prevMessages => [...prevMessages, { text: currentMessage, sender: "USER" }]);
+        }
+        // Можно добавить плейсхолдер для файла, если нужно
+        // if (currentFile) {
+        //     setMessages(prevMessages => [...prevMessages, { text: `Отправка файла: ${currentFile.name}`, sender: "USER" }]);
+        // }
+
 
         setMessage("");
+        setSelectedFile(null);
+
+        const formData = new FormData();
+        formData.append('chat_id', '0'); // Для создания нового чата
+        if (currentMessage.trim()) {
+            formData.append('message', currentMessage.trim());
+        }
+        if (currentFile) {
+            formData.append('file', currentFile); // Убедитесь, что ключ 'file' правильный для вашего API
+        }
+
 
         try {
-            const res = await sendMessage({
-                chat_id: 0,
-                message: currentMessage
-            }).unwrap();
+            const res = await sendMessage(formData).unwrap();
 
-            if (res.chat_id) {
+            if (res.chat_id) { // Предполагаем, что ответ содержит chat_id
                 router.push(`/chats/${res.chat_id}`);
             } else {
-                console.error("Сервер не вернул ID чата");
+                // Если chat_id не пришел, возможно, показать сообщение об ошибке или остаться на странице
+                console.error("Сервер не вернул ID чата для перенаправления");
+                // Можно добавить ответное сообщение от AI в текущий интерфейс, если оно есть в `res`
+                // if (res.message) {
+                //    setMessages(prev => [...prev, { text: res.message, sender: "AQYLBEK" }]);
+                // }
+                // Или откатить добавленное сообщение
+                // setMessages(prev => prev.slice(0, -1)); // Удалить последнее оптимистично добавленное сообщение
             }
-        } catch (e) {
-            console.error("Ошибка при создании чата:", e);
+        } catch (err) { // Изменено имя переменной
+            console.error("Ошибка при создании чата:", err);
+            // Можно вернуть сообщение и файл в инпуты или показать уведомление
+            // setMessage(currentMessage);
+            // setSelectedFile(currentFile); // Восстановление файла сложнее
+            // setMessages(prev => prev.slice(0, -1)); // Удалить последнее оптимистично добавленное сообщение
         }
     }
 
@@ -56,6 +94,15 @@ export default function Chats() {
             console.error("Failed to copy text: ", err);
         });
     };
+
+    const handleAttachClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const removeSelectedFile = () => {
+        setSelectedFile(null);
+    }
+
 
     return (
         <div className="flex flex-col flex-1 overflow-hidden relative h-full w-full bg-[#f0f2f5]">
@@ -81,36 +128,30 @@ export default function Chats() {
 
                 )
             }
-            <div className="flex-1 overflow-y-auto p-5 bg-[#f0f2f5] max-h-[80vh] chat-messages pb-[5vh]">
-                <div className="max-w-5xl mx-auto space-y-4">
+            <div className="flex-1 overflow-y-auto p-5 bg-[#f0f2f5] chat-messages pb-[10vh]">
+                <div className="max-w-5xl mx-auto space-y-4 h-full"> {/* Добавлен h-full */}
                     {messages.length === 0 ? (
                         <div className="flex items-center justify-center h-full">
-                            <div className="text-gray-500 text-center">
+                            <div className="text-center text-gray-500">
                                 <p className="text-xl font-medium mb-2">Жаңа чат бастаңыз</p>
                                 <p className="text-sm">Жаңа әңгімені бастау үшін кез-келген нәрсе жазсаңыз болады!</p>
                             </div>
                         </div>
                     ) : (
                         messages.map((msg, index) => (
-                            <div key={index} className={`${msg.sender === "USER" ? "flex justify-end" : ""}`}>
+                            <div key={index} className={`flex ${msg.sender === "USER" ? "justify-end" : "justify-start"}`}>
                                 <div
-                                    className={`${
+                                    className={`rounded-2xl p-4 max-w-[70%] shadow-sm ${
                                         msg?.sender === "USER"
-                                            ? "bg-blue-100 rounded-2xl p-4 w-[50%] shadow-sm"
-                                            : "bg-white rounded-2xl p-4 w-[50%] shadow-sm"
+                                            ? "bg-blue-100"
+                                            : "bg-white" // Возможно, ответ AI здесь не отображается до редиректа
                                     }`}
                                 >
                                     <div className="flex items-center mb-2">
                                         <div className="flex items-center">
-                                            {msg?.sender === "USER" ? (
-                                                <>
-                                                    <div className="font-medium">{msg?.sender}</div>
-                                                </>
-                                            ) : (
-                                                <div className="font-medium text-indigo-600">{msg.sender}</div>
-                                            )}
+                                            <div className="font-medium">{msg?.sender === "USER" ? "Сіз" : msg.sender}</div>
                                         </div>
-                                        <button className="ml-auto text-gray-400" aria-label="Copy message" onClick={() => copyToClipboard(msg.text)}>
+                                        <button className="ml-auto pl-2 text-gray-400 hover:text-gray-600" aria-label="Copy message" onClick={() => copyToClipboard(msg.text)}>
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 width="16"
@@ -134,21 +175,57 @@ export default function Chats() {
                     )}
                 </div>
             </div>
-            <form className="p-4 border-t bg-[#f0f2f5] absolute max-h-[15vh] bottom-0 w-full" onSubmit={handleSubmit}>
+            <form className="p-4 border-t bg-[#f0f2f5] absolute bottom-0 w-full" onSubmit={handleSubmit}>
                 <div className="max-w-4xl mx-auto">
+                    {selectedFile && (
+                        <div className="mb-2 p-2 bg-gray-100 rounded-md text-sm flex justify-between items-center border border-gray-200">
+                            <span className="truncate text-gray-700">
+                                Файл: {selectedFile.name}
+                            </span>
+                            <button
+                                type="button"
+                                onClick={removeSelectedFile}
+                                className="ml-2 p-1 text-red-500 hover:text-red-700"
+                                aria-label="Remove file"
+                                disabled={isLoading}
+                            >
+                                <XIcon size={16} />
+                            </button>
+                        </div>
+                    )}
                     <div className="flex items-center bg-white rounded-full border p-2 shadow-sm">
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            className="hidden"
+                            disabled={isLoading}
+                        />
+                        <button
+                            type="button"
+                            onClick={handleAttachClick}
+                            className="p-2 text-gray-500 hover:text-indigo-600"
+                            aria-label="Attach file"
+                            disabled={isLoading}
+                        >
+                            <Paperclip className="h-5 w-5" />
+                        </button>
                         <input
                             type="text"
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Хабарлама жазыңыз..."
-                            className="flex-1 px-3 py-2 outline-none bg-transparent"
+                            className="flex-1 px-3 py-2 outline-none bg-transparent mx-1"
                             disabled={isLoading}
                         />
                         <button
                             type="submit"
-                            className={`w-8 h-8 flex items-center justify-center ${isLoading ? 'bg-gray-400' : 'bg-indigo-500 hover:bg-indigo-600'} text-white rounded-full ml-1`}
-                            disabled={isLoading || !message.trim()}
+                            className={`w-8 h-8 flex items-center justify-center flex-shrink-0 ${
+                                (isLoading || (!message.trim() && !selectedFile))
+                                    ? 'bg-gray-400 cursor-not-allowed'
+                                    : 'bg-indigo-500 hover:bg-indigo-600 cursor-pointer'
+                            } text-white rounded-full ml-1`}
+                            disabled={isLoading || (!message.trim() && !selectedFile)}
                         >
                             {
                                 isLoading ? (
