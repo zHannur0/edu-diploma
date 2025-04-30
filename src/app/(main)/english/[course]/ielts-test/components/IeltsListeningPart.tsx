@@ -3,21 +3,18 @@
 "use client";
 
 import React from 'react';
-import { IeltsListening, QuestionIelts, OptionIelts as Option } from "@/types/Ielts"; // Переименовали OptionIelts в Option для удобства
+import { IeltsListeningParts, QuestionIelts, OptionIelts as Option } from "@/types/Ielts"; // Переименовали OptionIelts в Option для удобства
 
 type ListeningAnswersState = { [questionId: number]: string | number | null };
 
 interface IeltsListeningPartProps {
-    partData: IeltsListening;
+    partData: IeltsListeningParts;
     answers: ListeningAnswersState;
     onAnswerChange: (questionId: number, answer: string | number | null) => void;
-    isActive: boolean; // Подсвечивать ли текущую часть
 }
 
-export default function IeltsListeningPart({ partData, answers, onAnswerChange, isActive }: IeltsListeningPartProps) {
+export default function IeltsListeningPart({ partData, answers, onAnswerChange }: IeltsListeningPartProps) {
 
-    // Эта функция почти идентична той, что была в QuestionDisplay для Reading
-    // Можно вынести в отдельный хелпер или компонент QuestionRenderer
     const renderQuestionInput = (question: QuestionIelts) => {
         const currentAnswer = answers[question.id];
 
@@ -108,8 +105,7 @@ export default function IeltsListeningPart({ partData, answers, onAnswerChange, 
     };
 
     return (
-        // Обертка для части с подсветкой активной части
-        <div className={`border border-gray-200 rounded-lg p-4 md:p-6 transition-shadow duration-500 ${isActive ? 'shadow-lg border-blue-300' : 'shadow-sm'}`}>
+        <div className={`border border-gray-200 rounded-lg p-4 md:p-6 transition-shadow duration-500`}>
             <h3 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
                 {partData.part_label || `Part ${partData.part}`} {partData.title && `- ${partData.title}`}
             </h3>
@@ -124,8 +120,7 @@ export default function IeltsListeningPart({ partData, answers, onAnswerChange, 
                                 dangerouslySetInnerHTML={{ __html: question.question_content }}
                             />
                         </div>
-                        {/* Поле для ответа */}
-                        <div className="pl-5 mt-1"> {/* Небольшой отступ для поля ответа */}
+                        <div className="pl-5 mt-1">
                             {renderQuestionInput(question)}
                         </div>
                     </div>

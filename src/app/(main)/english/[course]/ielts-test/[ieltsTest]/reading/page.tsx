@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { useParams, useRouter } from "next/navigation";
 import { useGetIeltsReadingQuery, useSubmitIeltsReadingMutation } from "@/store/api/ieltsApi";
 import { useModalLogic } from "@/hooks/useModalLogic";
@@ -11,7 +11,7 @@ import QuestionDisplay from "@/app/(main)/english/[course]/ielts-test/components
 import Button from "@/components/ui/button/Button";
 import Timer from "@/components/Timer";
 
-type ReadingAnswersState = { [questionId: number]: string | number | null };
+type ReadingAnswersState = { [questionId: number]: string | number | null | string[] };
 
 
 export default function IeltsReadingPage() {
@@ -22,6 +22,8 @@ export default function IeltsReadingPage() {
 
     const [currentPassageIndex, setCurrentPassageIndex] = useState<number>(0);
     const [answers, setAnswers] = useState<ReadingAnswersState>({});
+
+    const submitReadingRef = useRef<(() => Promise<void>) | undefined>(undefined);
 
     const { data: readingPassages, isLoading: isLoadingData, error: loadingError } = useGetIeltsReadingQuery(ieltsTestId, {
         skip: !ieltsTestId,
@@ -38,63 +40,58 @@ export default function IeltsReadingPage() {
         setCurrentPassageIndex(index);
     };
 
-    // Оборачиваем в useCallback для передачи в дочерний компонент
-    const handleAnswerChange = useCallback((questionId: number, answer: string | number | null) => {
+    const handleAnswerChange = useCallback((questionId: number, answer: string | number | null | string[]) => {
         setAnswers(prevAnswers => ({
             ...prevAnswers,
             [questionId]: answer,
         }));
     }, []);
 
-    /*
-    useEffect(() => {
-        const savedAnswers = sessionStorage.getItem(`readingAnswers_${ieltsTestId}`);
-        if (savedAnswers) {
-            try {
-                setAnswers(JSON.parse(savedAnswers));
-            } catch (e) { console.error("Failed to parse saved reading answers", e); }
-        }
-    }, [ieltsTestId]);
-    */
-
-    const handleSubmitReading = async () => {
+    // Создаем функцию отправки один раз и сохраняем ссылку на неё
+    const handleSubmitReading = useCallback(async () => {
         if (!readingPassages || isSubmitting) return;
 
         const payloadData: {
             readings: {
                 reading_id: number;
                 options: {
-                    answer: string;
+                    option_id: number;
                     question_id: number;
-                }[]; // Массив!
-                fills: { // Добавляем '[]'
-                    question_id: number; // Тип из твоего кода
-                    answer: string;     // Тип из твоего кода
-                }[]; // Массив!
-                selects: { // Добавляем '[]'
-                    question_id: number; // Тип из твоего кода
-                    answer: number;
-                }[]; // Массив!
+                }[];
+                fills: {
+                    question_id: number;
+                    answer: string[];
+                }[];
+                selects: {
+                    question_id: number;
+                    answer: string;
+                }[];
             }[]
         } = { readings: [] };
 
         readingPassages.forEach(passage => {
-            const passageAnswers = { // Тип passageAnswers теперь совпадает с элементом массива readings
+            const passageAnswers = {
                 reading_id: passage.id,
-                options: [] as { answer: string; question_id: number }[],
-                fills: [] as { question_id: number; answer: string }[],
-                selects: [] as { question_id: number; answer: number }[],
+                options: [] as { option_id: number; question_id: number }[],
+                fills: [] as { question_id: number; answer: string[] }[],
+                selects: [] as { question_id: number; answer: string }[],
             };
 
             passage.questions.forEach(q => {
                 const answer = answers[q.id];
                 if (answer !== undefined && answer !== null) {
                     if (q.question_type === 'OPTIONS') {
-                        passageAnswers.options.push({ question_id: q.id, answer: String(answer) });
+                        passageAnswers.options.push({ question_id: q.id, option_id: Number(answer) });
                     } else if (q.question_type === 'FILL') {
-                        passageAnswers.fills.push({ question_id: q.id, answer: String(answer) });
+                        if (Array.isArray(answer) && answer.every(item => typeof item === 'string')) {
+                            passageAnswers.fills.push({ question_id: q.id, answer: answer });
+                        } else if (typeof answer === 'string') {
+                            passageAnswers.fills.push({ question_id: q.id, answer: [answer] });
+                        } else {
+                            console.warn(`Invalid answer type for FILL question ${q.id}: expected string or string[], got ${typeof answer}`);
+                        }
                     } else if (q.question_type === 'SELECT_INSERT') {
-                        if (typeof answer === 'number') {
+                        if (typeof answer === 'string') {
                             passageAnswers.selects.push({ question_id: q.id, answer: answer });
                         } else {
                             console.warn(`Invalid answer type for SELECT question ${q.id}: expected number, got ${typeof answer}`);
@@ -112,14 +109,27 @@ export default function IeltsReadingPage() {
             await submitReading({ id: ieltsTestId, data: payloadData }).unwrap();
             modalLogic.showSuccess();
         } catch (e) {
-            console.error("Failed to submit reading:", e);
+            console.log("Failed to submit reading:", e);
             modalLogic.showError();
         }
-    };
+    }, [readingPassages, isSubmitting, ieltsTestId, answers, submitReading, modalLogic]);
+
+    // Обновляем ссылку при изменении функции
+    submitReadingRef.current = handleSubmitReading;
+
+    // Создаем стабильный обработчик для таймера, который будет вызывать текущую функцию из ref
+    const stableTimerEndHandler = useCallback(() => {
+        submitReadingRef.current?.();
+    }, []);
 
     const handleSuccessRedirect = () => {
-        router.push(`/english/${course || 'default-course'}`); // Настроить путь
+        router.push(`/english/${course || 'default-course'}`);
     };
+
+    // Мемоизируем только таймер с стабильным обработчиком
+    const memoizedTimer = useMemo(() => {
+        return <Timer timeProp={3600} onTimerEnd={stableTimerEndHandler} />;
+    }, [stableTimerEndHandler]);
 
     return (
         <div className="w-full min-h-screen bg-[#EEF4FF] flex flex-col py-12 px-4 md:px-8">
@@ -127,7 +137,7 @@ export default function IeltsReadingPage() {
                 <p className="text-3xl font-semibold text-[#737B98]">IELTS Reading</p>
                 <div className="flex items-center gap-6">
                     <p className="text-xl font-semibold text-[#737B98]">
-                        Time left: <Timer timeProp={3600} onTimerEnd={handleSubmitReading}/>
+                        Time left: {memoizedTimer}
                     </p>
                     <Button
                         onClick={handleSubmitReading}

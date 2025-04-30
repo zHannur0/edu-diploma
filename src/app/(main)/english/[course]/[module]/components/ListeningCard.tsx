@@ -93,7 +93,7 @@ const ListeningCard = ({
                 audio.currentTime = 0;
                 setCurrentTime(0);
             }
-            audio.play().catch(error => console.error("Audio play failed:", error));
+            audio.play().catch(error => console.log("Audio play failed:", error));
         }
     };
 

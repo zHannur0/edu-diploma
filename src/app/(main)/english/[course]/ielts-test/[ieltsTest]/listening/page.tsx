@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useParams, useRouter } from "next/navigation";
 import {ListeningSubmit, useGetIeltsListeningQuery, useSubmitIeltsListeningMutation} from "@/store/api/ieltsApi";
 import { useModalLogic } from "@/hooks/useModalLogic";
@@ -20,22 +20,16 @@ export default function IeltsListeningPage() {
     const modalLogic = useModalLogic();
 
     const [answers, setAnswers] = useState<ListeningAnswersState>({});
-    const [currentAudioPartIndex, setCurrentAudioPartIndex] = useState<number>(0); // Индекс текущего аудиофайла для воспроизведения
     const [hasPlaybackStarted, setHasPlaybackStarted] = useState<boolean>(false); // Началось ли воспроизведение вообще
     const [playbackFinished, setPlaybackFinished] = useState<boolean>(false); // Завершено ли проигрывание *всех* частей
 
-    const audioPlayerRef = useRef<{ getCurrentTime: () => number }>(null); // Ref для доступа к методам плеера, если нужно
+    const audioPlayerRef = useRef<{ getCurrentTime: () => number }>(null);
 
     const { data: listeningParts, isLoading: isLoadingData, error: loadingError } = useGetIeltsListeningQuery(ieltsTestId, {
         skip: !ieltsTestId,
     });
 
     const [submitListening, { isLoading: isSubmitting }] = useSubmitIeltsListeningMutation();
-
-    const currentAudioUrl = useMemo(() =>
-            listeningParts?.[currentAudioPartIndex]?.audio_file || null,
-        [listeningParts, currentAudioPartIndex]
-    );
 
     const handleAnswerChange = useCallback((questionId: number, answer: string | number | null) => {
         setAnswers(prevAnswers => ({
@@ -45,20 +39,10 @@ export default function IeltsListeningPage() {
     }, []);
 
     const handleAudioEnded = useCallback(() => {
-        const nextPartIndex = currentAudioPartIndex + 1;
-        if (listeningParts && nextPartIndex < listeningParts.length) {
-            // Есть следующая часть аудио, переключаемся
-            console.log(`Audio Part ${currentAudioPartIndex + 1} ended, loading Part ${nextPartIndex + 1}`);
-            setCurrentAudioPartIndex(nextPartIndex);
-        } else {
-            // Это была последняя часть аудио
-            console.log("All audio parts finished.");
             setPlaybackFinished(true);
-        }
-    }, [currentAudioPartIndex, listeningParts]);
+    }, []);
 
     const handlePlaybackStart = useCallback(() => {
-        // Фиксируем, что воспроизведение началось (чтобы нельзя было начать заново)
         if (!hasPlaybackStarted) {
             setHasPlaybackStarted(true);
         }
@@ -66,10 +50,8 @@ export default function IeltsListeningPage() {
 
 
     const handleSubmitListening = async () => {
-        if (!listeningParts || isSubmitting || !playbackFinished) {
+        if (!listeningParts || isSubmitting) {
             console.log("Submit blocked: No data, submitting, or playback not finished.");
-            // Возможно, стоит разрешить отправку и до конца проигрывания? Уточни правила.
-            // Если да, убери проверку !playbackFinished
             return;
         }
 
@@ -77,10 +59,9 @@ export default function IeltsListeningPage() {
             listening_id: number;
             options: { option_id: number; question_id: number }[];
             fills: { question_id: number; answer: string[] }[];
-            // Добавить selects если нужно
         }[] = [];
 
-        listeningParts.forEach(part => {
+        listeningParts?.listening_parts?.forEach(part => {
             const partSubmission: {
                 listening_id: number;
                 options: { option_id: number; question_id: number }[];
@@ -104,17 +85,12 @@ export default function IeltsListeningPage() {
                 }
             });
 
-            // Добавляем данные для части, только если были ответы (или всегда?)
             if (partSubmission.options.length > 0 || partSubmission.fills.length > 0) {
                 formattedSubmissions.push(partSubmission);
             }
         });
 
-        // Обертка в финальный формат { data: ListeningSubmit[] }
-        // Если API ожидает массив ListeningSubmit[], то data = [{ listenings: formattedSubmissions }] ?
-        // Если API ожидает ТОЛЬКО массив listenings, то data = formattedSubmissions ?
-        // Это КРАЙНЕ ВАЖНО уточнить. Пока предположим, что ожидает [{ listenings: [...] }]
-        const payloadData: ListeningSubmit[] = [{ listenings: formattedSubmissions }];
+        const payloadData: ListeningSubmit[] = [{ listening: formattedSubmissions }];
 
         console.log("Submitting Listening Payload:", JSON.stringify(payloadData, null, 2));
 
@@ -122,7 +98,7 @@ export default function IeltsListeningPage() {
             await submitListening({ id: ieltsTestId, data: payloadData }).unwrap();
             modalLogic.showSuccess();
         } catch (e) {
-            console.error("Failed to submit listening:", e);
+            console.log("Failed to submit listening:", e);
             modalLogic.showError();
         }
     };
@@ -135,15 +111,13 @@ export default function IeltsListeningPage() {
 
     return (
         <div className="w-full min-h-screen bg-[#EEF4FF] flex flex-col py-12 px-4 md:px-8">
-            {/* Header */}
             <div className="w-full max-w-[1200px] mx-auto flex justify-between items-center mb-6 flex-wrap gap-4">
                 <p className="text-3xl font-semibold text-[#737B98]">IELTS Listening</p>
                 <div className="flex items-center gap-6">
                     <Button
                         onClick={handleSubmitListening}
-                        disabled={isSubmitting || isLoadingData || !playbackFinished}
+                        disabled={isSubmitting || isLoadingData}
                         className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50"
-                        title={!playbackFinished ? "Wait for audio to finish" : ""}
                     >
                         {isSubmitting ? "Submitting..." : "Submit Listening Test"}
                     </Button>
@@ -151,15 +125,15 @@ export default function IeltsListeningPage() {
             </div>
 
             <div className="w-full max-w-[1000px] mx-auto mb-8 sticky top-4 z-10">
-                {currentAudioUrl && !playbackFinished && (
+                {listeningParts?.audio_file && !playbackFinished && (
                     <AudioPlayer
                         ref={audioPlayerRef}
-                        audioUrl={currentAudioUrl}
+                        audioUrl={listeningParts.audio_file}
                         onEnded={handleAudioEnded}
                         onPlay={handlePlaybackStart}
                         disableSeekBack={hasPlaybackStarted}
                         disableReplay={hasPlaybackStarted}
-                        key={currentAudioUrl}
+                        key={listeningParts.audio_file}
                     />
                 )}
                 {playbackFinished && (
@@ -176,20 +150,19 @@ export default function IeltsListeningPage() {
             <div className="w-full max-w-[1000px] mx-auto flex-grow bg-white p-5 md:p-8 rounded-xl shadow-md overflow-y-auto max-h-[calc(100vh-250px)]">
                 {isLoadingData && <p className="text-center">Loading questions...</p>}
                 {loadingError && <p className="text-center text-red-500">Failed to load questions.</p>}
-                {!isLoadingData && !loadingError && listeningParts && listeningParts.length > 0 && (
+                {!isLoadingData && !loadingError && listeningParts && listeningParts?.listening_parts?.length > 0 && (
                     <div className="flex flex-col gap-8">
-                        {listeningParts.map((part, index) => (
+                        {listeningParts?.listening_parts?.map((part) => (
                             <IeltsListeningPart
                                 key={part.id}
                                 partData={part}
                                 answers={answers}
                                 onAnswerChange={handleAnswerChange}
-                                isActive={index === currentAudioPartIndex && !playbackFinished}
                             />
                         ))}
                     </div>
                 )}
-                {!isLoadingData && (!listeningParts || listeningParts.length === 0) && (
+                {!isLoadingData && (!listeningParts || listeningParts?.listening_parts?.length === 0) && (
                     <p className="text-center text-gray-500">No listening parts found for this test.</p>
                 )}
             </div>

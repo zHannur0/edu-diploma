@@ -3,7 +3,7 @@ export interface Ielts {
     id: number;
     name: string;
     reading_passages: IeltsReading[];
-    listening_parts: IeltsListening[];
+    listening: IeltsListening;
     writing_tasks: IeltsWriting[];
     speaking_parts: IeltsSpeaking[];
 }
@@ -29,10 +29,16 @@ export interface IeltsReading {
 
 export interface IeltsListening {
     id: number;
+    audio_file: string;
+    title: string;
+    listening_parts: IeltsListeningParts[];
+}
+
+export interface IeltsListeningParts {
+    id: number;
     title: string;
     part: number;
     part_label: string;
-    audio_file: string;
     questions: QuestionIelts[];
 }
 

@@ -61,7 +61,7 @@ const UniversityCard = ({
                 await addFavoriteMutation({ university: id }).unwrap();
             }
         } catch (error) {
-            console.error("Failed to toggle favorite:", error);
+            console.log("Failed to toggle favorite:", error);
             setOptimisticFavorite(previousOptimisticState);
         }
     };

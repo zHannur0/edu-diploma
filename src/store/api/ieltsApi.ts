@@ -1,8 +1,7 @@
 import {createApi} from "@reduxjs/toolkit/query/react";
 import baseQueryWithReauth from "@/store/api/baseQuery";
 import {
-    Ielts,
-    IeltsListening,
+    Ielts, IeltsListening,
     IeltsModule,
     IeltsReading,
     IeltsSpeaking,
@@ -11,7 +10,7 @@ import {
 } from "@/types/Ielts";
 
 export interface ListeningSubmit {
-    listenings: {
+    listening: {
         listening_id: number;
         options: {
             option_id: number;
@@ -60,16 +59,16 @@ export const ieltsApi = createApi({
                     readings: {
                         reading_id: number;
                         options: {
-                            answer: string;
+                            option_id: number;
                             question_id: number;
                         }[];
                         fills: {
                             question_id: number;
-                            answer: string;
+                            answer: string[];
                         }[];
                         selects: {
                             question_id: number;
-                            answer: number;
+                            answer: string;
                         }[];
                     }[]
         }
@@ -106,11 +105,11 @@ export const ieltsApi = createApi({
                 body: data
             }),
         }),
-        getIeltsListening: builder.query<IeltsListening[], number>({
+        getIeltsListening: builder.query<IeltsListening, number>({
             query: (id) => ({
                 url: `ielts/modules/test/${id}/`,
             }),
-            transformResponse: (response: Ielts) => response.listening_parts ,
+            transformResponse: (response: Ielts) => response.listening ,
         }),
         submitIeltsListening: builder.mutation<string, {id: number, data: ListeningSubmit[]}>({
             query: ({id, data}) => ({

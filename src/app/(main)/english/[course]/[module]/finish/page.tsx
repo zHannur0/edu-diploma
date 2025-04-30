@@ -5,6 +5,7 @@ import React from "react";
 import {useGetModuleQuery} from "@/store/api/generalEnglishApi";
 import {useParams, useRouter} from "next/navigation";
 import {getSectionName, sectionImages} from "@/config/sections";
+import Link from "next/link";
 
 export default function FinishPage() {
     const router = useRouter();
@@ -26,6 +27,9 @@ export default function FinishPage() {
                     <div className="flex items-center justify-center w-full max-w-[300px] bg-[#F5443A] rounded-xl p-4 text-white">
                         {moduleData?.total_score.score}
                     </div>
+                    <Link href={`/english/${course}/${Number(module) + 1}/reading`} className={"flex items-center justify-center w-full bg-white rounded-xl p-2"}>
+                        <p>Келесі модульге өту</p>
+                    </Link>
                 </div>
                 <div className="w-full grid grid-cols-4 gap-2 p-4 bg-[#F7F6F9] rounded-3xl">
                     {

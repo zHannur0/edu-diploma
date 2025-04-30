@@ -75,7 +75,7 @@ function ProgramDetailContent() {
                 await addFavoriteMutation({ university: university?.id || 0}).unwrap();
             }
         } catch (error) {
-            console.error("Failed to toggle favorite:", error);
+            console.log("Failed to toggle favorite:", error);
             setOptimisticFavorite(previousOptimisticState);
         }
     };

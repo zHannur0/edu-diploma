@@ -35,7 +35,7 @@ export default function IeltsWritingPage() {
             try {
                 setAnswers(JSON.parse(savedAnswers));
             } catch (e) {
-                console.error("Failed to parse saved answers:", e);
+                console.log("Failed to parse saved answers:", e);
                 sessionStorage.removeItem(`ieltsAnswers_${ieltsTest}`); // Очистить некорректные данные
             }
         }

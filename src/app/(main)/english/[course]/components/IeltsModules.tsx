@@ -1,7 +1,7 @@
 import React from "react";
 import { useGetIeltsModulesQuery } from "@/store/api/ieltsApi";
 import IeltsSubModuleCard from "@/app/(main)/english/[course]/components/IeltsSubModule";
-import { IeltsModule } from "@/types/Ielts"; // Убедись, что тип импортирован
+import { IeltsModule } from "@/types/Ielts";
 
 const IeltsModules = () => {
     const { data: ieltsModules, isLoading, isError } = useGetIeltsModulesQuery();
@@ -17,29 +17,40 @@ const IeltsModules = () => {
     return (
         <div className="space-y-8">
             {ieltsModules.map((module: IeltsModule) => (
-                <div key={module.id} className="w-full p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
-
-                        <div className="flex-grow">
-                            <h3 className="font-semibold text-xl text-gray-800 mb-4">
-                                {module.title || "IELTS Module"}
-                            </h3>
-                            <div className="space-y-2">
-                                {module.sub_modules?.map((submodule, index) => (
-                                    <IeltsSubModuleCard
-                                        key={submodule.id}
-                                        id={submodule.id} // Передаем ID сабмодуля
-                                        index={index + 1}
-                                        title={submodule.title}
-                                        tests={submodule.tests}
-                                    />
-                                ))}
-                                {!module.sub_modules?.length && (
-                                    <p className="text-sm text-gray-500">Подмодули отсутствуют.</p>
-                                )}
-                            </div>
+                <div key={module.id}
+                     className="w-full p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <div className="flex-grow">
+                        <h3 className="font-semibold text-xl text-gray-800 mb-4">
+                            {module.title || "IELTS Module"}
+                        </h3>
+                        <div className="space-y-2">
+                            {module.sub_modules?.map((submodule, index) => (
+                                <IeltsSubModuleCard
+                                    key={submodule.id}
+                                    id={submodule.id} // Передаем ID сабмодуля
+                                    index={index + 1}
+                                    title={submodule.title}
+                                    tests={submodule.tests}
+                                />
+                            ))}
+                            {!module.sub_modules?.length && (
+                                <p className="text-sm text-gray-500">Подмодули отсутствуют.</p>
+                            )}
                         </div>
+                    </div>
+
                 </div>
             ))}
+            <div className="w-full flex justify-center relative"> {/* <-- Added 'flex' */}
+                <a
+                    href="https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/"
+                    target="_blank"
+                    rel="noopener noreferrer" // <-- Good practice for security/performance
+                    className="w-full p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+                    Осы батырманы басу арқылы шын Ielts емтиханына дайындалыңыз
+                </a>
+            </div>
+
         </div>
     );
 };

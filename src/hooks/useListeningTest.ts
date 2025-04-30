@@ -70,7 +70,7 @@ const useListeningTest = (): UseListeningTestReturn => {
                 }));
 
             } catch (error) {
-                console.error('Error restoring listening progress:', error);
+                console.log('Error restoring listening progress:', error);
                 initialAnswers = questions.map((q) => ({ question_id: q.id, option_id: null }));
                 sessionStorage.removeItem('userAnswersListening');
             }

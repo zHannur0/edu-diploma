@@ -67,7 +67,7 @@ export default function ChatIdPage() {
             refetch();
 
         } catch (err) {
-            console.error("Ошибка при отправке сообщения:", err);
+            console.log("Ошибка при отправке сообщения:", err);
         }
     }
 
@@ -83,7 +83,7 @@ export default function ChatIdPage() {
     const copyToClipboard = (text: string) => {
         navigator.clipboard.writeText(text).then(() => {
         }).catch((err) => {
-            console.error("Failed to copy text: ", err);
+            console.log("Failed to copy text: ", err);
         });
     };
 
