@@ -8,7 +8,6 @@ interface AudioRecorderControlsProps {
     isRecording: boolean;
     startRecording: () => Promise<void> | void;
     stopRecording: () => void;
-    // transcript: string; // Accept transcript for potential display
     disabled?: boolean;
 }
 

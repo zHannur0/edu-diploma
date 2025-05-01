@@ -4,12 +4,10 @@
 
 import React from 'react';
 import {IeltsSpeakingQuestion} from "@/types/Ielts";
-// import Button from "@/components/ui/button/Button";
 
 interface SpeakingPart3ContentProps {
     questions: IeltsSpeakingQuestion[];
     currentIndex: number;
-    // onNextQuestion: () => void;
     topic: string;
     activeQuestionId?: number;
 }
@@ -17,7 +15,6 @@ interface SpeakingPart3ContentProps {
 export default function SpeakingPart3Content({ questions, currentIndex, topic, activeQuestionId }: SpeakingPart3ContentProps) {
 
     const currentQuestion = questions[currentIndex];
-    // const isLastQuestion = currentIndex >= questions.length - 1;
 
     return (
         <div className="flex flex-col justify-between h-full gap-4 text-sm text-[#555C77]">
@@ -35,18 +32,6 @@ export default function SpeakingPart3Content({ questions, currentIndex, topic, a
                     <p className="text-center text-gray-500 mt-10">No more questions in this part.</p>
                 )}
             </div>
-
-            {/*{currentQuestion && (*/}
-            {/*    <div className="flex justify-end mt-6">*/}
-            {/*        <Button*/}
-            {/*            onClick={onNextQuestion}*/}
-            {/*            disabled={isLastQuestion}*/}
-            {/*            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"*/}
-            {/*        >*/}
-            {/*            {isLastQuestion ? "End of Part 3" : "Next Question"}*/}
-            {/*        </Button>*/}
-            {/*    </div>*/}
-            {/*)}*/}
         </div>
     );
 }

@@ -15,6 +15,7 @@ export interface IeltsSpeakingQuestion {
 }
 
 export interface IeltsSpeaking {
+    id: number;
     part: number;
     speaking_questions: IeltsSpeakingQuestion[];
 }

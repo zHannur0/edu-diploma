@@ -11,7 +11,7 @@ import {IeltsSpeakingQuestion } from "@/types/Ielts";
 import SpeakingPart1Content from "@/app/(main)/english/[course]/ielts-test/components/SpeakingPart1Content";
 import SpeakingPart2Content from "@/app/(main)/english/[course]/ielts-test/components/SpeakingPart2Content";
 import SpeakingPart3Content from "@/app/(main)/english/[course]/ielts-test/components/SpeakingPart3Content";
-import AudioRecorderControls from "@/app/(main)/english/[course]/ielts-test/components/AudioRecorderControls";
+import AudioRecorderControls from "@/app/(main)/english/[course]/ielts-test/components/AudioRecorderControls"; // Assuming correct path
 import Button from "@/components/ui/button/Button";
 
 type AnswersState = { [questionId: number]: string };
@@ -35,7 +35,6 @@ export default function IeltsSpeakingPage() {
     const [answers, setAnswers] = useState<AnswersState>({});
     const [questionIndices, setQuestionIndices] = useState<QuestionIndicesState>({ 1: 0, 3: 0 });
     const [stopRequestedForQuestionId, setStopRequestedForQuestionId] = useState<number | null>(null);
-
 
     const { data: speakingPartsData, isLoading: isLoadingData, error: loadingError } = useGetIeltsSpeakingQuery(ieltsTestId, {
         skip: !ieltsTestId,
@@ -63,7 +62,6 @@ export default function IeltsSpeakingPage() {
         [currentQuestions, activeQuestionIndex]
     );
 
-    // Функция isPartCompleted остается без изменений
     const isPartCompleted = useCallback((partNumber: number): boolean => {
         const partData = speakingPartsData?.find(p => p.part === partNumber);
         if (!partData) return false;
@@ -73,17 +71,18 @@ export default function IeltsSpeakingPage() {
         if (partNumber === 1 || partNumber === 3) {
             const lastQuestionIndex = questions.length - 1;
             const lastQuestion = questions[lastQuestionIndex];
-            return questionIndices[partNumber] >= lastQuestionIndex && (answers[lastQuestion?.id]?.trim()?.length || 0) > 0;
+            if (!lastQuestion) return questionIndices[partNumber] >= questions.length;
+            return questionIndices[partNumber] > lastQuestionIndex || (questionIndices[partNumber] === lastQuestionIndex && !!answers[lastQuestion.id]?.trim());
         } else if (partNumber === 2) {
             const part2QuestionId = questions[0]?.id;
-            return !!part2QuestionId && (answers[part2QuestionId]?.trim()?.length || 0) > 0;
+            return !!part2QuestionId && !!answers[part2QuestionId]?.trim();
         }
         return false;
     }, [speakingPartsData, questionIndices, answers]);
 
     useEffect(() => {
         if (voiceRecorder.isRecording && activeQuestion?.id) {
-            if (voiceRecorder.transcript && voiceRecorder.transcript.trim().length > 0) {
+            if (voiceRecorder.transcript) {
                 setAnswers(prev => ({
                     ...prev,
                     [activeQuestion.id]: voiceRecorder.transcript
@@ -92,121 +91,121 @@ export default function IeltsSpeakingPage() {
         }
     }, [voiceRecorder.transcript, voiceRecorder.isRecording, activeQuestion?.id]);
 
+    // Wrapped handlePartChange in useCallback to ensure stable reference if used in deps
+    const handlePartChangeCallback = useCallback((partNumber: number, triggeredProgrammatically: boolean = false) => {
+        setCurrentPart(prevCurrentPart => {
+            if (partNumber === prevCurrentPart) return prevCurrentPart;
 
-    useEffect(() => {
-        if (!voiceRecorder.isRecording && stopRequestedForQuestionId !== null && voiceRecorder.transcript) {
-            console.log(`Effect triggered: Recording stopped for question ${stopRequestedForQuestionId}`);
-
-            const questionIdThatStopped = stopRequestedForQuestionId;
-            const finalTranscript = (voiceRecorder.transcript || "").trim();
-            console.log(`Final transcript captured: "${finalTranscript}"`);
-            console.log(voiceRecorder.transcript);
-            if (finalTranscript.length > 0) {
-                setAnswers(prevAnswers => ({
-                    ...prevAnswers,
-                    [questionIdThatStopped]: finalTranscript
-                }));
-                console.log(`Saved final transcript for question ${questionIdThatStopped}`);
-            } else {
-                console.log(`Final transcript for question ${questionIdThatStopped} is empty.`);
+            if (!triggeredProgrammatically && partNumber > prevCurrentPart) {
+                if (!isPartCompleted(prevCurrentPart)) {
+                    console.log(`Manual transition blocked: Part ${prevCurrentPart} not completed`);
+                    return prevCurrentPart;
+                }
             }
 
+            if (voiceRecorder.isRecording) {
+                voiceRecorder.stopRecording();
+            }
+            setStopRequestedForQuestionId(null);
+            voiceRecorder.setTranscript("");
 
-            const currentPartQuestions = speakingPartsData?.find(p => p.part === currentPart)?.speaking_questions || [];
+            return partNumber;
+        });
+    }, [isPartCompleted, voiceRecorder.isRecording, voiceRecorder.stopRecording, voiceRecorder.setTranscript]); // Added missing deps
+
+    useEffect(() => {
+        // Process stop only when recording has actually stopped and a stop was requested
+        if (!voiceRecorder.isRecording && stopRequestedForQuestionId !== null) {
+            const questionIdThatStopped = stopRequestedForQuestionId;
+            const finalTranscript = (voiceRecorder.transcript || "").trim();
+
+            setAnswers(prevAnswers => {
+                if (finalTranscript.length > 0) {
+                    return { ...prevAnswers, [questionIdThatStopped]: finalTranscript };
+                }
+                return prevAnswers;
+            });
+
+            const partDataWhereStopOccurred = speakingPartsData?.find(p => p.speaking_questions.some(q => q.id === questionIdThatStopped));
+            const partNumberWhereStopOccurred = partDataWhereStopOccurred?.part;
+
+            if (!partNumberWhereStopOccurred) {
+                console.error("Could not determine part number for stopped question:", questionIdThatStopped);
+                setStopRequestedForQuestionId(null); // Reset request even if part not found
+                return;
+            }
+
+            const currentPartQuestions = partDataWhereStopOccurred?.speaking_questions || [];
             const stoppedQuestionIndex = currentPartQuestions.findIndex(q => q.id === questionIdThatStopped);
-            const isLastQuestionOfPart = (currentPart === 1 || currentPart === 3) &&
-                stoppedQuestionIndex !== -1 &&
-                stoppedQuestionIndex >= currentPartQuestions.length - 1;
-            const nextPartNumber = currentPart + 1;
-            const nextPartExists = speakingPartsData?.some(p => p.part === nextPartNumber);
-            const part3Exists = speakingPartsData?.some(p => p.part === 3);
 
             let nextActionTaken = false;
 
-            if (currentPart === 1 || currentPart === 3) {
+            if (partNumberWhereStopOccurred === 1 || partNumberWhereStopOccurred === 3) {
+                const isLastQuestionOfPart = stoppedQuestionIndex >= 0 && stoppedQuestionIndex >= currentPartQuestions.length - 1;
                 if (isLastQuestionOfPart) {
+                    const nextPartNumber = partNumberWhereStopOccurred + 1;
+                    const nextPartExists = speakingPartsData?.some(p => p.part === nextPartNumber);
                     if (nextPartExists) {
-                        console.log(`Transitioning from Part ${currentPart} to Part ${nextPartNumber}`);
-                        handlePartChange(nextPartNumber); // Переход на след. часть
+                        handlePartChangeCallback(nextPartNumber, true); // Используем стабильный колбэк
                         nextActionTaken = true;
                     } else {
-                        console.log("End of test or next part missing after Part", currentPart);
+                        if (stoppedQuestionIndex >= 0) {
+                            const finalIndex = stoppedQuestionIndex + 1;
+                            setQuestionIndices(prev => ({ ...prev, [partNumberWhereStopOccurred]: finalIndex }));
+                            console.log(`Stop Effect: Last question of Part ${partNumberWhereStopOccurred}. Set index to ${finalIndex}.`);
+                            nextActionTaken = true; // Действие выполнено
+                        } else {
+                            console.log(`Stop Effect: Last question of Part ${partNumberWhereStopOccurred}, but index was invalid?`);
+                            // nextActionTaken остается false
+                        }
+                        // --- КОНЕЦ ИЗМЕНЕНИЯ ---
                     }
-                } else if (stoppedQuestionIndex !== -1) {
+                } else if (stoppedQuestionIndex >= 0) { // Для не-последних вопросов
                     const nextIndex = stoppedQuestionIndex + 1;
-                    console.log(`Transitioning from question index ${stoppedQuestionIndex} to ${nextIndex} in Part ${currentPart}`);
-                    setQuestionIndices(prev => ({ ...prev, [currentPart]: nextIndex })); // Переход на след. вопрос
+                    setQuestionIndices(prev => ({ ...prev, [partNumberWhereStopOccurred]: nextIndex }));
                     nextActionTaken = true;
                 }
-            } else if (currentPart === 2) {
+            } else if (partNumberWhereStopOccurred === 2) {
+                const part3Exists = speakingPartsData?.some(p => p.part === 3);
                 if (part3Exists) {
-                    console.log("Transitioning from Part 2 to Part 3");
-                    handlePartChange(3);
+                    handlePartChangeCallback(3, true);
                     nextActionTaken = true;
                 } else {
-                    console.log("Part 3 missing after Part 2.");
+                    if (stoppedQuestionIndex >= 0) {
+                        console.log("Stop Effect: End of Part 2, no Part 3 exists.");
+                    }
                 }
             }
 
             if (nextActionTaken) {
                 voiceRecorder.setTranscript("");
-                console.log("Cleared transcript in hook for next question/part.");
             }
 
             setStopRequestedForQuestionId(null);
-            console.log("Reset stop request.");
         }
     }, [
         voiceRecorder.isRecording,
         stopRequestedForQuestionId,
         voiceRecorder.transcript,
-        voiceRecorder.setTranscript,
-        currentPart,
         speakingPartsData,
-        setQuestionIndices,
-        answers
+        handlePartChangeCallback, // Убедись, что handlePartChange обернут в useCallback и добавлен сюда
+        voiceRecorder.setTranscript // Убедись, что setTranscript от хука стабилен или добавлен сюда
     ]);
 
 
-    const requestStopRecordingAndTransition = () => {
-        if (voiceRecorder.isRecording && activeQuestion) {
-            console.log(`Requesting stop for question ${activeQuestion.id}`);
-            setStopRequestedForQuestionId(activeQuestion.id); // Устанавливаем ID вопроса для useEffect
-            voiceRecorder.stopRecording(); // Вызываем остановку в хуке
-        } else {
-            console.warn("Stop requested but not recording or no active question.");
-        }
-    };
-
-
-    const handlePartChange = useCallback((partNumber: number) => {
-        if (partNumber === currentPart) return;
-
-        // Проверка при ручном переходе вперед
-        if (partNumber > currentPart) {
-            if (!isPartCompleted(currentPart)) {
-                console.log(`Manual transition blocked: Part ${currentPart} not completed`);
-                return;
-            }
-        }
-
-        if (voiceRecorder.isRecording) {
-            setStopRequestedForQuestionId(null);
+    const requestStopRecordingAndTransition = useCallback(() => {
+        // Add log here
+        console.log("Requesting stop. isRecording:", voiceRecorder.isRecording, "activeQuestionId:", activeQuestion?.id);
+        if (voiceRecorder.isRecording && activeQuestion?.id) {
+            setStopRequestedForQuestionId(activeQuestion.id);
             voiceRecorder.stopRecording();
         }
-        voiceRecorder.setTranscript("");
-        setCurrentPart(partNumber);
-    }, [currentPart, isPartCompleted, voiceRecorder.isRecording, voiceRecorder.stopRecording, voiceRecorder.setTranscript, activeQuestion?.id]); // Добавили зависимости
+    }, [voiceRecorder.isRecording, voiceRecorder.stopRecording, activeQuestion?.id]);
 
 
     const handleSubmitSpeaking = async () => {
-        const allPartsCompleted = speakingPartsData?.every(part => isPartCompleted(part.part)) ?? false;
-        if (!allPartsCompleted) {
-            console.log("Cannot submit, not all parts completed");
-            return;
-        }
-        if (!speakingPartsData || isSubmitting || voiceRecorder.isRecording) {
-            console.log("Submit blocked: submitting, loading, recording, or no data");
+        if (!speakingPartsData || isSubmitting || voiceRecorder.isRecording || stopRequestedForQuestionId !== null) {
+            console.log("Submit blocked: submitting, loading, recording, pending stop, or no data");
             return;
         }
 
@@ -224,7 +223,7 @@ export default function IeltsSpeakingPage() {
             setScore(res.score);
             modalLogic.showSuccess();
         } catch (e) {
-            console.error("Failed to submit speaking:", e);
+            console.log("Failed to submit speaking:", e);
             modalLogic.showError();
         }
     };
@@ -247,7 +246,6 @@ export default function IeltsSpeakingPage() {
         [currentQuestions, currentPart]
     );
 
-
     const partTitles: { [key: number]: string } = {
         1: "Part 1: Interview",
         2: "Part 2: Long Turn",
@@ -267,7 +265,9 @@ export default function IeltsSpeakingPage() {
                     activeQuestionId={activeQuestion?.id}
                 />;
             case 2:
+                const part2Key = currentPartData.id ? `part-2-${currentPartData.id}` : `part-2`;
                 return <SpeakingPart2Content
+                    key={part2Key}
                     cueCardData={cueCardDataForPart2}
                     activeQuestionId={activeQuestion?.id}
                     startRecording={voiceRecorder.startRecording}
@@ -287,30 +287,17 @@ export default function IeltsSpeakingPage() {
     };
 
     useEffect(() => {
-        console.log('EFFECT: Adding beforeunload listener. Current answers length:', Object.keys(answers).length, 'SuccessModal shown:', modalLogic.showSuccessModal);
-
         const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-            console.log('EVENT: beforeunload triggered');
-
-            const currentAnswersLength = Object.keys(answers).length;
-            const isSuccessModalShown = modalLogic.showSuccessModal;
-            const hasUnsavedProgress = currentAnswersLength > 0 && !isSuccessModalShown;
-
-            console.log(`EVENT data: answers length = ${currentAnswersLength}, success modal shown = ${isSuccessModalShown}, should prevent? = ${hasUnsavedProgress}`);
+            const isSuccessModalBeingShown = modalLogic.showSuccessModal;
+            const hasUnsavedProgress = Object.keys(answers).length > 0 && !isSuccessModalBeingShown;
 
             if (hasUnsavedProgress) {
-                console.log('EVENT: Preventing unload and setting returnValue.');
                 event.preventDefault();
                 event.returnValue = '';
-            } else {
-                console.log('EVENT: Condition not met, allowing unload.');
             }
         };
-
         window.addEventListener('beforeunload', handleBeforeUnload);
-
         return () => {
-            console.log('EFFECT: Removing beforeunload listener.');
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
     }, [answers, modalLogic.showSuccessModal]);
@@ -320,7 +307,17 @@ export default function IeltsSpeakingPage() {
         [speakingPartsData, isPartCompleted]
     );
 
-    const isAudioControlDisabled = !activeQuestion || isSubmitting || isLoadingData || stopRequestedForQuestionId !== null; // Блокируем во время обработки остановки
+    const isAudioControlDisabled = !activeQuestion || isSubmitting || isLoadingData || stopRequestedForQuestionId !== null;
+
+    // Add log here before rendering controls
+    console.log("Rendering AudioControls:", {
+        isRecording: voiceRecorder.isRecording,
+        isDisabled: isAudioControlDisabled,
+        activeQuestionId: activeQuestion?.id,
+        currentPart: currentPart,
+        questionIndex: currentPart === 1 ? questionIndices[1] : (currentPart === 3 ? questionIndices[3] : 'N/A'),
+        stopRequested: stopRequestedForQuestionId
+    });
 
     return (
         <div className="w-full min-h-screen bg-[#EEF4FF] flex flex-col py-12 items-center px-4">
@@ -345,7 +342,7 @@ export default function IeltsSpeakingPage() {
                                                 ? "bg-transparent text-[#737B98] hover:bg-white hover:text-[#333] cursor-pointer"
                                                 : "bg-gray-100 text-gray-400 border-gray-300 cursor-not-allowed"
                                     }`}
-                                    onClick={() => isEnabled && handlePartChange(part.part)}
+                                    onClick={() => isEnabled && handlePartChangeCallback(part.part)} // Use callback
                                 >
                                     Part {part.part}
                                 </button>
@@ -364,8 +361,8 @@ export default function IeltsSpeakingPage() {
                     <div className="w-full mt-6 border-t pt-6">
                         <AudioRecorderControls
                             isRecording={voiceRecorder.isRecording}
-                            startRecording={voiceRecorder.startRecording}
-                            stopRecording={requestStopRecordingAndTransition} // Передаем новую функцию запроса остановки
+                            startRecording={voiceRecorder.startRecording} // Assumed stable from hook
+                            stopRecording={requestStopRecordingAndTransition} // useCallback ensures stability
                             disabled={isAudioControlDisabled}
                         />
                         {stopRequestedForQuestionId !== null && <p className="text-center text-sm text-[#7B68EE] mt-2">Processing answer...</p>}
@@ -376,7 +373,7 @@ export default function IeltsSpeakingPage() {
                     <div className="w-full flex justify-end mt-6">
                         <Button
                             onClick={handleSubmitSpeaking}
-                            disabled={isSubmitting || isLoadingData || voiceRecorder.isRecording || !areAllPartsCompleted || stopRequestedForQuestionId !== null}
+                            disabled={isSubmitting || isLoadingData || voiceRecorder.isRecording || stopRequestedForQuestionId !== null}
                             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                             title={!areAllPartsCompleted ? "Complete all parts first" : ""}
                         >
