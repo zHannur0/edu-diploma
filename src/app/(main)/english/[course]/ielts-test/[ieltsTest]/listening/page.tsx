@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, {useState, useCallback, useRef, useEffect} from 'react';
 import { useParams, useRouter } from "next/navigation";
 import {ListeningSubmit, useGetIeltsListeningQuery, useSubmitIeltsListeningMutation} from "@/store/api/ieltsApi";
 import { useModalLogic } from "@/hooks/useModalLogic";
@@ -106,6 +106,34 @@ export default function IeltsListeningPage() {
         }
     };
 
+    useEffect(() => {
+        console.log('EFFECT: Adding beforeunload listener. Current answers length:', Object.keys(answers).length, 'SuccessModal shown:', modalLogic.showSuccessModal);
+
+        const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+            console.log('EVENT: beforeunload triggered');
+
+            const currentAnswersLength = Object.keys(answers).length;
+            const isSuccessModalShown = modalLogic.showSuccessModal;
+            const hasUnsavedProgress = currentAnswersLength > 0 && !isSuccessModalShown;
+
+            console.log(`EVENT data: answers length = ${currentAnswersLength}, success modal shown = ${isSuccessModalShown}, should prevent? = ${hasUnsavedProgress}`);
+
+            if (hasUnsavedProgress) {
+                console.log('EVENT: Preventing unload and setting returnValue.');
+                event.preventDefault();
+                event.returnValue = '';
+            } else {
+                console.log('EVENT: Condition not met, allowing unload.');
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            console.log('EFFECT: Removing beforeunload listener.');
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [answers, modalLogic.showSuccessModal]);
 
     const handleSuccessRedirect = () => {
         router.push(`/english/${course || 'default-course'}`);

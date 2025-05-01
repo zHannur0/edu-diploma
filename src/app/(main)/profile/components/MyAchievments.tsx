@@ -19,7 +19,7 @@ const MyAchievments = () => {
         </span>
                             <div>
                                 <p className="text-sm text-gray-600">Күнделікті прогресс</p>
-                                <p className="font-semibold text-gray-900">{user?.achievement?.progress?.toFixed(1)}</p>
+                                <p className="font-semibold text-gray-900">{user?.achievement?.progress?.toFixed(1)}%</p>
                             </div>
                         </li>
 
