@@ -2,6 +2,7 @@ import React from "react";
 import { useGetIeltsModulesQuery } from "@/store/api/ieltsApi";
 import IeltsSubModuleCard from "@/app/(main)/english/[course]/components/IeltsSubModule";
 import { IeltsModule } from "@/types/Ielts";
+import {ArrowRight} from "lucide-react";
 
 const IeltsModules = () => {
     const { data: ieltsModules, isLoading, isError } = useGetIeltsModulesQuery();
@@ -41,13 +42,13 @@ const IeltsModules = () => {
 
                 </div>
             ))}
-            <div className="w-full flex justify-center relative"> {/* <-- Added 'flex' */}
+            <div className="w-full flex justify-center relative">
                 <a
                     href="https://www.cambridgeenglish.org/exams-and-tests/ielts/preparation/"
                     target="_blank"
-                    rel="noopener noreferrer" // <-- Good practice for security/performance
-                    className="w-full p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
-                    Осы батырманы басу арқылы шын Ielts емтиханына дайындалыңыз
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-between p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+                    Осы батырманы басу арқылы шын Ielts емтиханына дайындалыңыз <ArrowRight className={"text-red-600"}/>
                 </a>
             </div>
 

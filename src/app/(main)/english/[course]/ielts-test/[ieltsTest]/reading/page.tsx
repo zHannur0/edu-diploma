@@ -170,7 +170,7 @@ export default function IeltsReadingPage() {
                     <Button
                         onClick={handleSubmitReading}
                         disabled={isSubmitting || isLoadingData}
-                        className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50"
+                        className="bg-[#7B68EE] text-white font-bold py-2 px-6 rounded-lg disabled:opacity-50"
                     >
                         {isSubmitting ? "Submitting..." : "Submit Reading Test"}
                     </Button>

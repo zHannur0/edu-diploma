@@ -32,9 +32,9 @@ const IeltsWritingCard = ({ writing, answer, onAnswerChange }: IeltsWritingCardP
                 {writing?.images && writing.images.length > 0 && (
                     <div className="flex flex-wrap gap-4 my-3">
                         {writing.images.map((image, i) => (
-                            <div key={image || i} className="relative w-[300px] h-[170px] overflow-hidden rounded-lg border">
+                            <div key={image.id} className="relative w-[300px] h-[170px] overflow-hidden rounded-lg border">
                                 <Image
-                                    src={image || "/img/ListUniversity.png"}
+                                    src={image?.image || "/img/ListUniversity.png"}
                                     alt={`Writing task image ${i + 1}`}
                                     layout="fill"
                                     objectFit="contain"

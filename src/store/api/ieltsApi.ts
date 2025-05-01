@@ -85,7 +85,7 @@ export const ieltsApi = createApi({
             }),
             transformResponse: (response: Ielts) => response.writing_tasks ,
         }),
-        submitIeltsWriting: builder.mutation<string, {id: number, data: {writings: {answer: string, writing_id: number }[]}}>({
+        submitIeltsWriting: builder.mutation<{ score: number }, {id: number, data: {writings: {answer: string, writing_id: number }[]}}>({
             query: ({id, data}) => ({
                 url: `ielts/modules/tests/${id}/writing-submit/`,
                 method: "POST",
@@ -98,7 +98,7 @@ export const ieltsApi = createApi({
             }),
             transformResponse: (response: Ielts) => response.speaking_parts ,
         }),
-        submitIeltsSpeaking: builder.mutation<string, {id: number, data: {speakings: {answer: string, speaking_id: number }[]}}>({
+        submitIeltsSpeaking: builder.mutation<{ score: number }, {id: number, data: {speakings: {answer: string, speaking_id: number }[]}}>({
             query: ({id, data}) => ({
                 url: `ielts/modules/tests/${id}/speaking-submit/`,
                 method: "POST",

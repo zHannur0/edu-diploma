@@ -23,18 +23,17 @@ interface CueCardData {
     questionId: number;
 }
 
-
 export default function IeltsSpeakingPage() {
     const { ieltsTest: ieltsTestParam, course } = useParams();
     const ieltsTestId = Number(ieltsTestParam);
     const router = useRouter();
     const modalLogic = useModalLogic();
     const voiceRecorder = useVoiceRecorder();
+    const [score, setScore] = useState<number | null>(null);
 
     const [currentPart, setCurrentPart] = useState<number>(1);
     const [answers, setAnswers] = useState<AnswersState>({});
     const [questionIndices, setQuestionIndices] = useState<QuestionIndicesState>({ 1: 0, 3: 0 });
-    // --- НОВОЕ: Состояние для отслеживания запроса на остановку ---
     const [stopRequestedForQuestionId, setStopRequestedForQuestionId] = useState<number | null>(null);
 
 
@@ -142,15 +141,15 @@ export default function IeltsSpeakingPage() {
             } else if (currentPart === 2) {
                 if (part3Exists) {
                     console.log("Transitioning from Part 2 to Part 3");
-                    handlePartChange(3); // Переход на часть 3
+                    handlePartChange(3);
                     nextActionTaken = true;
                 } else {
                     console.log("Part 3 missing after Part 2.");
                 }
             }
 
-            if (nextActionTaken) { // Очищаем только если был какой-то переход
-                voiceRecorder.setTranscript(""); // Используем функцию очистки из хука
+            if (nextActionTaken) {
+                voiceRecorder.setTranscript("");
                 console.log("Cleared transcript in hook for next question/part.");
             }
 
@@ -165,13 +164,11 @@ export default function IeltsSpeakingPage() {
         currentPart,
         speakingPartsData,
         setQuestionIndices,
-        answers // Добавляем answers, так как isPartCompleted от него зависит
+        answers
     ]);
 
 
-    // --- НОВАЯ Функция для кнопки Stop ---
     const requestStopRecordingAndTransition = () => {
-        // Запрашиваем остановку только если идет запись и есть активный вопрос
         if (voiceRecorder.isRecording && activeQuestion) {
             console.log(`Requesting stop for question ${activeQuestion.id}`);
             setStopRequestedForQuestionId(activeQuestion.id); // Устанавливаем ID вопроса для useEffect
@@ -182,8 +179,6 @@ export default function IeltsSpeakingPage() {
     };
 
 
-    // handlePartChange остается для ручного перехода (в основном назад)
-    // Оборачиваем в useCallback, так как используется в useEffect
     const handlePartChange = useCallback((partNumber: number) => {
         if (partNumber === currentPart) return;
 
@@ -196,15 +191,14 @@ export default function IeltsSpeakingPage() {
         }
 
         if (voiceRecorder.isRecording) {
-            setStopRequestedForQuestionId(null); // Отменяем запрос на авто-переход
+            setStopRequestedForQuestionId(null);
             voiceRecorder.stopRecording();
         }
-        voiceRecorder.setTranscript(""); // Очищаем транскрипт для новой части
+        voiceRecorder.setTranscript("");
         setCurrentPart(partNumber);
     }, [currentPart, isPartCompleted, voiceRecorder.isRecording, voiceRecorder.stopRecording, voiceRecorder.setTranscript, activeQuestion?.id]); // Добавили зависимости
 
 
-    // handleSubmitSpeaking остается почти без изменений, проверяет areAllPartsCompleted
     const handleSubmitSpeaking = async () => {
         const allPartsCompleted = speakingPartsData?.every(part => isPartCompleted(part.part)) ?? false;
         if (!allPartsCompleted) {
@@ -223,10 +217,11 @@ export default function IeltsSpeakingPage() {
                 speaking_id: q.id,
             })),
         };
-        console.log("Submitting payload:", payloadData); // Логируем перед отправкой
+        console.log("Submitting payload:", payloadData);
 
         try {
-            await submitSpeaking({ id: ieltsTestId, data: payloadData }).unwrap();
+            const res = await submitSpeaking({ id: ieltsTestId, data: payloadData }).unwrap();
+            setScore(res.score);
             modalLogic.showSuccess();
         } catch (e) {
             console.error("Failed to submit speaking:", e);
@@ -238,7 +233,6 @@ export default function IeltsSpeakingPage() {
         router.push(`/english/${course || 'default-course'}`);
     };
 
-    // parseCueCardData остается без изменений
     const parseCueCardData = (question?: IeltsSpeakingQuestion): CueCardData | null => {
         if (!question || currentPart !== 2) return null;
         return {
@@ -321,7 +315,6 @@ export default function IeltsSpeakingPage() {
         };
     }, [answers, modalLogic.showSuccessModal]);
 
-    // areAllPartsCompleted остается без изменений
     const areAllPartsCompleted = useMemo(() =>
             speakingPartsData?.every(part => isPartCompleted(part.part)) ?? false,
         [speakingPartsData, isPartCompleted]
@@ -361,7 +354,6 @@ export default function IeltsSpeakingPage() {
                     </div>
                 )}
 
-                {/* Content Area */}
                 <div className="w-full p-6 flex flex-col bg-white items-start rounded-2xl gap-5 shadow-md min-h-[450px]">
                     <h2 className="text-xl font-bold text-gray-800 self-center mb-4">
                         {partTitles[currentPart] || `Part ${currentPart}`}
@@ -369,7 +361,6 @@ export default function IeltsSpeakingPage() {
                     <div className="w-full flex-grow min-h-[250px]">
                         {renderPartContent()}
                     </div>
-                    {/* --- ИЗМЕНЕНО: Передаем requestStopRecordingAndTransition как stopRecording --- */}
                     <div className="w-full mt-6 border-t pt-6">
                         <AudioRecorderControls
                             isRecording={voiceRecorder.isRecording}
@@ -381,7 +372,6 @@ export default function IeltsSpeakingPage() {
                     </div>
                 </div>
 
-                {/* Submit Button */}
                 {speakingPartsData && speakingPartsData.length > 0 && (
                     <div className="w-full flex justify-end mt-6">
                         <Button
@@ -397,10 +387,9 @@ export default function IeltsSpeakingPage() {
 
             </div>
 
-            {/* Modals */}
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Cәтті тапсырдыңыз!"
+                    message={`Сіз сәтті тапсырдыңыз! Сіздің бағаңыз ${score}`}
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />

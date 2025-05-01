@@ -18,6 +18,7 @@ export default function IeltsWritingPage() {
     const { ieltsTest, course } = useParams();
     const router = useRouter();
     const modalLogic = useModalLogic();
+    const [score, setScore] = useState<number | null>(null);
 
     const [currentRound, setCurrentRound] = useState<number>(0);
     const [answers, setAnswers] = useState<WritingAnswers>({});
@@ -67,8 +68,8 @@ export default function IeltsWritingPage() {
         };
 
         try {
-            await submitWriting({ id: Number(ieltsTest), data: payload }).unwrap();
-
+            const res = await submitWriting({ id: Number(ieltsTest), data: payload }).unwrap();
+            setScore(res.score);
             modalLogic.showSuccess();
             sessionStorage.removeItem(`ieltsAnswers_${ieltsTest}`);
         } catch (e) {
@@ -166,7 +167,7 @@ export default function IeltsWritingPage() {
 
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Сіз сәтті тапсырдыңыз!"
+                    message={`Сіз сәтті тапсырдыңыз! Сіздің бағаңыз ${score}`}
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />

@@ -46,7 +46,10 @@ export interface IeltsWriting {
     id: number;
     title: string;
     description: string;
-    images: string[];
+    images: {
+        id: number;
+        image: string;
+    }[];
     part: number;
 }
 
