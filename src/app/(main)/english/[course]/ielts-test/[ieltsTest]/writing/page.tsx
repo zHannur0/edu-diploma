@@ -144,7 +144,7 @@ export default function IeltsWritingPage() {
             )}
             {modalLogic.showErrorModal && (
                 <ErrorModal
-                    message="Failed to submit your answers. Please try again."
+                    message="Қателік пайда болды. Қайталап көріңіз."
                     onClose={modalLogic.onErrorModalClose}
                 />
             )}

@@ -371,14 +371,14 @@ export default function IeltsSpeakingPage() {
             {/* Modals */}
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Your speaking answers have been submitted successfully!"
+                    message="Cәтті тапсырдыңыз!"
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />
             )}
             {modalLogic.showErrorModal && (
                 <ErrorModal
-                    message="Failed to submit your answers. Please try again."
+                    message="Қателік пайда болды. Қайталап көріңіз."
                     onClose={modalLogic.onErrorModalClose}
                 />
             )}
