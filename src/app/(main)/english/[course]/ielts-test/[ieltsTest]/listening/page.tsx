@@ -18,6 +18,7 @@ export default function IeltsListeningPage() {
     const ieltsTestId = Number(ieltsTestParam);
     const router = useRouter();
     const modalLogic = useModalLogic();
+    const [score, setScore] = useState<number | null>(null);
 
     const [answers, setAnswers] = useState<ListeningAnswersState>({});
     const [hasPlaybackStarted, setHasPlaybackStarted] = useState<boolean>(false); // Началось ли воспроизведение вообще
@@ -90,12 +91,14 @@ export default function IeltsListeningPage() {
             }
         });
 
-        const payloadData: ListeningSubmit[] = [{ listening: formattedSubmissions }];
+        const payloadData: ListeningSubmit = { listenings: formattedSubmissions };
 
         console.log("Submitting Listening Payload:", JSON.stringify(payloadData, null, 2));
 
         try {
-            await submitListening({ id: ieltsTestId, data: payloadData }).unwrap();
+            const res = await submitListening({ id: ieltsTestId, data: payloadData }).unwrap();
+            setScore(res?.score || null);
+
             modalLogic.showSuccess();
         } catch (e) {
             console.log("Failed to submit listening:", e);
@@ -169,14 +172,14 @@ export default function IeltsListeningPage() {
 
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Your listening answers have been submitted successfully!"
+                    message={`Cәтті тапсырдыңыз! Сіздің нәтижеңііз: ${score}/30`}
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />
             )}
             {modalLogic.showErrorModal && (
                 <ErrorModal
-                    message="Failed to submit your answers. Please try again."
+                    message="Қателік пайда болды. Қайталап көріңіз."
                     onClose={modalLogic.onErrorModalClose}
                 />
             )}

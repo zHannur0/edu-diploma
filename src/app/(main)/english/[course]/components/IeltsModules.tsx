@@ -27,7 +27,7 @@ const IeltsModules = () => {
                             {module.sub_modules?.map((submodule, index) => (
                                 <IeltsSubModuleCard
                                     key={submodule.id}
-                                    id={submodule.id} // Передаем ID сабмодуля
+                                    id={submodule.id}
                                     index={index + 1}
                                     title={submodule.title}
                                     tests={submodule.tests}

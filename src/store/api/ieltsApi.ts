@@ -10,7 +10,7 @@ import {
 } from "@/types/Ielts";
 
 export interface ListeningSubmit {
-    listening: {
+    listenings: {
         listening_id: number;
         options: {
             option_id: number;
@@ -54,7 +54,7 @@ export const ieltsApi = createApi({
             }),
             transformResponse: (response: Ielts) => response.reading_passages ,
         }),
-        submitIeltsReading: builder.mutation<string, {id: number, data:
+        submitIeltsReading: builder.mutation<{ score: number }, {id: number, data:
                 {
                     readings: {
                         reading_id: number;
@@ -111,7 +111,7 @@ export const ieltsApi = createApi({
             }),
             transformResponse: (response: Ielts) => response.listening ,
         }),
-        submitIeltsListening: builder.mutation<string, {id: number, data: ListeningSubmit[]}>({
+        submitIeltsListening: builder.mutation<{ score: number }, {id: number, data: ListeningSubmit}>({
             query: ({id, data}) => ({
                 url: `ielts/modules/tests/${id}/listening-submit/`,
                 method: "POST",

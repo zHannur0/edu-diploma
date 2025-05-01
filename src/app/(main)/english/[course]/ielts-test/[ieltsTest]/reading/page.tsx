@@ -20,6 +20,8 @@ export default function IeltsReadingPage() {
     const router = useRouter();
     const modalLogic = useModalLogic();
 
+    const [score, setScore] = useState<number | null>(null);
+
     const [currentPassageIndex, setCurrentPassageIndex] = useState<number>(0);
     const [answers, setAnswers] = useState<ReadingAnswersState>({});
 
@@ -47,7 +49,6 @@ export default function IeltsReadingPage() {
         }));
     }, []);
 
-    // Создаем функцию отправки один раз и сохраняем ссылку на неё
     const handleSubmitReading = useCallback(async () => {
         if (!readingPassages || isSubmitting) return;
 
@@ -106,7 +107,8 @@ export default function IeltsReadingPage() {
         console.log("Submitting Reading Payload:", JSON.stringify(payloadData, null, 2));
 
         try {
-            await submitReading({ id: ieltsTestId, data: payloadData }).unwrap();
+            const res = await submitReading({ id: ieltsTestId, data: payloadData }).unwrap();
+            setScore(res?.score || null);
             modalLogic.showSuccess();
         } catch (e) {
             console.log("Failed to submit reading:", e);
@@ -114,10 +116,8 @@ export default function IeltsReadingPage() {
         }
     }, [readingPassages, isSubmitting, ieltsTestId, answers, submitReading, modalLogic]);
 
-    // Обновляем ссылку при изменении функции
     submitReadingRef.current = handleSubmitReading;
 
-    // Создаем стабильный обработчик для таймера, который будет вызывать текущую функцию из ref
     const stableTimerEndHandler = useCallback(() => {
         submitReadingRef.current?.();
     }, []);
@@ -126,7 +126,6 @@ export default function IeltsReadingPage() {
         router.push(`/english/${course || 'default-course'}`);
     };
 
-    // Мемоизируем только таймер с стабильным обработчиком
     const memoizedTimer = useMemo(() => {
         return <Timer timeProp={3600} onTimerEnd={stableTimerEndHandler} />;
     }, [stableTimerEndHandler]);
@@ -196,14 +195,14 @@ export default function IeltsReadingPage() {
             {/* Модальные окна */}
             {modalLogic.showSuccessModal && (
                 <SuccessModal
-                    message="Your reading answers have been submitted successfully!"
+                    message={`Cәтті тапсырдыңыз! Сіздің нәтижеңііз: ${score}/30`}
                     onOk={handleSuccessRedirect}
                     onClose={modalLogic.onSuccessModalClose}
                 />
             )}
             {modalLogic.showErrorModal && (
                 <ErrorModal
-                    message="Failed to submit your answers. Please try again."
+                    message="Қателік пайда болды. Қайталап көріңіз."
                     onClose={modalLogic.onErrorModalClose}
                 />
             )}
