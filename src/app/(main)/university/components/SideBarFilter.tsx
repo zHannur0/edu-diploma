@@ -1,13 +1,14 @@
 import { useState, ReactNode, useEffect, useCallback } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
-    useGetDegreeTypesQuery,
+    useGetDegreeTypesQuery, useGetDurationsQuery,
     useGetFieldStudiesQuery,
     useGetLanguagesQuery,
     useGetLocationsQuery,
     useGetStudyFormatsQuery
 } from "@/store/api/universityApi";
 import { useFilters } from "@/hooks/useFilter";
+import {Duration} from "@/types/University";
 
 interface FilterSectionProps {
     title: string;
@@ -45,6 +46,13 @@ interface FilterItem {
     name: string;
 }
 
+const mapDurationsToFilterItems = (data: Duration[]): FilterItem[] => {
+    return data.map(d => ({
+        id: d.id,
+        name: `${d.duration} ${d.prefix}`
+    }));
+};
+
 const DISPLAY_LIMIT = 10;
 
 const SideBarFilter: React.FC = () => {
@@ -56,12 +64,14 @@ const SideBarFilter: React.FC = () => {
     const { data: studyFormats = [], isLoading: isLoadingFormats, isError: isErrorFormats } = useGetStudyFormatsQuery();
     const { data: locations = [], isLoading: isLoadingLocations, isError: isErrorLocations } = useGetLocationsQuery();
     const { data: languages = [], isLoading: isLoadingLanguages, isError: isErrorLanguages } = useGetLanguagesQuery();
+    const { data: durations = [], isLoading: isLoadingDurations, isError: isErrorDurations } = useGetDurationsQuery();
 
     const [showAllFields, setShowAllFields] = useState(false);
     const [showAllDegrees, setShowAllDegrees] = useState(false);
     const [showAllFormats, setShowAllFormats] = useState(false);
     const [showAllLocations, setShowAllLocations] = useState(false);
     const [showAllLanguages, setShowAllLanguages] = useState(false);
+    const [showAllDurations, setShowAllDurations] = useState(false);
 
     const allData = {
         degree_type: degreeTypes,
@@ -69,6 +79,7 @@ const SideBarFilter: React.FC = () => {
         location: locations,
         languages: languages,
         study_formats: studyFormats,
+        duration: durations,
     }
 
     useEffect(() => {
@@ -80,19 +91,33 @@ const SideBarFilter: React.FC = () => {
                 value.forEach(id => {
                     const item = dataList.find(d => d.id === Number(id));
                     if (item) {
-                        newSelectedFilters.push({ key, value: item.name, id: item.id });
+                        console.log(item)
+                        let displayValue = '';
+                        if (key === 'duration') {
+                            const durationItem = item as Duration;
+                            displayValue = `${durationItem.duration} ${durationItem.prefix}`;
+                        } else {
+                            displayValue = (item as { name: string }).name;
+                        }
+                        newSelectedFilters.push({ key, value: displayValue, id: item.id });
                     }
                 });
             } else if (value !== undefined && value !== null && value !== "") {
                 const item = dataList.find(d => d.id === Number(value));
                 if (item) {
-                    newSelectedFilters.push({ key, value: item.name, id: item.id });
+                    let displayValue = '';
+                    if (key === 'duration') {
+                        const durationItem = item as Duration;
+                        displayValue = `${durationItem.duration} ${durationItem.prefix}`;
+                    } else {
+                        displayValue = (item as { name: string }).name;
+                    }
+                    newSelectedFilters.push({ key, value: displayValue, id: item.id });
                 }
             }
         });
 
         setSelectedFilters(newSelectedFilters);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters]);
 
 
@@ -261,6 +286,19 @@ const SideBarFilter: React.FC = () => {
                     isErrorFormats,
                     'Оқу форматы',
                     'Оқу форматы'
+                )}
+            </FilterSection>
+
+            <FilterSection title="Ұзақтығы">
+                {renderFilterList(
+                    mapDurationsToFilterItems(durations),
+                    'durations',
+                    showAllDurations,
+                    setShowAllDurations,
+                    isLoadingDurations,
+                    isErrorDurations,
+                    'Ұзақтығы',
+                    'Ұзақтығы'
                 )}
             </FilterSection>
         </div>

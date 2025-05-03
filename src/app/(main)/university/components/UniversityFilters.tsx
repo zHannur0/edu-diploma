@@ -45,7 +45,7 @@ const UniversityFilters = () => {
     const { data: durations = [], isLoading: isLoadingDurations, isError: isErrorDurations } = useGetDurationsQuery();
 
     // const durationOptions: OptionType[] = [ /* ... */ { id: '1', name: '1 жыл' }, { id: '2', name: '2 жыл' }, { id: '3', name: '3 жыл' }, { id: '4', name: '4+ жыл' }];
-    const academicScoreOptions: OptionType[] = [ /* ... */ { id: 'any', name: 'Кез келген' }, { id: '4.5', name: 'Жоғары (>4.5)' }, { id: '3.5', name: 'Орташа (3.5-4.4)' }, { id: '0', name: 'Төмен (<3.5)' }];
+    // const academicScoreOptions: OptionType[] = [ /* ... */ { id: 'any', name: 'Кез келген' }, { id: '4.5', name: 'Жоғары (>4.5)' }, { id: '3.5', name: 'Орташа (3.5-4.4)' }, { id: '0', name: 'Төмен (<3.5)' }];
 
 
     const [selectedField, setSelectedField] = useState<string>(filters.fields_of_study?.toString() || '');
@@ -115,16 +115,15 @@ const UniversityFilters = () => {
 
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-            <div className={"grid grid-cols-2 gap-4 col-span-3 col-start-1"}>
+        <div className="grid grid-cols-1 gap-4 items-end ">
+            <div className={"grid grid-cols-2 gap-4"}>
                 {renderSelect("Оқу саласы", selectedField, (e) => setSelectedField(e.target.value), fieldsOfStudy, isLoadingFields, isErrorFields)}
-                {renderSelect("Академиялық балл", selectedScore, (e) => setSelectedScore(e.target.value), academicScoreOptions, false, false)}
+                {/*{renderSelect("", selectedScore, (e) => setSelectedScore(e.target.value), academicScoreOptions, false, false)}*/}
                 {renderSelect("Ұзақтығы", selectedDuration, (e) => setSelectedDuration(e.target.value), durations, isLoadingDurations, isErrorDurations)}
                 {renderSelect("Оқыту тілі", selectedLanguage, (e) => setSelectedLanguage(e.target.value), languages, isLoadingLanguages, isErrorLanguages)}
                 {renderSelect("Орналасқан жері", selectedLocation, (e) => setSelectedLocation(e.target.value), locations, isLoadingLocations, isErrorLocations)}
                 {renderSelect("Оқу форматы", selectedFormat, (e) => setSelectedFormat(e.target.value), studyFormats, isLoadingFormats, isErrorFormats)}
-                {renderSelect("Дәреже түрі", selectedDegree, (e) => setSelectedDegree(e.target.value), degreeTypes, isLoadingDegrees, isErrorDegrees)}
-
+                {renderSelect("Оқу түрі", selectedDegree, (e) => setSelectedDegree(e.target.value), degreeTypes, isLoadingDegrees, isErrorDegrees)}
             </div>
 
             {/* Іздеу батырмасы (onClick өзгеріссіз қалады, себебі handleSearch жаңартылды) */}

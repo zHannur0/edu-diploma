@@ -192,7 +192,7 @@ function ProgramDetailContent() {
                             {university.degree_type && (
                                 <DetailItem
                                     icon={<GraduationCap size={20}/>}
-                                    label="Дәреже түрі"
+                                    label="Оқу түрі"
                                     value={university.degree_type.name}
                                 />
                             )}
