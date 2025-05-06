@@ -52,6 +52,7 @@ export interface IeltsWriting {
         image: string;
     }[];
     part: number;
+    context: string;
 }
 
 export interface QuestionIelts {

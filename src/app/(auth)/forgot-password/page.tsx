@@ -79,14 +79,11 @@ export default function ForgotPage() {
         const newErrors: Errors = {};
         if (!values.password) {
             newErrors.password = "Құпия сөз міндетті.";
-        } else if (values.password.length < 8) {
-            newErrors.password = "Құпия сөз кемінде 8 таңбадан тұруы керек.";
         }
         if (!values.confirmPassword) {
             newErrors.confirmPassword = "Құпия сөзді қайталау міндетті.";
         } else if (values.password && values.confirmPassword && values.password !== values.confirmPassword) {
             newErrors.confirmPassword = "Құпия сөздер сәйкес келмейді.";
-            newErrors.password = "Құпия сөздер сәйкес келмейді."; // Екі өріске де қате көрсету
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -103,13 +100,11 @@ export default function ForgotPage() {
                 setCurrentStep(2);
             } else if (currentStep === 2) {
                 if (!validateStep2()) return;
-                // Осы жерде email мәнін қайта қолдану маңызды
                 const res = await verifyResetPassword({ email: values.email, otp: values.otp }).unwrap();
                 setSessionToken(res.session_token);
                 setCurrentStep(3);
             } else if (currentStep === 3) {
                 if (!validateStep3()) return;
-                // API сұрауында password2 күтілуі мүмкін
                 await resetPassword({ password: values.password, password2: values.confirmPassword, session_token: sessionToken || "" }).unwrap();
                 setSuccessMessage("Құпия сөз сәтті жаңартылды!");
                 setCurrentStep(4);
@@ -156,21 +151,28 @@ export default function ForgotPage() {
     }
 
     return (
-        // Бастапқы контейнер (дизайнсыз)
         <div className="flex flex-col w-full max-w-[520px]">
-            {/* Бастапқы тақырып */}
             <h1 className="mb-6 text-[#363E4A] text-[28px] font-bold">
                 Құпия сөзді ұмыттыңыз ба?
             </h1>
-            {/* Динамикалық сипаттама */}
+            <p className={"hover:underline text-sm text-indigo-600 cursor-pointer"}
+               onClick={() => {
+                   setCurrentStep((prevState) => {
+                       if(prevState > 1) {
+                           return prevState - 1;
+                       }
+
+                       return prevState;
+                   });
+               }}>
+                Артқа
+            </p>
             <p className="mb-14 text-[#363E4A] text-lg font-medium">
                 {renderDescription()}
             </p>
 
-            {/* Бастапқы форма */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-                {/* Email - тек 1-ші қадамда көрсетіледі */}
                 {currentStep === 1 && (
                     <EmailInput
                         value={values.email}
@@ -180,7 +182,6 @@ export default function ForgotPage() {
                     />
                 )}
 
-                {/* OTP - тек 2-ші қадамда көрсетіледі */}
                 {currentStep === 2 && (
                     <div className="flex flex-col gap-1">
                         <label htmlFor="otp" className="text-sm font-medium text-gray-700">OTP Коды</label>
@@ -202,7 +203,6 @@ export default function ForgotPage() {
                     </div>
                 )}
 
-                {/* Пароль өрістері - тек 3-ші қадамда көрсетіледі */}
                 {currentStep === 3 && (
                     <>
                         <PasswordInput
@@ -222,16 +222,18 @@ export default function ForgotPage() {
                     </>
                 )}
 
-                {/* Жалпы API қатесі */}
                 {errors.api && <p className="text-xs text-red-500 text-center -mt-2">{errors.api}</p>}
+                {errors.email && <p className="text-xs text-red-500 text-center -mt-2">{errors.email}</p>}
+                {errors.confirmPassword && <p className="text-xs text-red-500 text-center -mt-2">{errors.confirmPassword}</p>}
+                {errors.password && <p className="text-xs text-red-500 text-center -mt-2">{errors.password}</p>}
+                {errors.otp && <p className="text-xs text-red-500 text-center -mt-2">{errors.otp}</p>}
 
-                {/* Батырма */}
+
                 <Button type="submit" disabled={isLoading}>
                     {renderButtonText()}
                 </Button>
             </form>
 
-            {/* Кіру бетіне сілтеме (4-ші қадамнан басқа) */}
             <div className="mt-6 text-center">
                 <Link href="/login" legacyBehavior>
                     <a className="text-sm text-indigo-600 hover:underline">

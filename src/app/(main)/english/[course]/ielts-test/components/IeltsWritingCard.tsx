@@ -2,10 +2,8 @@
 import React, { ChangeEvent } from "react"; // Убрали useState, useEffect
 import TextArea from "@/components/ui/textArea/TextArea";
 import Image from "next/image";
-// Убрали useRouter, useSubmitWritingMutation, SuccessModal, ErrorModal, useModalLogic
 import { IeltsWriting } from "@/types/Ielts";
 
-// Определяем props для компонента
 interface IeltsWritingCardProps {
     writing: IeltsWriting;
     answer: string; // Принимаем текущий ответ
@@ -25,8 +23,13 @@ const IeltsWritingCard = ({ writing, answer, onAnswerChange }: IeltsWritingCardP
                     {writing?.title || `Writing Task`}
                 </p>
                 {writing?.description && (
-                    <p className="text-sm text-[#737B98] font-medium">
+                    <p className=" text-black font-medium">
                         {writing.description}
+                    </p>
+                )}
+                {writing?.context && (
+                    <p className="text-sm text-[#737B98] font-medium">
+                        {writing.context}
                     </p>
                 )}
                 {writing?.images && writing.images.length > 0 && (

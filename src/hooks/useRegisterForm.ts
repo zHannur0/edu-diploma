@@ -61,9 +61,8 @@ export const useRegisterForm = (): UseRegisterFormReturn => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("asdf")
         try {
-            await signUp({
+             await signUp({
                 first_name: values.username,
                 email: values.email,
                 password: values.password,
@@ -71,7 +70,7 @@ export const useRegisterForm = (): UseRegisterFormReturn => {
             }).unwrap()
             router.push("/login");
         } catch (err) {
-            console.log(err)
+                console.log(err)
         }
     }
 

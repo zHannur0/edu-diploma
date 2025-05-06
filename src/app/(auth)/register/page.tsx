@@ -7,7 +7,7 @@ import Input from "@/components/ui/input/Input";
 import {useRegisterForm} from "@/hooks/useRegisterForm";
 
 export default function LoginPage() {
-    const {values, handleSubmit, handleChange} = useRegisterForm()
+    const {values, handleSubmit, handleChange, isLoading, isError} = useRegisterForm()
 
     return (
         <div className="flex flex-col w-full max-w-[520px]">
@@ -28,11 +28,12 @@ export default function LoginPage() {
                                    name="repeatPassword"/>
                 </div>
 
-                <div className="flex w-full justify-between">
-                    <div></div>
-                </div>
-
-                <Button type="submit">Тіркелу</Button>
+                {isError && (
+                    <p className="text-red-600 text-sm text-center font-medium">
+                        Бұл пошта қолданушысы ендігі кезекте тіркелген. Немесе толтырылған деректер қате!
+                    </p>
+                )}
+                <Button type="submit">{isLoading ? "Жүктелуде..." : "Тіркелу"}</Button>
             </form>
         </div>
     );

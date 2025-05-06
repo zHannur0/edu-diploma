@@ -10,7 +10,7 @@ export default function IeltsLayout({
     const { isAuthenticated } = useAuth();
 
     return (
-        <div className="w-full bg-[#EEF4FF] flex justify-center h-screen">
+        <div className="w-full bg-[#EEF4FF] flex justify-center min-h-screen">
             <Wrapper isLoading={isAuthenticated === null}>
                 {children}
             </Wrapper>

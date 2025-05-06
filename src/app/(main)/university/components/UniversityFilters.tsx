@@ -34,8 +34,8 @@ const SelectPlaceholder: React.FC<{ label: string; isLoading: boolean }> = ({ la
 );
 
 const UniversityFilters = () => {
-    const router = useRouter(); // useRouter шақыру
-    const { filters } = useFilters(); // Бастапқы мәндерді оқу үшін қалдыруға болады
+    const router = useRouter();
+    const { filters } = useFilters();
 
     const { data: degreeTypes = [], isLoading: isLoadingDegrees, isError: isErrorDegrees } = useGetDegreeTypesQuery();
     const { data: fieldsOfStudy = [], isLoading: isLoadingFields, isError: isErrorFields } = useGetFieldStudiesQuery();
@@ -44,8 +44,6 @@ const UniversityFilters = () => {
     const { data: studyFormats = [], isLoading: isLoadingFormats, isError: isErrorFormats } = useGetStudyFormatsQuery();
     const { data: durations = [], isLoading: isLoadingDurations, isError: isErrorDurations } = useGetDurationsQuery();
 
-    // const durationOptions: OptionType[] = [ /* ... */ { id: '1', name: '1 жыл' }, { id: '2', name: '2 жыл' }, { id: '3', name: '3 жыл' }, { id: '4', name: '4+ жыл' }];
-    // const academicScoreOptions: OptionType[] = [ /* ... */ { id: 'any', name: 'Кез келген' }, { id: '4.5', name: 'Жоғары (>4.5)' }, { id: '3.5', name: 'Орташа (3.5-4.4)' }, { id: '0', name: 'Төмен (<3.5)' }];
 
 
     const [selectedField, setSelectedField] = useState<string>(filters.fields_of_study?.toString() || '');
@@ -66,7 +64,6 @@ const UniversityFilters = () => {
         setSelectedDegree(filters.degree_type?.toString() || '');
     }, [filters]);
 
-    // ӨЗГЕРТІЛГЕН handleSearch функциясы
     const handleSearch = () => {
         const filtersToSet = {
             fields_of_study: selectedField || undefined,
@@ -81,7 +78,6 @@ const UniversityFilters = () => {
         const params = new URLSearchParams();
 
         Object.entries(filtersToSet).forEach(([key, value]) => {
-            // Тек белсенді (undefined емес) фильтрлерді қосамыз
             if (value !== undefined && value !== null && value !== '') {
                 params.set(key, String(value));
             }
@@ -90,11 +86,9 @@ const UniversityFilters = () => {
         const queryString = params.toString();
         const targetPath = '/university/all'; // Өту керек бет
 
-        // Жаңа бетке query string арқылы өту
         router.push(`${targetPath}${queryString ? `?${queryString}` : ''}`);
     };
 
-    // ... (renderSelect функциясы - бұрынғы код)
     const renderSelect = (
         label: string, value: string, onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void,
         options: OptionType[], isLoading: boolean, isError: boolean
@@ -126,13 +120,15 @@ const UniversityFilters = () => {
                 {renderSelect("Оқу түрі", selectedDegree, (e) => setSelectedDegree(e.target.value), degreeTypes, isLoadingDegrees, isErrorDegrees)}
             </div>
 
-            {/* Іздеу батырмасы (onClick өзгеріссіз қалады, себебі handleSearch жаңартылды) */}
-            <Button
-                onClick={handleSearch}
-                className="w-full md:w-auto justify-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 h-[42px]"
-            >
-                Іздеу
-            </Button>
+            <div className={"w-full flex justify-center"}>
+                <Button
+                    onClick={handleSearch}
+                    className="w-full max-w-1/2 justify-center px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 h-[42px]"
+                >
+                    Іздеу
+                </Button>
+            </div>
+
         </div>
     );
 };

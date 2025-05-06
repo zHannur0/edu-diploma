@@ -84,14 +84,12 @@ const SideBarFilter: React.FC = () => {
 
     useEffect(() => {
         const newSelectedFilters: Array<{key: string, value: string, id: number}> = [];
-
         Object.entries(filters).forEach(([key, value]) => {
             const dataList = allData[key as keyof typeof allData] || [];
             if (Array.isArray(value)) {
                 value.forEach(id => {
                     const item = dataList.find(d => d.id === Number(id));
                     if (item) {
-                        console.log(item)
                         let displayValue = '';
                         if (key === 'duration') {
                             const durationItem = item as Duration;
@@ -138,7 +136,7 @@ const SideBarFilter: React.FC = () => {
     const handleRemoveFilter = useCallback((key: string, idToRemove: number) => {
         const currentValues = filters[key] ? (Array.isArray(filters[key]) ? filters[key] : [filters[key]]) : [];
         const numericIdToRemove = Number(idToRemove);
-        const newValues = currentValues.filter(id => id !== numericIdToRemove);
+        const newValues = currentValues.filter(id => Number(id) !== numericIdToRemove);
         setFilter(key, newValues);
     }, [filters, setFilter]);
 
@@ -292,7 +290,7 @@ const SideBarFilter: React.FC = () => {
             <FilterSection title="Ұзақтығы">
                 {renderFilterList(
                     mapDurationsToFilterItems(durations),
-                    'durations',
+                    'duration',
                     showAllDurations,
                     setShowAllDurations,
                     isLoadingDurations,
