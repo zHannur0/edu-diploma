@@ -16,8 +16,7 @@ export default function WritingPage() {
     const { data: attemptData, isLoading: isLoadingAttempt, isSuccess: isAttemptLoaded, refetch: refetchAttempt } = useGetWritingAttemptQuery({ id: moduleId }, {
         skip: !moduleId,
     });
-
-    const isReviewMode = isAttemptLoaded && !!attemptData;
+    const isReviewMode = isAttemptLoaded && !!attemptData && !!attemptData.writing;
     const isLoading = (isLoadingTask && !writingData) || (isLoadingAttempt && !attemptData && !writingData); // Уточненная логика загрузки
 
     const handleSuccessfulSubmit = () => {

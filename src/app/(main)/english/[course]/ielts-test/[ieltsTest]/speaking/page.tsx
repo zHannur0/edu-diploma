@@ -91,7 +91,6 @@ export default function IeltsSpeakingPage() {
         }
     }, [voiceRecorder.transcript, voiceRecorder.isRecording, activeQuestion?.id]);
 
-    // Wrapped handlePartChange in useCallback to ensure stable reference if used in deps
     const handlePartChangeCallback = useCallback((partNumber: number, triggeredProgrammatically: boolean = false) => {
         setCurrentPart(prevCurrentPart => {
             if (partNumber === prevCurrentPart) return prevCurrentPart;
@@ -114,7 +113,6 @@ export default function IeltsSpeakingPage() {
     }, [isPartCompleted, voiceRecorder.isRecording, voiceRecorder.stopRecording, voiceRecorder.setTranscript]); // Added missing deps
 
     useEffect(() => {
-        // Process stop only when recording has actually stopped and a stop was requested
         if (!voiceRecorder.isRecording && stopRequestedForQuestionId !== null) {
             const questionIdThatStopped = stopRequestedForQuestionId;
             const finalTranscript = (voiceRecorder.transcript || "").trim();
@@ -153,14 +151,12 @@ export default function IeltsSpeakingPage() {
                             const finalIndex = stoppedQuestionIndex + 1;
                             setQuestionIndices(prev => ({ ...prev, [partNumberWhereStopOccurred]: finalIndex }));
                             console.log(`Stop Effect: Last question of Part ${partNumberWhereStopOccurred}. Set index to ${finalIndex}.`);
-                            nextActionTaken = true; // Действие выполнено
+                            nextActionTaken = true;
                         } else {
                             console.log(`Stop Effect: Last question of Part ${partNumberWhereStopOccurred}, but index was invalid?`);
-                            // nextActionTaken остается false
                         }
-                        // --- КОНЕЦ ИЗМЕНЕНИЯ ---
                     }
-                } else if (stoppedQuestionIndex >= 0) { // Для не-последних вопросов
+                } else if (stoppedQuestionIndex >= 0) {
                     const nextIndex = stoppedQuestionIndex + 1;
                     setQuestionIndices(prev => ({ ...prev, [partNumberWhereStopOccurred]: nextIndex }));
                     nextActionTaken = true;
@@ -188,13 +184,12 @@ export default function IeltsSpeakingPage() {
         stopRequestedForQuestionId,
         voiceRecorder.transcript,
         speakingPartsData,
-        handlePartChangeCallback, // Убедись, что handlePartChange обернут в useCallback и добавлен сюда
-        voiceRecorder.setTranscript // Убедись, что setTranscript от хука стабилен или добавлен сюда
+        handlePartChangeCallback,
+        voiceRecorder.setTranscript
     ]);
 
 
     const requestStopRecordingAndTransition = useCallback(() => {
-        // Add log here
         console.log("Requesting stop. isRecording:", voiceRecorder.isRecording, "activeQuestionId:", activeQuestion?.id);
         if (voiceRecorder.isRecording && activeQuestion?.id) {
             setStopRequestedForQuestionId(activeQuestion.id);

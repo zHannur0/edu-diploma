@@ -16,7 +16,6 @@ interface SpeakingPart1ContentProps {
 export default function SpeakingPart1Content({ questions, currentIndex, activeQuestionId }: SpeakingPart1ContentProps) {
 
     const currentQuestion = questions[currentIndex];
-    // const isLastQuestion = currentIndex >= questions.length - 1;
 
     return (
         <div className="flex flex-col justify-between h-full gap-4 text-sm text-[#555C77]">

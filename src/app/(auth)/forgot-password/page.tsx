@@ -8,7 +8,7 @@ import {
     useResetPasswordEmailMutation,
     useVerifyResetPasswordMutation,
     useResetPasswordMutation
-} from "@/store/api/authApi"; // API мутацияларының импорты
+} from "@/store/api/authApi";
 import Link from "next/link";
 
 interface FormValues {
@@ -68,7 +68,7 @@ export default function ForgotPage() {
         const newErrors: Errors = {};
         if (!values.otp) {
             newErrors.otp = "OTP коды міндетті.";
-        } else if (!/^\d{6}$/.test(values.otp)) { // Тек 6 саннан тұруын тексеру
+        } else if (!/^\d{6}$/.test(values.otp)) {
             newErrors.otp = "OTP 6 саннан тұруы керек.";
         }
         setErrors(newErrors);
