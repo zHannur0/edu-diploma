@@ -47,7 +47,7 @@ const useListeningTest = (): UseListeningTestReturn => {
         { skip: !Number(module) }
     );
 
-    const isReviewMode = isAttemptLoaded && !!attempt;
+    const isReviewMode = isAttemptLoaded && !!attempt && attempt.test?.length > 0;
 
     useEffect(() => {
         if (isReviewMode || !questions) return;
